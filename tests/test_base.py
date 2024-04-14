@@ -1,5 +1,5 @@
-from project_name.base import NAME
+from doc_generator.base import NAME
 
 
 def test_base():
-    assert NAME == "project_name"
+    assert NAME == "doc_generator"
