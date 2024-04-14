@@ -4,7 +4,7 @@ from pathlib import Path
 from abc import abstractmethod
 import hnswlib
 from langchain_community.docstore.in_memory import InMemoryDocstore
-from langchain_community.embeddings import Embeddings
+from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_core.vectorstores import VectorStore
 
 
