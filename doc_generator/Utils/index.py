@@ -1,7 +1,7 @@
 from prompt_toolkit import prompt
 from prompt_toolkit.shortcuts import clear
 import os
-from langchain.embeddings import OpenAIEmbeddings
+from langchain_community.embeddings import OpenAIEmbeddings
 import hnswlib
 from markdown2 import markdown
 from createChatChain import make_chain

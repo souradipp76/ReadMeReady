@@ -1,11 +1,12 @@
-from langchain.chains import LLMChain, ChatVectorDBChain, loadQAChain
-from langchain.llms import OpenAIChat
+from langchain.chains import LLMChain, ChatVectorDBChain
+from langchain.chains.question_answering import load_qa_chain
+from LLMUtils import OpenAIChat
 from langchain.prompts import PromptTemplate
 
 
 # Define the prompt template for condensing the follow-up question
-condense_prompt = PromptTemplate(
-    template="Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.\n\n"
+condense_prompt = PromptTemplate.from_template(
+    "Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.\n\n"
              "Chat History:\n{chat_history}\nFollow Up Input: {question}\nStandalone question:"
 )
 
