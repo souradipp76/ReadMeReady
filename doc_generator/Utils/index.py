@@ -2,7 +2,7 @@ from prompt_toolkit import prompt
 from prompt_toolkit.shortcuts import clear
 import os
 from langchain_community.embeddings import OpenAIEmbeddings
-import HNSWLib
+from HNSWLib import HNSWLib
 from markdown2 import markdown
 from createChatChain import make_chain
 
@@ -36,11 +36,10 @@ def query(name, repository_url, output, content_type, chat_prompt, target_audien
             print(f"Something went wrong: {error}")
 
 if __name__ == "__main__":
-    # Example config objects, these need to be defined or imported properly
     repo_config = {
-        "name": "ProjectName",
-        "repository_url": "https://github.com/yourproject",
-        "output": "/path/to/output",
+        "name": "autodoc",
+        "repository_url": "https://github.com/context-labs/autodoc",
+        "output": "./.autodoc",
         "content_type": "docs",
         "chat_prompt": "Additional instructions here",
         "target_audience": "developers"

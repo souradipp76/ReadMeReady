@@ -1,15 +1,7 @@
 import os
 from dataclasses import dataclass
 
-@dataclass
-class OpenAIChat:
-    temperature: float
-    openAIApiKey: str
-    modelName: str
-
-    def __post_init__(self):
-        # Initialization logic here, if necessary
-        pass
+from langchain_community.chat_models import ChatOpenAI
 
 class LLMModels:
     GPT3 = 'GPT3'
@@ -22,7 +14,7 @@ class LLMModelDetails:
     inputCostPer1KTokens: float
     outputCostPer1KTokens: float
     maxLength: int
-    llm: OpenAIChat
+    llm: ChatOpenAI
     inputTokens: int = 0
     outputTokens: int = 0
     succeeded: int = 0
@@ -35,21 +27,21 @@ models = {
         inputCostPer1KTokens=0.0015,
         outputCostPer1KTokens=0.002,
         maxLength=3050,
-        llm=OpenAIChat(temperature=0.1, openAIApiKey=os.getenv('OPENAI_API_KEY'), modelName=LLMModels.GPT3)
+        llm=ChatOpenAI(temperature=0.1, openai_api_key=os.getenv('OPENAI_API_KEY'), model_name=LLMModels.GPT3)
     ),
     LLMModels.GPT4: LLMModelDetails(
         name=LLMModels.GPT4,
         inputCostPer1KTokens=0.03,
         outputCostPer1KTokens=0.06,
         maxLength=8192,
-        llm=OpenAIChat(temperature=0.1, openAIApiKey=os.getenv('OPENAI_API_KEY'), modelName=LLMModels.GPT4)
+        llm=ChatOpenAI(temperature=0.1, openai_api_key=os.getenv('OPENAI_API_KEY'), model_name=LLMModels.GPT4)
     ),
     LLMModels.GPT432k: LLMModelDetails(
         name=LLMModels.GPT432k,
         inputCostPer1KTokens=0.06,
         outputCostPer1KTokens=0.12,
         maxLength=32768,
-        llm=OpenAIChat(temperature=0.1, openAIApiKey=os.getenv('OPENAI_API_KEY'), modelName=LLMModels.GPT4)
+        llm=ChatOpenAI(temperature=0.1, openai_api_key=os.getenv('OPENAI_API_KEY'), model_name=LLMModels.GPT4)
     )
 }
 

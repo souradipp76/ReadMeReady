@@ -27,6 +27,7 @@ class HNSWLibArgs(HNSWLibBase):
 class HNSWLib(SaveableVectorStore):
     def __init__(self, embeddings: OpenAIEmbeddings, args: 'HNSWLibArgs'):
         super().__init__(embeddings, args)
+        self.args = args
         self._index = args.index
         self.docstore = args.docstore if args.docstore else InMemoryDocstore()
 
