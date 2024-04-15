@@ -28,7 +28,7 @@ def query(name, repository_url, output, content_type, chat_prompt, target_audien
 
         print('Thinking...')
         try:
-            response = chain.call({'question': question, 'chat_history': chat_history})
+            response = chain({'question': question, 'chat_history': chat_history})
             chat_history.append((question, response['text']))
             print('\n\nMarkdown:\n')
             print(markdown(response['text']))
@@ -36,10 +36,11 @@ def query(name, repository_url, output, content_type, chat_prompt, target_audien
             print(f"Something went wrong: {error}")
 
 if __name__ == "__main__":
+    # Example config objects, these need to be defined or imported properly
     repo_config = {
-        "name": "autodoc",
-        "repository_url": "https://github.com/context-labs/autodoc",
-        "output": "./.autodoc",
+        "name": "ProjectName",
+        "repository_url": "https://github.com/yourproject",
+        "output": "./autodoc",
         "content_type": "docs",
         "chat_prompt": "Additional instructions here",
         "target_audience": "developers"

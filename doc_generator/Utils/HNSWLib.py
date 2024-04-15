@@ -5,6 +5,7 @@ from typing import List, Optional
 from langchain_community.docstore.in_memory import InMemoryDocstore
 from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_core.vectorstores import VectorStore
+from langchain_core.documents import Document
 from abc import abstractmethod
 
 class SaveableVectorStore(VectorStore):
@@ -26,12 +27,13 @@ class HNSWLibArgs(HNSWLibBase):
       
 class HNSWLib(SaveableVectorStore):
     def __init__(self, embeddings: OpenAIEmbeddings, args: 'HNSWLibArgs'):
-        super().__init__(embeddings, args)
-        self.args = args
-        self._index = args.index
-        self.docstore = args.docstore if args.docstore else InMemoryDocstore()
+      super().__init__()
+      self.args = args
+      self._embeddings = embeddings
+      self._index = args.index
+      self.docstore = args.docstore if args.docstore else InMemoryDocstore()
 
-    def add_documents(self, documents: List):
+    def add_texts(self, documents: List):
         texts = [doc.page_content for doc in documents]
         vectors = self.embeddings.embed_documents(texts)
         self.add_vectors(vectors, documents)
@@ -77,8 +79,20 @@ class HNSWLib(SaveableVectorStore):
         for i, vector in enumerate(vectors):
             self.index.add_items([vector], [self.docstore.count + i])
             self.docstore.add(self.docstore.count + i, documents[i])
+            
+    @staticmethod
+    def from_texts(texts: List[str], embeddings: OpenAIEmbeddings, docstore: InMemoryDocstore):
+        documents = [Document(text) for text in texts]
+        return HNSWLib.from_documents(documents, embeddings, docstore)
 
-    def similarity_search_vector_with_score(self, query: List[float], k: int) -> List:
+    @staticmethod
+    def from_documents(documents: List[Document], embeddings: OpenAIEmbeddings, docstore: InMemoryDocstore):
+        args = HNSWLibArgs(space='cosine', docstore=docstore)
+        hnsw = HNSWLib(embeddings, args)
+        hnsw.add_documents(documents)
+        return hnsw
+
+    def similarity_search(self, query: List[float], k: int) -> List:
         if len(query) != self.args.num_dimensions:
             raise ValueError(f"Query vector must have the same length as the number of dimensions ({self.args.num_dimensions})")
         total = self.index.get_current_count()
@@ -107,6 +121,10 @@ class HNSWLib(SaveableVectorStore):
         with open(os.path.join(directory, 'docstore.json'), 'r') as f:
             doc_data = json.load(f)
         args.docstore = InMemoryDocstore()
-        args.docstore.add(doc_data)
+        doc_dict = {}
+        for doc in doc_data:
+          key, value = doc
+          doc_dict[key] = value
+        args.docstore.add(doc_dict)
         args.index = index
         return HNSWLib(embeddings, args)

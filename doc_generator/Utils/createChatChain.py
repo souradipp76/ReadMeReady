@@ -12,8 +12,8 @@ condense_prompt = PromptTemplate.from_template(
 
 def make_qa_prompt(project_name, repository_url, content_type, chat_prompt, target_audience):
     additional_instructions = f"\nHere are some additional instructions for answering questions about {content_type}:\n{chat_prompt}" if chat_prompt else ""
-    return PromptTemplate(
-        template=f"You are an AI assistant for a software project called {project_name}. You are trained on all the {content_type} that makes up this project.\n"
+    return PromptTemplate.from_template(
+        f"You are an AI assistant for a software project called {project_name}. You are trained on all the {content_type} that makes up this project.\n"
                  f"The {content_type} for the project is located at {repository_url}.\n"
                  "You are given the following extracted parts of a technical summary of files in a {content_type} and a question. "
                  "Provide a conversational answer with hyperlinks back to GitHub.\n"
@@ -53,7 +53,7 @@ def make_chain(project_name, repository_url, content_type, chat_prompt, target_a
     )
 
     return ChatVectorDBChain(
-        vectorstore=vectorstore,
-        combine_documents_chain=doc_chain,
-        question_generator_chain=question_generator
-    )
+    vectorstore=vectorstore,
+    combine_docs_chain=doc_chain,
+    question_generator=question_generator
+)
