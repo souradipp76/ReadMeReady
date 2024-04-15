@@ -2,7 +2,7 @@ from prompt_toolkit import prompt
 from prompt_toolkit.shortcuts import clear
 import os
 from langchain_community.embeddings import OpenAIEmbeddings
-import HNSW
+import HNSWLib
 from markdown2 import markdown
 from createChatChain import make_chain
 
@@ -15,7 +15,7 @@ def display_welcome_message(project_name):
 def query(name, repository_url, output, content_type, chat_prompt, target_audience, llms):
     data_path = os.path.join(output, 'docs', 'data')
     embeddings = OpenAIEmbeddings()
-    vector_store = HNSW.load(data_path, embeddings)
+    vector_store = HNSWLib.load(data_path, embeddings)
     chain = make_chain(name, repository_url, content_type, chat_prompt, target_audience, vector_store, llms)
 
     clear()
