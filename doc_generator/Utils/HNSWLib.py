@@ -3,7 +3,7 @@ import os
 import hnswlib
 from typing import List, Optional
 from langchain_community.docstore.in_memory import InMemoryDocstore
-from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from langchain_core.vectorstores import VectorStore
 from langchain_core.documents import Document
 from abc import abstractmethod
@@ -35,7 +35,7 @@ class HNSWLib(SaveableVectorStore):
 
     def add_texts(self, documents: List):
         texts = [doc.page_content for doc in documents]
-        vectors = self.embeddings.embed_documents(texts)
+        vectors = self._embeddings.embed_documents(texts)
         self.add_vectors(vectors, documents)
 
     @staticmethod
@@ -91,8 +91,8 @@ class HNSWLib(SaveableVectorStore):
         hnsw = HNSWLib(embeddings, args)
         hnsw.add_documents(documents)
         return hnsw
-
-    def similarity_search(self, query: List[float], k: int) -> List:
+    
+    def similarity_search_by_vector(self, query: List[float], k: int) -> List:
         if len(query) != self.args.num_dimensions:
             raise ValueError(f"Query vector must have the same length as the number of dimensions ({self.args.num_dimensions})")
         total = self.index.get_current_count()
@@ -102,6 +102,9 @@ class HNSWLib(SaveableVectorStore):
         labels, distances = self.index.knn_query(query, k)
         return [(self.docstore.search(str(label)), distance) for label, distance in zip(labels, distances)]
 
+    def similarity_search(self, query: str, k: int) -> List[Document]:
+        return self.similarity_search_by_vector(self._embeddings.embed_query(query), k)
+    
     def save(self, directory: str):
         if not os.path.exists(directory):
             os.makedirs(directory)

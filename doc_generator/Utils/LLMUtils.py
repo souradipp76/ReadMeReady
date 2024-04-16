@@ -1,7 +1,7 @@
 import os
 from dataclasses import dataclass
 
-from langchain_community.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 
 class LLMModels:
     GPT3 = 'GPT3'

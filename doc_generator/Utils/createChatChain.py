@@ -1,6 +1,6 @@
 from langchain.chains import LLMChain, ChatVectorDBChain
 from langchain.chains.question_answering import load_qa_chain
-from langchain_community.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
 
 
