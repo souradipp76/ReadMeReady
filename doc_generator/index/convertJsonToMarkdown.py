@@ -1,15 +1,12 @@
-import asyncio
-from pathlib import Path
 import json
+from pathlib import Path
 from typing import Any, Dict
 
-# Assume necessary imports for custom types and utility functions
-from types import AutodocRepoConfig, FileSummary, FolderSummary
-from utils import traverseFileSystem
-from spinner import spinnerSuccess, updateSpinnerText
-from file_util import getFileName
+from doc_generator.types import AutodocRepoConfig, FileSummary, FolderSummary
+from doc_generator.utils.traverseFileSystem import traverseFileSystem
+from doc_generator.utils.FileUtils import get_file_name
 
-async def convertJsonToMarkdown(config: AutodocRepoConfig):
+def convertJsonToMarkdown(config: AutodocRepoConfig):
     projectName = config.name
     inputRoot = Path(config.root)
     outputRoot = Path(config.output)
@@ -22,12 +19,12 @@ async def convertJsonToMarkdown(config: AutodocRepoConfig):
     # Count the number of files in the project
     files = 0
 
-    async def count_files(file_info: Dict[str, Any]):
+    def count_files(file_info: Dict[str, Any]):
         nonlocal files
         files += 1
         return
 
-    await traverseFileSystem({
+    traverseFileSystem({
         'inputPath': str(inputRoot),
         'projectName': projectName,
         'processFile': count_files,
@@ -40,7 +37,7 @@ async def convertJsonToMarkdown(config: AutodocRepoConfig):
     })
 
     # Process and create markdown files for each code file in the project
-    async def process_file(file_info: Dict[str, Any]):
+    def process_file(file_info: Dict[str, Any]):
         filePath = Path(file_info['filePath'])
         fileName = file_info['fileName']
         content = filePath.read_text(encoding='utf-8')
@@ -68,11 +65,10 @@ async def convertJsonToMarkdown(config: AutodocRepoConfig):
             if data.questions:
                 markdown += f"## Questions: \n{data.questions}"
 
-        outputPath = getFileName(markdownFilePath, '.', '.md')
+        outputPath = get_file_name(markdownFilePath, '.', '.md')
         outputPath.write_text(markdown, encoding='utf-8')
 
-    updateSpinnerText(f"Creating {files} markdown files...")
-    await traverseFileSystem({
+    traverseFileSystem({
         'inputPath': str(inputRoot),
         'projectName': projectName,
         'processFile': process_file,
@@ -83,4 +79,3 @@ async def convertJsonToMarkdown(config: AutodocRepoConfig):
         'targetAudience': targetAudience,
         'linkHosted': linkHosted,
     })
-    spinnerSuccess(f"Created {files} markdown files...")
