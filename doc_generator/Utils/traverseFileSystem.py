@@ -18,7 +18,7 @@ class TraverseFileSystemParams:
         self.targetAudience = targetAudience
         self.linkHosted = linkHosted
 
-async def traverseFileSystem(params: TraverseFileSystemParams):
+def traverseFileSystem(params: TraverseFileSystemParams):
     try:
         inputPath = Path(params.inputPath)
         if not inputPath.exists():
@@ -28,15 +28,15 @@ async def traverseFileSystem(params: TraverseFileSystemParams):
         def shouldIgnore(fileName):
             return any(fnmatch.fnmatch(fileName, pattern) for pattern in params.ignore)
 
-        async def dfs(currentPath: Path):
+        def dfs(currentPath: Path):
             contents = [entry for entry in currentPath.iterdir() if not shouldIgnore(entry.name)]
 
             # Process directories first
             for entry in contents:
                 if entry.is_dir():
-                    await dfs(entry)
+                    dfs(entry)
                     if params.processFolder:
-                        await params.processFolder({
+                        params.processFolder({
                             'inputPath': str(params.inputPath),
                             'folderName': entry.name,
                             'folderPath': str(entry),
@@ -56,7 +56,7 @@ async def traverseFileSystem(params: TraverseFileSystemParams):
                         content = file.read()
                         if magic.from_buffer(content, mime=True).startswith('text/'):
                             if params.processFile:
-                                await params.processFile({
+                                params.processFile({
                                     'fileName': entry.name,
                                     'filePath': filePath,
                                     'projectName': params.projectName,
@@ -66,7 +66,7 @@ async def traverseFileSystem(params: TraverseFileSystemParams):
                                     'linkHosted': params.linkHosted,
                                 })
 
-        await dfs(inputPath)
+        dfs(inputPath)
 
     except Exception as e:
         print(f"Error during traversal: {e}")
