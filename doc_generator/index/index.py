@@ -1,5 +1,4 @@
 from pathlib import Path
-import asyncio
 
 # Import the necessary classes and functions from the files you provided
 from your_module.convertJsonToMarkdown import convertJsonToMarkdown as convert
@@ -28,26 +27,26 @@ class AutodocRepoConfig:
         self.linkHosted = linkHosted
 
 # Function implementations
-async def processRepository(config):
+def processRepository(config):
     # This function will handle preprocessing of the repository
-    await preprocess(config)
+    preprocess(config)
 
-async def convertJsonToMarkdown(config):
+def convertJsonToMarkdown(config):
     # This function will convert the JSON outputs into Markdown
-    await convert(config)
+    convert(config)
 
-async def createVectorStore(config):
+def createVectorStore(config):
     # This function will create a vector store from the processed data
-    await createStore(config)
+    createStore(config)
 
-# Utility functions for UI feedback
-def updateSpinnerText(text):
-    print(text)  # Simplistic spinner text update simulation
+# # Utility functions for UI feedback
+# def updateSpinnerText(text):
+#     print(text)  # Simplistic spinner text update simulation
 
-def spinnerSuccess():
-    print("Done!")  # Simplistic success message
+# def spinnerSuccess():
+#     print("Done!")  # Simplistic success message
 
-async def index(config: AutodocRepoConfig):
+def index(config: AutodocRepoConfig):
     json_path = Path(config.output) / 'docs' / 'json'
     markdown_path = Path(config.output) / 'docs' / 'markdown'
     data_path = Path(config.output) / 'docs' / 'data'
@@ -59,7 +58,7 @@ async def index(config: AutodocRepoConfig):
 
     # Process the repository to create JSON files
     updateSpinnerText('Processing repository...')
-    await processRepository(AutodocRepoConfig(
+    processRepository(AutodocRepoConfig(
         name=config.name,
         repositoryUrl=config.repositoryUrl,
         root=config.root,
@@ -76,11 +75,11 @@ async def index(config: AutodocRepoConfig):
         targetAudience=config.targetAudience,
         linkHosted=config.linkHosted,
     ))
-    spinnerSuccess()
+    #spinnerSuccess()
 
     # Convert the JSON files to Markdown
     updateSpinnerText('Creating markdown files...')
-    await convertJsonToMarkdown(AutodocRepoConfig(
+    convertJsonToMarkdown(AutodocRepoConfig(
         name=config.name,
         repositoryUrl=config.repositoryUrl,
         root=str(json_path),
@@ -97,11 +96,11 @@ async def index(config: AutodocRepoConfig):
         targetAudience=config.targetAudience,
         linkHosted=config.linkHosted,
     ))
-    spinnerSuccess()
+    #spinnerSuccess()
 
     # Create a vector store from the Markdown documents
     updateSpinnerText('Creating vector files...')
-    await createVectorStore(AutodocRepoConfig(
+    createVectorStore(AutodocRepoConfig(
         name=config.name,
         repositoryUrl=config.repositoryUrl,
         root=str(markdown_path),
@@ -118,7 +117,7 @@ async def index(config: AutodocRepoConfig):
         targetAudience=config.targetAudience,
         linkHosted=config.linkHosted,
     ))
-    spinnerSuccess()
+    #spinnerSuccess()
 
 # Example usage
 if __name__ == "__main__":

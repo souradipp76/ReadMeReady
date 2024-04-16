@@ -1,4 +1,4 @@
-import asyncio
+
 import hashlib
 from pathlib import Path
 import json
@@ -12,25 +12,25 @@ from your_module.spinner import spinnerSuccess, stopSpinner, updateSpinnerText
 from your_module.file_util import getFileName, githubFileUrl, githubFolderUrl
 from your_module.llm_util import models, selectModel
 
-async def processRepository(config: AutodocRepoConfig, dryRun=False):
+def processRepository(config: AutodocRepoConfig, dryRun=False):
     rateLimit = APIRateLimit(config.maxConcurrentCalls)
 
-    async def callLLM(prompt, model):
-        async def model_call():
-            return await model.call(prompt)
-        return await rateLimit.callApi(model_call)
+    def callLLM(prompt, model):
+        def model_call():
+            return model.call(prompt)
+        return rateLimit.callApi(model_call)
 
     def isModel(model):
         return model is not None
 
-    async def processFile(fileInfo):
+    def processFile(fileInfo):
         fileName = fileInfo['fileName']
         filePath = fileInfo['filePath']
-        content = await asyncio.to_thread(read_file, filePath)
+        content = read_file(filePath)
 
         newChecksum = calculateChecksum(content)
 
-        reindex = await shouldReindex(
+        reindex = shouldReindex(
             Path(config.outputRoot) / Path(filePath).parent,
             f"{Path(fileName).stem}.json",
             newChecksum
@@ -58,7 +58,7 @@ async def processRepository(config: AutodocRepoConfig, dryRun=False):
         questionLength = len(encoding.encode(questionsPrompt))
 
         if not dryRun:
-            responses = await asyncio.gather(*(callLLM(prompt, model.llm) for prompt in prompts))
+            responses = [callLLM(prompt, model.llm) for prompt in prompts]
 
             fileSummary = FileSummary(
                 fileName=fileName,
@@ -79,7 +79,7 @@ async def processRepository(config: AutodocRepoConfig, dryRun=False):
             model.total += 1
             model.succeeded += 1
 
-    async def processFolder(folderInfo):
+    def processFolder(folderInfo):
         if dryRun:
             return
 
@@ -89,20 +89,20 @@ async def processRepository(config: AutodocRepoConfig, dryRun=False):
 
         newChecksum = calculateChecksum(contents)
 
-        reindex = await shouldReindex(folderPath, 'summary.json', newChecksum)
+        reindex = shouldReindex(folderPath, 'summary.json', newChecksum)
         if not reindex:
             return
 
         url = githubFolderUrl(config.repositoryUrl, config.inputRoot, folderPath, config.linkHosted)
-        fileSummaries = await asyncio.gather(*(processFile({'fileName': f.name, 'filePath': str(f)}) for f in contents if f.is_file() and f.name != 'summary.json'))
-        folderSummaries = [await processFolder({'folderName': f.name, 'folderPath': str(f)}) for f in contents if f.is_dir()]
+        fileSummaries = [processFile({'fileName': f.name, 'filePath': str(f)}) for f in contents if f.is_file() and f.name != 'summary.json']
+        folderSummaries = [processFolder({'folderName': f.name, 'folderPath': str(f)}) for f in contents if f.is_dir()]
 
         summaryPrompt = folderSummaryPrompt(folderPath, config.name, fileSummaries, folderSummaries, config.contentType, config.folderPrompt)
         model = selectModel([summaryPrompt], config.llms, models, config.priority)
         if not isModel(model):
             return
 
-        summary = await callLLM(summaryPrompt, model.llm)
+        summary = callLLM(summaryPrompt, model.llm)
 
         folderSummary = FolderSummary(
             folderName=folderName,
@@ -116,19 +116,19 @@ async def processRepository(config: AutodocRepoConfig, dryRun=False):
         )
 
         outputPath = Path(folderPath) / 'summary.json'
-        await asyncio.to_thread(write_file, str(outputPath), json.dumps(folderSummary, indent=2))
+        write_file(str(outputPath), json.dumps(folderSummary, indent=2))
 
-    files_folders_count = await filesAndFolders(config.inputRoot, config)
+    files_folders_count = filesAndFolders(config.inputRoot, config)
     updateSpinnerText(f"Processing {files_folders_count['files']} files and {files_folders_count['folders']} folders...")
-    await traverseFileSystem(config.inputRoot, config, processFile, processFolder)
+    traverseFileSystem(config.inputRoot, config, processFile, processFolder)
     spinnerSuccess("Processing complete.")
     stopSpinner()
 
-async def read_file(path):
+def read_file(path):
     with open(path, 'r', encoding='utf-8') as file:
         return file.read()
 
-async def write_file(path, content):
+def write_file(path, content):
     with open(path, 'w', encoding='utf-8') as file:
         file.write(content)
 
@@ -137,7 +137,7 @@ def calculateChecksum(contents):
     [m.update(content.encode('utf-8')) for content in contents]
     return m.hexdigest()
 
-async def shouldReindex(contentPath, name, newChecksum):
+def shouldReindex(contentPath, name, newChecksum):
     jsonPath = Path(contentPath) / name
     try:
         with open(jsonPath, 'r', encoding='utf-8') as file:
@@ -146,9 +146,9 @@ async def shouldReindex(contentPath, name, newChecksum):
     except FileNotFoundError:
         return True
 
-async def filesAndFolders(rootPath, config):
+def filesAndFolders(rootPath, config):
     files, folders = 0, 0
-    await traverseFileSystem(rootPath, config,
+    traverseFileSystem(rootPath, config,
                              lambda: setattr(files, files + 1),
                              lambda: setattr(folders, folders + 1))
     return {'files': files, 'folders': folders}

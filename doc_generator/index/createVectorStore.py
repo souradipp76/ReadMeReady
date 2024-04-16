@@ -1,4 +1,4 @@
-import asyncio
+
 import os
 from pathlib import Path
 
@@ -9,20 +9,20 @@ from langchain.document import Document
 from langchain.document_loaders import BaseDocumentLoader
 from langchain.hnswlib import HNSWLib
 
-async def processFile(filePath: str) -> Document:
-    async def read_file(path):
+def processFile(filePath: str) -> Document:
+    def read_file(path):
         with open(path, 'r', encoding='utf8') as file:
             return file.read()
     
     try:
-        fileContents = await read_file(filePath)
+        fileContents = read_file(filePath)
         metadata = {'source': filePath}
         doc = Document(pageContent=fileContents, metadata=metadata)
         return doc
     except Exception as e:
         raise Exception(f"Error reading file {filePath}: {str(e)}")
 
-async def processDirectory(directoryPath: str) -> [Document]:
+def processDirectory(directoryPath: str) -> [Document]:
     docs = []
     try:
         files = os.listdir(directoryPath)
@@ -33,10 +33,10 @@ async def processDirectory(directoryPath: str) -> [Document]:
     for file in files:
         filePath = Path(directoryPath) / file
         if filePath.is_dir():
-            nestedDocs = await processDirectory(str(filePath))
+            nestedDocs = processDirectory(str(filePath))
             docs.extend(nestedDocs)
         else:
-            doc = await processFile(str(filePath))
+            doc = processFile(str(filePath))
             docs.append(doc)
     
     return docs
@@ -46,15 +46,15 @@ class RepoLoader(BaseDocumentLoader):
         super().__init__()
         self.filePath = filePath
     
-    async def load(self) -> [Document]:
-        return await processDirectory(self.filePath)
+    def load(self) -> [Document]:
+        return processDirectory(self.filePath)
 
-async def createVectorStore(root: str, output: str) -> None:
+def createVectorStore(root: str, output: str) -> None:
     loader = RepoLoader(root)
-    rawDocs = await loader.load()
+    rawDocs = loader.load()
     # Split the text into chunks
     textSplitter = RecursiveCharacterTextSplitter(chunkSize=8000, chunkOverlap=100)
-    docs = await textSplitter.splitDocuments(rawDocs)
+    docs = textSplitter.splitDocuments(rawDocs)
     # Create the vectorstore
-    vectorStore = await HNSWLib.fromDocuments(docs, OpenAIEmbeddings())
-    await vectorStore.save(output)
+    vectorStore = HNSWLib.fromDocuments(docs, OpenAIEmbeddings())
+    vectorStore.save(output)
