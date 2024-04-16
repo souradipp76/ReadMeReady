@@ -1,10 +1,11 @@
+import os
 from prompt_toolkit import prompt
 from prompt_toolkit.shortcuts import clear
-import os
 from langchain_openai import OpenAIEmbeddings
-from HNSWLib import HNSWLib
 from markdown2 import markdown
-from createChatChain import make_chain
+
+from doc_generator.utils.HNSWLib import HNSWLib
+from doc_generator.utils.createChatChain import make_chain
 
 chat_history = []
 
@@ -34,18 +35,3 @@ def query(name, repository_url, output, content_type, chat_prompt, target_audien
             print(markdown(response['text']))
         except Exception as error:
             print(f"Something went wrong: {error}")
-
-if __name__ == "__main__":
-    # Example config objects, these need to be defined or imported properly
-    repo_config = {
-        "name": "autodoc",
-        "repository_url": "https://github.com/context-labs/autodoc",
-        "output": "./autodoc",
-        "content_type": "docs",
-        "chat_prompt": "Additional instructions here",
-        "target_audience": "developers"
-    }
-    user_config = {
-        "llms": ["gpt-3.5-turbo"]
-    }
-    query(**repo_config, **user_config)

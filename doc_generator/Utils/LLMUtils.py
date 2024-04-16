@@ -1,6 +1,6 @@
 import os
-from dataclasses import dataclass
 
+from dataclasses import dataclass
 from langchain_openai import ChatOpenAI
 
 class LLMModels:

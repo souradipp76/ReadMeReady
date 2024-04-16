@@ -7,6 +7,7 @@ Be creative! do whatever you want!
 - Start a web application
 - Import things from your .base module
 """
+from doc_generator.query import query
 
 
 def main():  # pragma: no cover
@@ -25,4 +26,16 @@ def main():  # pragma: no cover
         * List all available tasks
         * Run an application (Flask, FastAPI, Django, etc.)
     """
-    print("This will do something")
+    # Example config objects, these need to be defined or imported properly
+    repo_config = {
+        "name": "autodoc",
+        "repository_url": "https://github.com/context-labs/autodoc",
+        "output": "doc_generator/autodoc",
+        "content_type": "docs",
+        "chat_prompt": "Additional instructions here",
+        "target_audience": "developers"
+    }
+    user_config = {
+        "llms": ["gpt-3.5-turbo"]
+    }
+    query(**repo_config, **user_config)
