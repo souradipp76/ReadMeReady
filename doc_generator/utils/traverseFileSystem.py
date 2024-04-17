@@ -1,21 +1,8 @@
 from pathlib import Path
+from doc_generator.types import TraverseFileSystemParams
 import fnmatch
 import magic
 
-class TraverseFileSystemParams:
-    def __init__(self, inputPath, projectName, processFile=None, processFolder=None,
-                 ignore=None, filePrompt=None, folderPrompt=None, contentType=None,
-                 targetAudience=None, linkHosted=None):
-        self.inputPath = inputPath
-        self.projectName = projectName
-        self.processFile = processFile
-        self.processFolder = processFolder
-        self.ignore = ignore if ignore else []
-        self.filePrompt = filePrompt
-        self.folderPrompt = folderPrompt
-        self.contentType = contentType
-        self.targetAudience = targetAudience
-        self.linkHosted = linkHosted
 
 def traverseFileSystem(params: TraverseFileSystemParams):
     try:

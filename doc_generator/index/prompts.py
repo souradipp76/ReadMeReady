@@ -1,15 +1,5 @@
 from typing import List
-from dataclasses import dataclass
-
-@dataclass
-class FileSummary:
-    file_name: str
-    summary: str
-
-@dataclass
-class FolderSummary:
-    folder_name: str
-    summary: str
+from doc_generator.types import FolderSummary, FileSummary
 
 def create_code_file_summary(file_path: str, project_name: str, file_contents: str, content_type: str, file_prompt: str) -> str:
     return f"""

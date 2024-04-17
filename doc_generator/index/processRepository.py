@@ -1,18 +1,22 @@
-
 import hashlib
-from pathlib import Path
 import json
-from langchain.llms import OpenAIChat
-from your_module.tiktoken import encoding_for_model
-from your_module.api_rate_limit import APIRateLimit
-from your_module.prompts import createCodeFileSummary, createCodeQuestions, folderSummaryPrompt
-from your_module.types import AutodocRepoConfig, FileSummary, FolderSummary, ProcessFile, ProcessFolder
-from your_module.traverse_file_system import traverseFileSystem
-from your_module.file_util import getFileName, githubFileUrl, githubFolderUrl
-from your_module.llm_util import models, selectModel
+from pathlib import Path
+
+import tiktoken
+
+from doc_generator.types import (AutodocRepoConfig, FileSummary, FolderSummary,
+                                 TraverseFileSystemParams)
+from doc_generator.utils.FileUtils import (getFileName, githubFileUrl,
+                                           githubFolderUrl)
+from doc_generator.utils.LLMUtils import models, selectModel
+from doc_generator.utils.traverseFileSystem import traverseFileSystem
+
+from .prompts import (create_code_file_summary, create_code_questions,
+                      folder_summary_prompt)
+
 
 def processRepository(config: AutodocRepoConfig, dryRun=False):
-    rateLimit = APIRateLimit(config.maxConcurrentCalls)
+    rateLimit = APIRateLimit(config.max_concurrent_calls)
 
     def callLLM(prompt, model):
         def model_call():
@@ -38,13 +42,13 @@ def processRepository(config: AutodocRepoConfig, dryRun=False):
             return
 
         markdownFilePath = Path(config.outputRoot) / filePath
-        url = githubFileUrl(config.repositoryUrl, config.inputRoot, filePath, config.linkHosted)
+        url = githubFileUrl(config.repositoryUrl, config.inputRoot, filePath, config.link_hosted)
 
-        summaryPrompt = createCodeFileSummary(
-            config.name, config.name, content, config.contentType, config.filePrompt
+        summaryPrompt = create_code_file_summary(
+            config.name, config.name, content, config.contentType, config.file_prompt
         )
-        questionsPrompt = createCodeQuestions(
-            config.name, config.name, content, config.contentType, config.targetAudience
+        questionsPrompt = create_code_questions(
+            config.name, config.name, content, config.contentType, config.target_audience
         )
         prompts = [summaryPrompt, questionsPrompt] if config.addQuestions else [summaryPrompt]
 
@@ -52,7 +56,7 @@ def processRepository(config: AutodocRepoConfig, dryRun=False):
         if not isModel(model):
             return
 
-        encoding = encoding_for_model(model.name)
+        encoding = tiktoken.get_encoding(model.name)
         summaryLength = len(encoding.encode(summaryPrompt))
         questionLength = len(encoding.encode(questionsPrompt))
 
@@ -60,20 +64,20 @@ def processRepository(config: AutodocRepoConfig, dryRun=False):
             responses = [callLLM(prompt, model.llm) for prompt in prompts]
 
             fileSummary = FileSummary(
-                fileName=fileName,
-                filePath=str(filePath),
+                file_name=fileName,
+                file_path=str(filePath),
                 url=url,
                 summary=responses[0],
-                questions=responses[1] if config.addQuestions else '',
+                questions=responses[1] if config.add_questions else '',
                 checksum=newChecksum
             )
 
             outputPath = getFileName(markdownFilePath, '.', '.json')
             content = json.dumps(fileSummary, indent=2) if fileSummary.summary else ''
 
-            await asyncio.to_thread(write_file, outputPath, content)
+            write_file(outputPath, content)
 
-            model.inputTokens += summaryLength + (questionLength if config.addQuestions else 0)
+            model.inputTokens += summaryLength + (questionLength if config.add_questions else 0)
             model.outputTokens += 1000  # Example token adjustment
             model.total += 1
             model.succeeded += 1
@@ -92,11 +96,11 @@ def processRepository(config: AutodocRepoConfig, dryRun=False):
         if not reindex:
             return
 
-        url = githubFolderUrl(config.repositoryUrl, config.inputRoot, folderPath, config.linkHosted)
+        url = githubFolderUrl(config.repository_url, config.root, folderPath, config.link_hosted)
         fileSummaries = [processFile({'fileName': f.name, 'filePath': str(f)}) for f in contents if f.is_file() and f.name != 'summary.json']
         folderSummaries = [processFolder({'folderName': f.name, 'folderPath': str(f)}) for f in contents if f.is_dir()]
 
-        summaryPrompt = folderSummaryPrompt(folderPath, config.name, fileSummaries, folderSummaries, config.contentType, config.folderPrompt)
+        summaryPrompt = folder_summary_prompt(folderPath, config.name, fileSummaries, folderSummaries, config.content_type, config.folder_prompt)
         model = selectModel([summaryPrompt], config.llms, models, config.priority)
         if not isModel(model):
             return
@@ -104,8 +108,8 @@ def processRepository(config: AutodocRepoConfig, dryRun=False):
         summary = callLLM(summaryPrompt, model.llm)
 
         folderSummary = FolderSummary(
-            folderName=folderName,
-            folderPath=str(folderPath),
+            folder_name=folderName,
+            folder_path=str(folderPath),
             url=url,
             files=fileSummaries,
             folders=folderSummaries,
@@ -117,11 +121,21 @@ def processRepository(config: AutodocRepoConfig, dryRun=False):
         outputPath = Path(folderPath) / 'summary.json'
         write_file(str(outputPath), json.dumps(folderSummary, indent=2))
 
-    files_folders_count = filesAndFolders(config.inputRoot, config)
-    updateSpinnerText(f"Processing {files_folders_count['files']} files and {files_folders_count['folders']} folders...")
-    traverseFileSystem(config.inputRoot, config, processFile, processFolder)
-    spinnerSuccess("Processing complete.")
-    stopSpinner()
+    files_folders_count = filesAndFolders(config)
+    print(f"Processing {files_folders_count['files']} files and {files_folders_count['folders']} folders...")
+    params = TraverseFileSystemParams(config.root,
+                                      config.name,
+                                      processFile,
+                                      processFolder,
+                                      config.ignore,
+                                      config.file_prompt,
+                                      config.folder_prompt,
+                                      config.content_type,
+                                      config.target_audience,
+                                      config.link_hosted
+                                      )
+    traverseFileSystem(params)
+    print("Processing complete.")
 
 def read_file(path):
     with open(path, 'r', encoding='utf-8') as file:
@@ -145,10 +159,20 @@ def shouldReindex(contentPath, name, newChecksum):
     except FileNotFoundError:
         return True
 
-def filesAndFolders(rootPath, config):
+
+def filesAndFolders(config):
     files, folders = 0, 0
-    traverseFileSystem(rootPath, config,
-                             lambda: setattr(files, files + 1),
-                             lambda: setattr(folders, folders + 1))
+    params = TraverseFileSystemParams(config.root,
+                                      config.name,
+                                      lambda: setattr(files, files + 1),
+                                      lambda: setattr(folders, folders + 1),
+                                      config.ignore,
+                                      config.file_prompt,
+                                      config.folder_prompt,
+                                      config.content_type,
+                                      config.target_audience,
+                                      config.link_hosted
+                                      )
+    traverseFileSystem(params)
     return {'files': files, 'folders': folders}
 
