@@ -8,7 +8,7 @@ Be creative! do whatever you want!
 - Import things from your .base module
 """
 from doc_generator.query import query
-
+from doc_generator.index import index
 
 def main():  # pragma: no cover
     """
