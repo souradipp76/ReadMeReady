@@ -10,6 +10,7 @@ from doc_generator.utils.FileUtils import (getFileName, githubFileUrl,
                                            githubFolderUrl)
 from doc_generator.utils.LLMUtils import models, selectModel
 from doc_generator.utils.traverseFileSystem import traverseFileSystem
+from doc_generator.utils.APIRateLimit import APIRateLimit
 
 from .prompts import (create_code_file_summary, create_code_questions,
                       folder_summary_prompt)
@@ -21,7 +22,7 @@ def processRepository(config: AutodocRepoConfig, dryRun=False):
     def callLLM(prompt, model):
         def model_call():
             return model.call(prompt)
-        return rateLimit.callApi(model_call)
+        return rateLimit.call_api(model_call)
 
     def isModel(model):
         return model is not None
