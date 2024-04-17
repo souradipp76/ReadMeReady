@@ -8,7 +8,6 @@ from your_module.api_rate_limit import APIRateLimit
 from your_module.prompts import createCodeFileSummary, createCodeQuestions, folderSummaryPrompt
 from your_module.types import AutodocRepoConfig, FileSummary, FolderSummary, ProcessFile, ProcessFolder
 from your_module.traverse_file_system import traverseFileSystem
-from your_module.spinner import spinnerSuccess, stopSpinner, updateSpinnerText
 from your_module.file_util import getFileName, githubFileUrl, githubFolderUrl
 from your_module.llm_util import models, selectModel
 
@@ -152,3 +151,4 @@ def filesAndFolders(rootPath, config):
                              lambda: setattr(files, files + 1),
                              lambda: setattr(folders, folders + 1))
     return {'files': files, 'folders': folders}
+
