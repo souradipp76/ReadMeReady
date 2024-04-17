@@ -11,11 +11,11 @@ def convertJsonToMarkdown(config: AutodocRepoConfig):
     projectName = config.name
     inputRoot = Path(config.root)
     outputRoot = Path(config.output)
-    filePrompt = config.filePrompt
-    folderPrompt = config.folderPrompt
-    contentType = config.contentType
-    targetAudience = config.targetAudience
-    linkHosted = config.linkHosted
+    filePrompt = config.file_prompt
+    folderPrompt = config.folder_prompt
+    contentType = config.content_type
+    targetAudience = config.target_audience
+    linkHosted = config.link_hosted
 
     # Count the number of files in the project
     files = 0
