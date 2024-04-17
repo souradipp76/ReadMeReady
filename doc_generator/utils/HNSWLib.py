@@ -82,12 +82,12 @@ class HNSWLib(SaveableVectorStore):
             self.docstore.add(self.docstore.count + i, documents[i])
             
     @staticmethod
-    def from_texts(texts: List[str], embeddings: OpenAIEmbeddings, docstore: InMemoryDocstore):
+    def from_texts(texts: List[str], embeddings: OpenAIEmbeddings, docstore: Optional[InMemoryDocstore] = None):
         documents = [Document(text) for text in texts]
         return HNSWLib.from_documents(documents, embeddings, docstore)
 
     @staticmethod
-    def from_documents(documents: List[Document], embeddings: OpenAIEmbeddings, docstore: InMemoryDocstore):
+    def from_documents(documents: List[Document], embeddings: OpenAIEmbeddings, docstore: Optional[InMemoryDocstore] = None):
         args = HNSWLibArgs(space='cosine', docstore=docstore)
         hnsw = HNSWLib(embeddings, args)
         hnsw.add_documents(documents)

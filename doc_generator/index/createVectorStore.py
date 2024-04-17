@@ -1,28 +1,27 @@
-
 import os
 from pathlib import Path
+from typing import List
 
-# Placeholder imports for custom Python classes and functions
-from langchain.embeddings import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.document import Document
-from langchain.document_loaders import BaseDocumentLoader
-from langchain.hnswlib import HNSWLib
+from langchain_core.documents import Document
+from langchain_core.document_loaders import BaseLoader
+from doc_generator.utils.HNSWLib import HNSWLib
 
 def processFile(filePath: str) -> Document:
     def read_file(path):
         with open(path, 'r', encoding='utf8') as file:
             return file.read()
-    
+
     try:
         fileContents = read_file(filePath)
         metadata = {'source': filePath}
-        doc = Document(pageContent=fileContents, metadata=metadata)
+        doc = Document(page_content=fileContents, metadata=metadata)
         return doc
     except Exception as e:
         raise Exception(f"Error reading file {filePath}: {str(e)}")
 
-def processDirectory(directoryPath: str) -> [Document]:
+def processDirectory(directoryPath: str) -> List[Document]:
     docs = []
     try:
         files = os.listdir(directoryPath)
@@ -41,12 +40,12 @@ def processDirectory(directoryPath: str) -> [Document]:
     
     return docs
 
-class RepoLoader(BaseDocumentLoader):
+class RepoLoader(BaseLoader):
     def __init__(self, filePath: str):
         super().__init__()
         self.filePath = filePath
     
-    def load(self) -> [Document]:
+    def load(self) -> List[Document]:
         return processDirectory(self.filePath)
 
 def createVectorStore(root: str, output: str) -> None:
@@ -54,7 +53,7 @@ def createVectorStore(root: str, output: str) -> None:
     rawDocs = loader.load()
     # Split the text into chunks
     textSplitter = RecursiveCharacterTextSplitter(chunkSize=8000, chunkOverlap=100)
-    docs = textSplitter.splitDocuments(rawDocs)
+    docs = textSplitter.split_documents(rawDocs)
     # Create the vectorstore
-    vectorStore = HNSWLib.fromDocuments(docs, OpenAIEmbeddings())
+    vectorStore = HNSWLib.from_documents(docs, OpenAIEmbeddings())
     vectorStore.save(output)
