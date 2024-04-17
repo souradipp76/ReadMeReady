@@ -1,8 +1,8 @@
-from langchain.chains import LLMChain, ChatVectorDBChain
+from langchain.chains.conversational_retrieval.base import ChatVectorDBChain
+from langchain.chains.llm import LLMChain
 from langchain.chains.question_answering import load_qa_chain
-from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
-
+from langchain_openai import ChatOpenAI
 
 # Define the prompt template for condensing the follow-up question
 condense_prompt = PromptTemplate.from_template(
@@ -53,7 +53,7 @@ def make_chain(project_name, repository_url, content_type, chat_prompt, target_a
     )
 
     return ChatVectorDBChain(
-    vectorstore=vectorstore,
-    combine_docs_chain=doc_chain,
-    question_generator=question_generator
-)
+        vectorstore=vectorstore,
+        combine_docs_chain=doc_chain,
+        question_generator=question_generator
+    )

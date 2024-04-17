@@ -1,6 +1,7 @@
 import hashlib
 import json
 from pathlib import Path
+from langchain_openai import ChatOpenAI
 
 import tiktoken
 
@@ -10,7 +11,6 @@ from doc_generator.utils.FileUtils import (getFileName, githubFileUrl,
                                            githubFolderUrl)
 from doc_generator.utils.LLMUtils import models
 from doc_generator.utils.traverseFileSystem import traverseFileSystem
-from doc_generator.utils.APIRateLimit import APIRateLimit
 
 from .prompts import (create_code_file_summary, create_code_questions,
                       folder_summary_prompt)
@@ -18,12 +18,8 @@ from .selectModel import select_model
 
 
 def processRepository(config: AutodocRepoConfig, dryRun=False):
-    rateLimit = APIRateLimit(config.max_concurrent_calls)
-
-    def callLLM(prompt, model):
-        def model_call():
-            return model.call(prompt)
-        return rateLimit.call_api(model_call)
+    def callLLM(prompt: str, model: ChatOpenAI):
+        return model.call(prompt)
 
     def isModel(model):
         return model is not None
