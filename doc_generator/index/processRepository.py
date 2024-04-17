@@ -8,12 +8,13 @@ from doc_generator.types import (AutodocRepoConfig, FileSummary, FolderSummary,
                                  TraverseFileSystemParams)
 from doc_generator.utils.FileUtils import (getFileName, githubFileUrl,
                                            githubFolderUrl)
-from doc_generator.utils.LLMUtils import models, selectModel
+from doc_generator.utils.LLMUtils import models
 from doc_generator.utils.traverseFileSystem import traverseFileSystem
 from doc_generator.utils.APIRateLimit import APIRateLimit
 
 from .prompts import (create_code_file_summary, create_code_questions,
                       folder_summary_prompt)
+from .selectModel import select_model
 
 
 def processRepository(config: AutodocRepoConfig, dryRun=False):
@@ -53,7 +54,7 @@ def processRepository(config: AutodocRepoConfig, dryRun=False):
         )
         prompts = [summaryPrompt, questionsPrompt] if config.addQuestions else [summaryPrompt]
 
-        model = selectModel(prompts, config.llms, models, config.priority)
+        model = select_model(prompts, config.llms, models, config.priority)
         if not isModel(model):
             return
 
