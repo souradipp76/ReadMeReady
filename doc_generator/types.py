@@ -1,4 +1,5 @@
-from typing import List, Callable, Optional, Enum
+from enum import Enum
+from typing import List, Callable, Optional
 from langchain_openai import ChatOpenAI
 
 class AutodocUserConfig:
@@ -88,10 +89,10 @@ class TraverseFileSystemParams:
         self.target_audience = target_audience
         self.link_hosted = link_hosted
 
-class LLMModels(Enum):
-    GPT3 = 'gpt-3.5-turbo'
-    GPT4 = 'gpt-4'
-    GPT432k = 'gpt-4-32k'
+class LLMModels(str, Enum):
+    GPT3 = "gpt-3.5-turbo"
+    GPT4 = "gpt-4"
+    GPT432k = "gpt-4-32k"
 
 class LLMModelDetails:
     def __init__(self, name: LLMModels, input_cost_per_1k_tokens: float, output_cost_per_1k_tokens: float,
@@ -108,6 +109,6 @@ class LLMModelDetails:
         self.failed = failed
         self.total = total
 
-class Priority(Enum):
+class Priority(str, Enum):
     COST = 'cost'
     PERFORMANCE = 'performance'
