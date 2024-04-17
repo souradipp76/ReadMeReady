@@ -1,5 +1,5 @@
 from pathlib import Path
-from doc_generator.types import TraverseFileSystemParams
+from doc_generator.types import TraverseFileSystemParams, ProcessFolderParams, ProcessFileParams
 import fnmatch
 import magic
 
@@ -22,17 +22,17 @@ def traverseFileSystem(params: TraverseFileSystemParams):
                 if entry.is_dir():
                     dfs(entry)
                     if params.processFolder:
-                        params.processFolder({
-                            'inputPath': str(params.inputPath),
-                            'folderName': entry.name,
-                            'folderPath': str(entry),
-                            'projectName': params.projectName,
-                            'shouldIgnore': shouldIgnore,
-                            'folderPrompt': params.folderPrompt,
-                            'contentType': params.contentType,
-                            'targetAudience': params.targetAudience,
-                            'linkHosted': params.linkHosted,
-                        })
+                        params.processFolder(ProcessFolderParams(
+                            str(params.input_path),
+                            entry.name,
+                            str(entry),
+                            params.project_name,
+                            shouldIgnore,
+                            params.folder_prompt,
+                            params.content_type,
+                            params.target_audience,
+                            params.link_hosted,
+                        ))
 
             # Process files
             for entry in contents:
@@ -42,15 +42,15 @@ def traverseFileSystem(params: TraverseFileSystemParams):
                         content = file.read()
                         if magic.from_buffer(content, mime=True).startswith('text/'):
                             if params.processFile:
-                                params.processFile({
-                                    'fileName': entry.name,
-                                    'filePath': filePath,
-                                    'projectName': params.projectName,
-                                    'filePrompt': params.filePrompt,
-                                    'contentType': params.contentType,
-                                    'targetAudience': params.targetAudience,
-                                    'linkHosted': params.linkHosted,
-                                })
+                                params.processFile(ProcessFileParams(
+                                    entry.name,
+                                    filePath,
+                                    params.process_file,
+                                    params.file_prompt,
+                                    params.content_type,
+                                    params.target_audience,
+                                    params.link_hosted
+                                ))
 
         dfs(inputPath)
 

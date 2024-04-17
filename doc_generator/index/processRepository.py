@@ -7,8 +7,8 @@ import tiktoken
 
 from doc_generator.types import (AutodocRepoConfig, FileSummary, FolderSummary,
                                  TraverseFileSystemParams)
-from doc_generator.utils.FileUtils import (getFileName, githubFileUrl,
-                                           githubFolderUrl)
+from doc_generator.utils.FileUtils import (get_file_name, github_file_url,
+                                           github_folder_url)
 from doc_generator.utils.LLMUtils import models
 from doc_generator.utils.traverseFileSystem import traverseFileSystem
 
@@ -40,7 +40,7 @@ def processRepository(config: AutodocRepoConfig, dryRun=False):
             return
 
         markdownFilePath = Path(config.outputRoot) / filePath
-        url = githubFileUrl(config.repositoryUrl, config.inputRoot, filePath, config.link_hosted)
+        url = github_file_url(config.repositoryUrl, config.inputRoot, filePath, config.link_hosted)
 
         summaryPrompt = create_code_file_summary(
             config.name, config.name, content, config.contentType, config.file_prompt
@@ -70,7 +70,7 @@ def processRepository(config: AutodocRepoConfig, dryRun=False):
                 checksum=newChecksum
             )
 
-            outputPath = getFileName(markdownFilePath, '.', '.json')
+            outputPath = get_file_name(markdownFilePath, '.', '.json')
             content = json.dumps(fileSummary, indent=2) if fileSummary.summary else ''
 
             write_file(outputPath, content)
@@ -94,12 +94,12 @@ def processRepository(config: AutodocRepoConfig, dryRun=False):
         if not reindex:
             return
 
-        url = githubFolderUrl(config.repository_url, config.root, folderPath, config.link_hosted)
+        url = github_folder_url(config.repository_url, config.root, folderPath, config.link_hosted)
         fileSummaries = [processFile({'fileName': f.name, 'filePath': str(f)}) for f in contents if f.is_file() and f.name != 'summary.json']
         folderSummaries = [processFolder({'folderName': f.name, 'folderPath': str(f)}) for f in contents if f.is_dir()]
 
         summaryPrompt = folder_summary_prompt(folderPath, config.name, fileSummaries, folderSummaries, config.content_type, config.folder_prompt)
-        model = selectModel([summaryPrompt], config.llms, models, config.priority)
+        model = select_model([summaryPrompt], config.llms, models, config.priority)
         if not isModel(model):
             return
 
