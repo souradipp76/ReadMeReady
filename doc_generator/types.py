@@ -2,13 +2,22 @@ from enum import Enum
 from typing import List, Callable, Optional
 from langchain_openai import ChatOpenAI
 
+class LLMModels(str, Enum):
+    GPT3 = "gpt-3.5-turbo"
+    GPT4 = "gpt-4"
+    GPT432k = "gpt-4-32k"
+
+class Priority(str, Enum):
+    COST = 'cost'
+    PERFORMANCE = 'performance'
+
 class AutodocUserConfig:
-    def __init__(self, llms: List[str]):
+    def __init__(self, llms: List[LLMModels]):
         self.llms = llms
 
 class AutodocRepoConfig:
-    def __init__(self, name: str, repository_url: str, root: str, output: str, llms: List[str],
-                 priority: str, max_concurrent_calls: int, add_questions: bool, ignore: List[str],
+    def __init__(self, name: str, repository_url: str, root: str, output: str, llms: List[LLMModels],
+                 priority: Priority, max_concurrent_calls: int, add_questions: bool, ignore: List[str],
                  file_prompt: str, folder_prompt: str, chat_prompt: str, content_type: str,
                  target_audience: str, link_hosted: bool):
         self.name = name
@@ -89,11 +98,6 @@ class TraverseFileSystemParams:
         self.target_audience = target_audience
         self.link_hosted = link_hosted
 
-class LLMModels(str, Enum):
-    GPT3 = "gpt-3.5-turbo"
-    GPT4 = "gpt-4"
-    GPT432k = "gpt-4-32k"
-
 class LLMModelDetails:
     def __init__(self, name: LLMModels, input_cost_per_1k_tokens: float, output_cost_per_1k_tokens: float,
                  max_length: int, llm: ChatOpenAI, input_tokens: int, output_tokens: int, succeeded: int,
@@ -108,7 +112,3 @@ class LLMModelDetails:
         self.succeeded = succeeded
         self.failed = failed
         self.total = total
-
-class Priority(str, Enum):
-    COST = 'cost'
-    PERFORMANCE = 'performance'
