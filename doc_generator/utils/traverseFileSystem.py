@@ -6,7 +6,7 @@ import magic
 
 def traverseFileSystem(params: TraverseFileSystemParams):
     try:
-        inputPath = Path(params.inputPath)
+        inputPath = Path(params.input_path)
         if not inputPath.exists():
             print('The provided folder path does not exist.')
             return
@@ -21,8 +21,8 @@ def traverseFileSystem(params: TraverseFileSystemParams):
             for entry in contents:
                 if entry.is_dir():
                     dfs(entry)
-                    if params.processFolder:
-                        params.processFolder(ProcessFolderParams(
+                    if params.process_folder:
+                        params.process_folder(ProcessFolderParams(
                             str(params.input_path),
                             entry.name,
                             str(entry),
@@ -41,8 +41,8 @@ def traverseFileSystem(params: TraverseFileSystemParams):
                     with open(filePath, 'rb') as file:
                         content = file.read()
                         if magic.from_buffer(content, mime=True).startswith('text/'):
-                            if params.processFile:
-                                params.processFile(ProcessFileParams(
+                            if params.process_file:
+                                params.process_file(ProcessFileParams(
                                     entry.name,
                                     filePath,
                                     params.process_file,

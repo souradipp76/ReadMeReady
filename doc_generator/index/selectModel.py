@@ -4,8 +4,8 @@ from doc_generator.types import LLMModels, LLMModelDetails, Priority
 import tiktoken
 
 def getMaxPromptLength(prompts: List[str], model: LLMModels) -> int:
-    encoding = tiktoken.get_encoding(model)
-    return max(encoding['encode'](prompt) for prompt in prompts)
+    encoding = tiktoken.encoding_for_model(model)
+    return max(len(encoding.encode(prompt)) for prompt in prompts)
 
 def select_model(prompts: List[str], llms: List[LLMModels], models: Dict[LLMModels, LLMModelDetails], priority: Priority) -> Optional[LLMModelDetails]:
     if priority == Priority.COST:

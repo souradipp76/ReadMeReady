@@ -52,7 +52,7 @@ def createVectorStore(root: str, output: str) -> None:
     loader = RepoLoader(root)
     rawDocs = loader.load()
     # Split the text into chunks
-    textSplitter = RecursiveCharacterTextSplitter(chunkSize=8000, chunkOverlap=100)
+    textSplitter = RecursiveCharacterTextSplitter(chunk_size=8000, chunk_overlap=100)
     docs = textSplitter.split_documents(rawDocs)
     # Create the vectorstore
     vectorStore = HNSWLib.from_documents(docs, OpenAIEmbeddings())

@@ -1,7 +1,7 @@
 import os
 
 from langchain_openai import ChatOpenAI
-from ..types import LLMModelDetails, LLMModels
+from doc_generator.types import LLMModelDetails, LLMModels
 
 models = {
     LLMModels.GPT3: LLMModelDetails(

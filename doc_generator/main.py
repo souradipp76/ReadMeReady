@@ -34,6 +34,7 @@ def main():  # pragma: no cover
         "root": "doc_generator",
         "repository_url": "https://github.com/context-labs/autodoc",
         "output": "doc_generator/autodoc",
+        "llms": ["gpt-3.5-turbo"],
         "ignore": [
             ".*",
             "*package-lock.json",
@@ -53,7 +54,10 @@ def main():  # pragma: no cover
         "chat_prompt": "",
         "content_type": "docs",
         "target_audience": "smart developer",
-        "link_hosted": True
+        "link_hosted": True,
+        "priority": 'performance',
+        "max_concurrent_calls": 50,
+        "add_questions": False
     }
     user_config = {
         "llms": ["gpt-3.5-turbo"]
