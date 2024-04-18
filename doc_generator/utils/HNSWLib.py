@@ -5,9 +5,10 @@ import hnswlib
 from abc import abstractmethod
 from typing import List, Optional
 from langchain_community.docstore.in_memory import InMemoryDocstore
-from langchain_openai import OpenAIEmbeddings
+from langchain_core.embeddings.embeddings import Embeddings
 from langchain_core.vectorstores import VectorStore
 from langchain_core.documents import Document
+
 
 class SaveableVectorStore(VectorStore):
 
@@ -15,24 +16,27 @@ class SaveableVectorStore(VectorStore):
     def save(self, directory):
         pass
 
+
 class HNSWLibBase:
-  def __init__(self, space: str, num_dimensions: Optional[int] = None):
-      self.space = space
-      self.num_dimensions = num_dimensions
+    def __init__(self, space: str, num_dimensions: Optional[int] = None):
+        self.space = space
+        self.num_dimensions = num_dimensions
+
 
 class HNSWLibArgs(HNSWLibBase):
     def __init__(self, space: str, num_dimensions: Optional[int] = None, docstore: Optional[InMemoryDocstore] = None, index: Optional[hnswlib.Index] = None):
         super().__init__(space, num_dimensions)
         self.docstore = docstore
         self.index = index
+
       
 class HNSWLib(SaveableVectorStore):
-    def __init__(self, embeddings: OpenAIEmbeddings, args: 'HNSWLibArgs'):
-      super().__init__()
-      self.args = args
-      self._embeddings = embeddings
-      self._index = args.index
-      self.docstore = args.docstore if args.docstore else InMemoryDocstore()
+    def __init__(self, embeddings: Embeddings, args: 'HNSWLibArgs'):
+        super().__init__()
+        self.args = args
+        self._embeddings = embeddings
+        self._index = args.index
+        self.docstore = args.docstore if args.docstore else InMemoryDocstore()
 
     def add_texts(self, documents: List):
         texts = [doc.page_content for doc in documents]
@@ -82,12 +86,12 @@ class HNSWLib(SaveableVectorStore):
             self.docstore.add(self.docstore.count + i, documents[i])
             
     @staticmethod
-    def from_texts(texts: List[str], embeddings: OpenAIEmbeddings, docstore: Optional[InMemoryDocstore] = None):
+    def from_texts(texts: List[str], embeddings: Embeddings, docstore: Optional[InMemoryDocstore] = None):
         documents = [Document(text) for text in texts]
         return HNSWLib.from_documents(documents, embeddings, docstore)
 
     @staticmethod
-    def from_documents(documents: List[Document], embeddings: OpenAIEmbeddings, docstore: Optional[InMemoryDocstore] = None):
+    def from_documents(documents: List[Document], embeddings: Embeddings, docstore: Optional[InMemoryDocstore] = None):
         args = HNSWLibArgs(space='cosine', docstore=docstore)
         hnsw = HNSWLib(embeddings, args)
         hnsw.add_documents(documents)
@@ -116,7 +120,7 @@ class HNSWLib(SaveableVectorStore):
             json.dump({'space': self.args.space, 'num_dimensions': self.args.num_dimensions}, f)
 
     @staticmethod
-    def load(directory: str, embeddings: OpenAIEmbeddings):
+    def load(directory: str, embeddings: Embeddings):
         with open(os.path.join(directory, 'args.json'), 'r') as f:
             args_data = json.load(f)
         args = HNSWLibArgs(space=args_data['space'], num_dimensions=args_data['num_dimensions'])
@@ -127,8 +131,8 @@ class HNSWLib(SaveableVectorStore):
         args.docstore = InMemoryDocstore()
         doc_dict = {}
         for doc in doc_data:
-          key, value = doc
-          doc_dict[key] = value
+            key, value = doc
+            doc_dict[key] = value
         args.docstore.add(doc_dict)
         args.index = index
         return HNSWLib(embeddings, args)
