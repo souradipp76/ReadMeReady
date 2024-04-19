@@ -38,17 +38,17 @@ class HNSWLib(SaveableVectorStore):
         self._index = args.index
         self.docstore = args.docstore if args.docstore else InMemoryDocstore()
 
-    def add_texts(self, documents: List):
-        texts = [doc.page_content for doc in documents]
+    def add_texts(self, texts: List[str], metadatas: Optional[List[dict]] = None):
         vectors = self._embeddings.embed_documents(texts)
+        documents = [Document(page_content=text, metadata=None) for text in texts]
         self.add_vectors(vectors, documents)
 
     @staticmethod
     def get_hierarchical_nsw(args: 'HNSWLibArgs'):
         if args.space is None:
-            raise ValueError('hnswlib-node requires a space argument')
+            raise ValueError('hnswlib requires a space argument')
         if args.num_dimensions is None:
-            raise ValueError('hnswlib-node requires a num_dimensions argument')
+            raise ValueError('hnswlib requires a num_dimensions argument')
         return hnswlib.Index(space=args.space, dim=args.num_dimensions)
 
     def init_index(self, vectors: List[List[float]]):
@@ -69,7 +69,7 @@ class HNSWLib(SaveableVectorStore):
     def index(self, value: hnswlib.Index):
         self._index = value
 
-    def add_vectors(self, vectors: List[List[float]], documents: List):
+    def add_vectors(self, vectors: List[List[float]], documents: List[Document]):
         if not vectors:
             return
         self.init_index(vectors)

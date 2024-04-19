@@ -2,6 +2,7 @@ from pathlib import Path
 from doc_generator.types import TraverseFileSystemParams, ProcessFolderParams, ProcessFileParams
 import fnmatch
 import magic
+import traceback
 
 
 def traverseFileSystem(params: TraverseFileSystemParams):
@@ -11,11 +12,11 @@ def traverseFileSystem(params: TraverseFileSystemParams):
             print('The provided folder path does not exist.')
             return
 
-        def shouldIgnore(fileName):
+        def should_ignore(fileName: str):
             return any(fnmatch.fnmatch(fileName, pattern) for pattern in params.ignore)
 
         def dfs(currentPath: Path):
-            contents = [entry for entry in currentPath.iterdir() if not shouldIgnore(entry.name)]
+            contents = [entry for entry in currentPath.iterdir() if not should_ignore(entry.name)]
 
             # Process directories first
             for entry in contents:
@@ -27,11 +28,11 @@ def traverseFileSystem(params: TraverseFileSystemParams):
                             entry.name,
                             str(entry),
                             params.project_name,
-                            shouldIgnore,
-                            params.folder_prompt,
                             params.content_type,
+                            params.folder_prompt,
                             params.target_audience,
                             params.link_hosted,
+                            should_ignore,
                         ))
 
             # Process files
@@ -45,9 +46,9 @@ def traverseFileSystem(params: TraverseFileSystemParams):
                                 params.process_file(ProcessFileParams(
                                     entry.name,
                                     filePath,
-                                    params.process_file,
-                                    params.file_prompt,
+                                    params.project_name,
                                     params.content_type,
+                                    params.file_prompt,
                                     params.target_audience,
                                     params.link_hosted
                                 ))
@@ -56,4 +57,5 @@ def traverseFileSystem(params: TraverseFileSystemParams):
 
     except Exception as e:
         print(f"Error during traversal: {e}")
+        # print(traceback.format_exc())
 

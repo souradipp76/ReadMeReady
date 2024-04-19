@@ -19,7 +19,8 @@ def processFile(filePath: str) -> Document:
         doc = Document(page_content=fileContents, metadata=metadata)
         return doc
     except Exception as e:
-        raise Exception(f"Error reading file {filePath}: {str(e)}")
+        print(f"Error reading file {filePath}: {str(e)}")
+        return None
 
 def processDirectory(directoryPath: str) -> List[Document]:
     docs = []
@@ -51,6 +52,7 @@ class RepoLoader(BaseLoader):
 def createVectorStore(root: str, output: str) -> None:
     loader = RepoLoader(root)
     rawDocs = loader.load()
+    rawDocs = [doc for doc in rawDocs if doc is not None]
     # Split the text into chunks
     textSplitter = RecursiveCharacterTextSplitter(chunk_size=8000, chunk_overlap=100)
     docs = textSplitter.split_documents(rawDocs)

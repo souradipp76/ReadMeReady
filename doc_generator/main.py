@@ -31,7 +31,7 @@ def main():  # pragma: no cover
     # Example config objects, these need to be defined or imported properly
     repo_config = {
         "name": "autodoc",
-        "root": "doc_generator",
+        "root": "./autodoc",
         "repository_url": "https://github.com/context-labs/autodoc",
         "output": "doc_generator/autodoc",
         "llms": ["gpt-3.5-turbo"],
