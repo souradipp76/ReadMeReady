@@ -3,6 +3,7 @@ from langchain.chains.llm import LLMChain
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
+from doc_generator.utils.LLMUtils import get_chat_model
 
 # Define the prompt template for condensing the follow-up question
 condense_prompt = PromptTemplate.from_template(
@@ -38,19 +39,23 @@ def make_qa_prompt(project_name, repository_url, content_type, chat_prompt, targ
 def make_chain(project_name, repository_url, content_type, chat_prompt, target_audience, vectorstore, llms, on_token_stream=None):
     llm = llms[1] if len(llms) > 1 else llms[0]
     question_generator = LLMChain(
-        llm=ChatOpenAI(temperature=0.1, model_name=llm),
+        # llm=ChatOpenAI(temperature=0.1, model_name=llm),
+        llm=get_chat_model(llm, {"temperature": 0.1}),
         prompt=condense_prompt
     )
 
     qa_prompt = make_qa_prompt(project_name, repository_url, content_type, chat_prompt, target_audience)
     doc_chain = load_qa_chain(
-        llm=ChatOpenAI(temperature=0.2,
-                       model_name=llm,
-                       streaming=bool(on_token_stream),
-                       model_kwargs={
-                        "frequency_penalty": 0.0,
-                        "presence_penalty": 0.0,
-                       }),
+        # llm=ChatOpenAI(temperature=0.2,
+        #                model_name=llm,
+        #                streaming=bool(on_token_stream),
+        #                model_kwargs={
+        #                 "frequency_penalty": 0.0,
+        #                 "presence_penalty": 0.0,
+        #                }),
+        llm=get_chat_model(llm, {
+            "temperature": 0.2
+        }),
         prompt=qa_prompt
     )
 

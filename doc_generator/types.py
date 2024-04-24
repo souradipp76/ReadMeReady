@@ -6,6 +6,7 @@ class LLMModels(str, Enum):
     GPT3 = "gpt-3.5-turbo"
     GPT4 = "gpt-4"
     GPT432k = "gpt-4-32k"
+    LLAMA2_7B_CHAT_GPTQ = "TheBloke/Llama-2-7B-Chat-GPTQ"
 
 class Priority(str, Enum):
     COST = 'cost'
@@ -100,7 +101,7 @@ class TraverseFileSystemParams:
 
 class LLMModelDetails:
     def __init__(self, name: LLMModels, input_cost_per_1k_tokens: float, output_cost_per_1k_tokens: float,
-                 max_length: int, llm: ChatOpenAI, input_tokens: int, output_tokens: int, succeeded: int,
+                 max_length: int, llm: LLama2Chat, input_tokens: int, output_tokens: int, succeeded: int,
                  failed: int, total: int):
         self.name = name
         self.input_cost_per_1k_tokens = input_cost_per_1k_tokens

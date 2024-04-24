@@ -1,6 +1,11 @@
 import os
+import torch
 
-from langchain_openai import ChatOpenAI
+from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_experimental.chat_models import Llama2Chat
+from langchain import HuggingFacePipeline
+from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig, pipeline, BitsAndBytesConfig
 from doc_generator.types import LLMModelDetails, LLMModels
 
 models = {
@@ -39,6 +44,36 @@ models = {
         succeeded=0,
         failed=0,
         total=0
+    ),
+    LLMModels.LLAMA2_7B_CHAT_GPTQ: LLMModelDetails(
+        name=LLMModels.LLAMA2_7B_CHAT_GPTQ,
+        input_cost_per_1k_tokens=0,
+        output_cost_per_1k_tokens=0,
+        max_length=4096,
+        llm=Llama2Chat(llm=HuggingFacePipeline(pipeline=pipeline(
+            "text-generation",
+            model=AutoModelForCausalLM.from_pretrained(
+                LLMModels.LLAMA2_7B_CHAT_GPTQ,
+                quantization_config=BitsAndBytesConfig(
+                    load_in_4bit=True,
+                    bnb_4bit_quant_type='nf4',
+                    bnb_4bit_use_double_quant=True,
+                    bnb_4bit_compute_dtype=torch.bfloat16
+                ),
+                torch_dtype=torch.float16,
+                trust_remote_code=True,
+                device_map="auto"
+            ),
+            tokenizer=AutoTokenizer.from_pretrained(LLMModels.LLAMA2_7B_CHAT_GPTQ, use_fast=True),
+            generation_config=AutoConfig.from_pretrained(
+                LLMModels.LLAMA2_7B_CHAT_GPTQ,
+            ),
+        ), model_kwargs={"temperature": 0})),
+        input_tokens=0,
+        output_tokens=0,
+        succeeded=0,
+        failed=0,
+        total=0
     )
 }
 
@@ -69,10 +104,38 @@ def print_model_details(models):
     for item in all_results:
         print(item)
 
-def total_index_cost_estimate(models):
+def total_index_cost_estimate(model):
     total_cost = sum(
         (model.input_tokens / 1000) * model.input_cost_per_1k_tokens +
         (model.output_tokens / 1000) * model.output_cost_per_1k_tokens
         for model in models.values()
     )
     return total_cost
+
+def get_embeddings(model):
+    if model == LLMModels.LLAMA2_7B_CHAT_GPTQ:
+        return HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2",
+                                     model_kwargs={"device": "cuda"},
+                                     encode_kwargs={"normalize_embeddings": True},
+                                     )
+    else:
+        return OpenAIEmbeddings()
+
+def get_chat_model(model_name, model_kwargs):
+    return Llama2Chat(llm=HuggingFacePipeline(pipeline=pipeline(
+            "text-generation",
+            model=AutoModelForCausalLM.from_pretrained(
+                model_name,
+                quantization_config=BitsAndBytesConfig(
+                    load_in_4bit=True,
+                    bnb_4bit_quant_type='nf4',
+                    bnb_4bit_use_double_quant=True,
+                    bnb_4bit_compute_dtype=torch.bfloat16
+                ),
+                torch_dtype=torch.float16,
+                trust_remote_code=True,
+                device_map="auto"
+            ),
+            tokenizer=AutoTokenizer.from_pretrained(model_name, use_fast=True),
+            generation_config=AutoConfig.from_pretrained(model_name),
+        ), model_kwargs=model_kwargs))

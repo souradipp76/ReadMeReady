@@ -2,11 +2,12 @@ import os
 from pathlib import Path
 from typing import List
 
-from langchain_openai import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
 from langchain_core.document_loaders import BaseLoader
 from doc_generator.utils.HNSWLib import HNSWLib
+from doc_generator.utils.LLMUtils import get_embeddings
+from doc_generator.types import LLMModels
 
 def processFile(filePath: str) -> Document:
     def read_file(path):
@@ -57,5 +58,5 @@ def createVectorStore(root: str, output: str) -> None:
     textSplitter = RecursiveCharacterTextSplitter(chunk_size=8000, chunk_overlap=100)
     docs = textSplitter.split_documents(rawDocs)
     # Create the vectorstore
-    vectorStore = HNSWLib.from_documents(docs, OpenAIEmbeddings())
+    vectorStore = HNSWLib.from_documents(docs, get_embeddings(LLMModels.LLAMA2_7B_CHAT_GPTQ))
     vectorStore.save(output)

@@ -3,7 +3,7 @@ import json
 import os
 from pathlib import Path
 from langchain_openai import ChatOpenAI
-
+from langchain_experimental.chat_models import Llama2Chat
 import tiktoken
 
 from doc_generator.types import (
@@ -40,7 +40,7 @@ def processRepository(config: AutodocRepoConfig, dryRun=False):
         with open(path, "w", encoding="utf-8") as file:
             file.write(content)
 
-    def callLLM(prompt: str, model: ChatOpenAI):
+    def callLLM(prompt: str, model: Llama2Chat):
         return model.invoke(prompt)
 
     def isModel(model):

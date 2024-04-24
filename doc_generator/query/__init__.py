@@ -1,12 +1,12 @@
 import os
 from prompt_toolkit import prompt
 from prompt_toolkit.shortcuts import clear
-from langchain_openai import OpenAIEmbeddings
 from markdown2 import markdown
 
 from doc_generator.types import AutodocRepoConfig, AutodocUserConfig
 from doc_generator.utils.HNSWLib import HNSWLib
 from doc_generator.utils.createChatChain import make_chain
+from doc_generator.utils.LLMUtils import get_embeddings
 
 chat_history = []
 
@@ -16,7 +16,7 @@ def display_welcome_message(project_name):
 
 def query(repo_config: AutodocRepoConfig, user_confg: AutodocUserConfig):
     data_path = os.path.join(repo_config.output, 'docs', 'data')
-    embeddings = OpenAIEmbeddings()
+    embeddings = get_embeddings(repo_config.llms[0])
     vector_store = HNSWLib.load(data_path, embeddings)
     chain = make_chain(repo_config.name,
                        repo_config.repository_url,
