@@ -34,7 +34,7 @@ def main():  # pragma: no cover
         "root": "./autodoc",
         "repository_url": "https://github.com/context-labs/autodoc",
         "output": "doc_generator/autodoc",
-        "llms": ["gpt-3.5-turbo"],
+        "llms": ["TheBloke/Llama-2-7B-Chat-GPTQ"],
         "ignore": [
             ".*",
             "*package-lock.json",

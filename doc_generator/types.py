@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import List, Callable, Optional
 from langchain_openai import ChatOpenAI
+from langchain_experimental.chat_models import Llama2Chat
 
 class LLMModels(str, Enum):
     GPT3 = "gpt-3.5-turbo"
@@ -101,7 +102,7 @@ class TraverseFileSystemParams:
 
 class LLMModelDetails:
     def __init__(self, name: LLMModels, input_cost_per_1k_tokens: float, output_cost_per_1k_tokens: float,
-                 max_length: int, llm: LLama2Chat, input_tokens: int, output_tokens: int, succeeded: int,
+                 max_length: int, llm: Llama2Chat, input_tokens: int, output_tokens: int, succeeded: int,
                  failed: int, total: int):
         self.name = name
         self.input_cost_per_1k_tokens = input_cost_per_1k_tokens
