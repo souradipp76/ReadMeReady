@@ -3,7 +3,6 @@ import torch
 
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
-from langchain_experimental.chat_models import Llama2Chat
 from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
 from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig, pipeline, BitsAndBytesConfig
 from doc_generator.types import LLMModelDetails, LLMModels
@@ -50,7 +49,7 @@ models = {
         input_cost_per_1k_tokens=0,
         output_cost_per_1k_tokens=0,
         max_length=4096,
-        llm=Llama2Chat(llm=HuggingFacePipeline(pipeline=pipeline(
+        llm=HuggingFacePipeline(pipeline=pipeline(
             "text-generation",
             model=AutoModelForCausalLM.from_pretrained(
                 LLMModels.LLAMA2_7B_CHAT_GPTQ.value,
@@ -60,9 +59,9 @@ models = {
             ),
             tokenizer=AutoTokenizer.from_pretrained(LLMModels.LLAMA2_7B_CHAT_GPTQ.value, use_fast=True),
             generation_config=AutoConfig.from_pretrained(
-                LLMModels.LLAMA2_7B_CHAT_GPTQ,
+                LLMModels.LLAMA2_7B_CHAT_GPTQ.value,
             ),
-        ), model_kwargs={"temperature": 0})),
+        ), model_kwargs={"temperature": 0}),
         input_tokens=0,
         output_tokens=0,
         succeeded=0,
@@ -120,7 +119,7 @@ def get_embeddings(model:str):
 
 
 def get_chat_model(model_name: str, model_kwargs):
-    return Llama2Chat(llm=HuggingFacePipeline(pipeline=pipeline(
+    return HuggingFacePipeline(pipeline=pipeline(
             "text-generation",
             model=AutoModelForCausalLM.from_pretrained(
                 model_name,
@@ -130,4 +129,4 @@ def get_chat_model(model_name: str, model_kwargs):
             ),
             tokenizer=AutoTokenizer.from_pretrained(model_name, use_fast=True),
             generation_config=AutoConfig.from_pretrained(model_name),
-        ), model_kwargs=model_kwargs))
+        ), model_kwargs=model_kwargs)

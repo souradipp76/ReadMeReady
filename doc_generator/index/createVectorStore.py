@@ -5,7 +5,7 @@ from typing import List
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
 from langchain_core.document_loaders import BaseLoader
-from doc_generator.utils.HNSWLib import HNSWLib
+from doc_generator.utils.HNSWLib import HNSWLib, InMemoryDocstore
 from doc_generator.utils.LLMUtils import get_embeddings
 from doc_generator.types import LLMModels
 
@@ -55,8 +55,14 @@ def createVectorStore(root: str, output: str) -> None:
     rawDocs = loader.load()
     rawDocs = [doc for doc in rawDocs if doc is not None]
     # Split the text into chunks
+    print(f"Splitting text into chunks for {len(rawDocs)} docs")
     textSplitter = RecursiveCharacterTextSplitter(chunk_size=8000, chunk_overlap=100)
     docs = textSplitter.split_documents(rawDocs)
     # Create the vectorstore
-    vectorStore = HNSWLib.from_documents(docs, get_embeddings(LLMModels.LLAMA2_7B_CHAT_GPTQ))
+    print('Creating vector store....')
+    vectorStore = HNSWLib.from_documents(docs, get_embeddings(LLMModels.LLAMA2_7B_CHAT_GPTQ), InMemoryDocstore())
+
+    print('Saving vector store output....')
     vectorStore.save(output)
+
+    print('Done creating vector store....')

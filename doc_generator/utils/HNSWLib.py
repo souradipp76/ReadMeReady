@@ -5,6 +5,7 @@ import hnswlib
 from abc import abstractmethod
 from typing import List, Optional
 from langchain_community.docstore.in_memory import InMemoryDocstore
+from langchain_core.embeddings import embeddings
 from langchain_core.embeddings.embeddings import Embeddings
 from langchain_core.vectorstores import VectorStore
 from langchain_core.documents import Document
@@ -40,7 +41,7 @@ class HNSWLib(SaveableVectorStore):
 
     def add_texts(self, texts: List[str], metadatas: Optional[List[dict]] = None):
         vectors = self._embeddings.embed_documents(texts)
-        documents = [Document(page_content=text, metadata=None) for text in texts]
+        documents = [Document(page_content=text) for text in texts]
         self.add_vectors(vectors, documents)
 
     @staticmethod
@@ -84,7 +85,13 @@ class HNSWLib(SaveableVectorStore):
         for i, vector in enumerate(vectors):
             self.index.add_items([vector], [self.docstore.count + i])
             self.docstore.add(self.docstore.count + i, documents[i])
-            
+
+    def add_documents(self, documents: List[Document]) -> List[str]:
+        texts = [doc.page_content for doc in documents]
+        embeddings = self._embeddings.embed_documents(texts)
+        self.add_vectors(embeddings, documents)
+        return []
+
     @staticmethod
     def from_texts(texts: List[str], embeddings: Embeddings, docstore: Optional[InMemoryDocstore] = None):
         documents = [Document(text) for text in texts]
@@ -94,7 +101,7 @@ class HNSWLib(SaveableVectorStore):
     def from_documents(documents: List[Document], embeddings: Embeddings, docstore: Optional[InMemoryDocstore] = None):
         args = HNSWLibArgs(space='cosine', docstore=docstore)
         hnsw = HNSWLib(embeddings, args)
-        hnsw.add_documents(documents)
+        indices = hnsw.add_documents(documents)
         return hnsw
     
     def similarity_search_by_vector(self, query: List[float], k: int) -> List:
@@ -111,6 +118,7 @@ class HNSWLib(SaveableVectorStore):
         return self.similarity_search_by_vector(self._embeddings.embed_query(query), k)
     
     def save(self, directory: str):
+        print(f"Saving in directory {directory}")
         if not os.path.exists(directory):
             os.makedirs(directory)
         self.index.save_index(os.path.join(directory, 'hnswlib.index'))

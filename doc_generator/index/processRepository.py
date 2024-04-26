@@ -91,19 +91,19 @@ def processRepository(config: AutodocRepoConfig, dryRun=False):
 
         markdownFilePath = Path(config.output) / filePath
         url = github_file_url(
-            config.repository_url, processFileParams.root, filePath, config.link_hosted
+            config.repository_url, config.root, filePath, config.link_hosted
         )
 
         summaryPrompt = create_code_file_summary(
-            processFileParams.name,
-            processFileParams.name,
+            processFileParams.project_name,
+            processFileParams.project_name,
             content,
             processFileParams.content_type,
             processFileParams.file_prompt,
         )
         questionsPrompt = create_code_questions(
-            processFileParams.name,
-            processFileParams.name,
+            processFileParams.project_name,
+            processFileParams.project_name,
             content,
             processFileParams.content_type,
             processFileParams.target_audience,

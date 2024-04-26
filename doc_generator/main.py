@@ -60,7 +60,7 @@ def main():  # pragma: no cover
         "add_questions": False
     }
     user_config = {
-        "llms": ["gpt-3.5-turbo"]
+        "llms": ["TheBloke/Llama-2-7B-Chat-GPTQ"]
     }
 
     repo_conf = AutodocRepoConfig(
@@ -84,5 +84,6 @@ def main():  # pragma: no cover
     usr_conf = AutodocUserConfig(llms=user_config['llms'])
 
     index.index(repo_conf)
+    print("Done Indexing!!")
     query(repo_conf, usr_conf)
 
