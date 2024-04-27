@@ -132,12 +132,13 @@ class HNSWLib(SaveableVectorStore):
         index.load_index(os.path.join(directory, 'hnswlib.index'))
         with open(os.path.join(directory, 'docstore.json'), 'r') as f:
             doc_data = json.load(f)
-        args.docstore = InMemoryDocstore()
-        doc_dict = {}
-        print(doc_data)
-        for data in doc_data:
-            key, value = data
-            doc_dict[key] = Document(page_content=value['page_content'], metadata = value['metadata'])
-        args.docstore.add(doc_dict)
+        doc_map = {}
+        for id, value in doc_data:
+            doc_map[id] = Document(
+                page_content=value['page_content'], 
+                metadata=value['metadata'],
+                type=value['type']
+            )
+        args.docstore = InMemoryDocstore([doc_map])
         args.index = index
         return HNSWLib(embeddings, args)

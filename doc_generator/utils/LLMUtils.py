@@ -7,6 +7,24 @@ from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
 from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig, pipeline, BitsAndBytesConfig
 from doc_generator.types import LLMModelDetails, LLMModels
 
+def get_chat_model(model_name: str, model_kwargs):
+    config = AutoConfig.from_pretrained(model_name)
+    config.quantization_config["disable_exllama"] = True
+    config.quantization_config["exllama_config"] = {"version":2}
+    tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
+    model = AutoModelForCausalLM.from_pretrained(
+                model_name,
+                torch_dtype=torch.float16,
+                trust_remote_code=True,
+                device_map="auto",
+                config = config
+            )
+    return HuggingFacePipeline(pipeline=pipeline(
+            "text-generation",
+            model=model,
+            tokenizer=tokenizer,
+        ), model_kwargs=model_kwargs)
+
 models = {
     LLMModels.GPT3: LLMModelDetails(
         name=LLMModels.GPT3,
@@ -49,19 +67,7 @@ models = {
         input_cost_per_1k_tokens=0,
         output_cost_per_1k_tokens=0,
         max_length=4096,
-        llm=HuggingFacePipeline(pipeline=pipeline(
-            "text-generation",
-            model=AutoModelForCausalLM.from_pretrained(
-                LLMModels.LLAMA2_7B_CHAT_GPTQ.value,
-                torch_dtype=torch.float16,
-                trust_remote_code=True,
-                device_map="auto"
-            ),
-            tokenizer=AutoTokenizer.from_pretrained(LLMModels.LLAMA2_7B_CHAT_GPTQ.value, use_fast=True),
-            generation_config=AutoConfig.from_pretrained(
-                LLMModels.LLAMA2_7B_CHAT_GPTQ.value,
-            ),
-        ), model_kwargs={"temperature": 0}),
+        llm=get_chat_model(LLMModels.LLAMA2_7B_CHAT_GPTQ.value, model_kwargs={"temperature": 0}),
         input_tokens=0,
         output_tokens=0,
         succeeded=0,
@@ -117,16 +123,3 @@ def get_embeddings(model:str):
     else:
         return OpenAIEmbeddings()
 
-
-def get_chat_model(model_name: str, model_kwargs):
-    return HuggingFacePipeline(pipeline=pipeline(
-            "text-generation",
-            model=AutoModelForCausalLM.from_pretrained(
-                model_name,
-                torch_dtype=torch.float16,
-                trust_remote_code=True,
-                device_map="auto"
-            ),
-            tokenizer=AutoTokenizer.from_pretrained(model_name, use_fast=True),
-            generation_config=AutoConfig.from_pretrained(model_name),
-        ), model_kwargs=model_kwargs)

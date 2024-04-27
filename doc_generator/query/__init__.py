@@ -8,6 +8,8 @@ from doc_generator.utils.HNSWLib import HNSWLib
 from doc_generator.utils.createChatChain import make_chain
 from doc_generator.utils.LLMUtils import get_embeddings
 
+import traceback
+
 chat_history = []
 
 def display_welcome_message(project_name):
@@ -42,3 +44,4 @@ def query(repo_config: AutodocRepoConfig, user_confg: AutodocUserConfig):
             print(markdown(response['text']))
         except Exception as error:
             print(f"Something went wrong: {error}")
+            traceback.print_exc()
