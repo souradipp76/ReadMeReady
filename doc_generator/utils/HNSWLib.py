@@ -1,6 +1,7 @@
 import os
 import json
 import hnswlib
+import numpy as np
 
 from abc import abstractmethod
 from typing import List, Optional
@@ -53,7 +54,6 @@ class HNSWLib(SaveableVectorStore):
         return hnswlib.Index(args.space, args.num_dimensions)
 
     def init_index(self, vectors: List[List[float]]):
-        print("Initializing index")
         if not self._index:
             if self.args.num_dimensions is None:
                 self.args.num_dimensions = len(vectors[0])
@@ -73,15 +73,16 @@ class HNSWLib(SaveableVectorStore):
         needed = self._index.element_count + len(vectors)
         if needed > capacity:
             self._index.resize_index(needed)
+        
+        docstore_size = len(self.docstore._dict)
         for i, vector in enumerate(vectors):
-            self._index.add_items([vector], [len(self.docstore._dict) + i])
-            self.docstore.add(len(self.docstore._dict) + i, documents[i])
+            self._index.add_items(np.array(vector), np.array([docstore_size + i]))
+            self.docstore.add({docstore_size + i: documents[i]})
 
     def add_documents(self, documents: List[Document]) -> List[str]:
         texts = [doc.page_content for doc in documents]
         embeds = self._embeddings.embed_documents(texts)
         self.add_vectors(embeds, documents)
-        print("Added vectors.")
         return []
 
     @staticmethod
@@ -113,9 +114,12 @@ class HNSWLib(SaveableVectorStore):
         print(f"Saving in directory {directory}")
         if not os.path.exists(directory):
             os.makedirs(directory)
-        self.index.save_index(os.path.join(directory, 'hnswlib.index'))
+        self._index.save_index(os.path.join(directory, 'hnswlib.index'))
         with open(os.path.join(directory, 'docstore.json'), 'w') as f:
-            json.dump(self.docstore._docs, f)
+            docstore_data = []
+            for key, val in self.docstore._dict.items():
+                docstore_data.append([key, val.json()])
+            json.dump(docstore_data, f)
         with open(os.path.join(directory, 'args.json'), 'w') as f:
             json.dump({'space': self.args.space, 'num_dimensions': self.args.num_dimensions}, f)
 

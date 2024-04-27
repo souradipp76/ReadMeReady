@@ -84,6 +84,6 @@ def main():  # pragma: no cover
     usr_conf = AutodocUserConfig(llms=user_config['llms'])
 
     index.index(repo_conf)
-    print("Done Indexing!!")
+    print("Done Indexing !!")
     query(repo_conf, usr_conf)
 
