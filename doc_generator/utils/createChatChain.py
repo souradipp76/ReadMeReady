@@ -1,4 +1,4 @@
-from langchain.chains.conversational_retrieval.base import ChatVectorDBChain
+from langchain.chains.conversational_retrieval.base import ConversationalRetrievalChain
 from langchain.chains.llm import LLMChain
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
@@ -87,8 +87,8 @@ def make_chain(project_name, repository_url, content_type, chat_prompt, target_a
         prompt=qa_prompt
     )
 
-    return ChatVectorDBChain(
-        vectorstore=vectorstore,
+    return ConversationalRetrievalChain(
+        retriever=vectorstore.as_retriever(),
         combine_docs_chain=doc_chain,
         question_generator=question_generator
     )

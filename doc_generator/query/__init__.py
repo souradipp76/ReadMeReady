@@ -38,7 +38,7 @@ def query(repo_config: AutodocRepoConfig, user_confg: AutodocUserConfig):
 
         print('Thinking...')
         try:
-            response = chain({'question': question, 'chat_history': chat_history})
+            response = chain.invoke({'question': question, 'chat_history': chat_history})
             chat_history.append((question, response['text']))
             print('\n\nMarkdown:\n')
             print(markdown(response['text']))
