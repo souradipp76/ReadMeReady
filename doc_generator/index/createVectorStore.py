@@ -56,7 +56,7 @@ def createVectorStore(root: str, output: str) -> None:
     rawDocs = [doc for doc in rawDocs if doc is not None]
     # Split the text into chunks
     print(f"Splitting text into chunks for {len(rawDocs)} docs")
-    textSplitter = RecursiveCharacterTextSplitter(chunk_size=8000, chunk_overlap=100)
+    textSplitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
     docs = textSplitter.split_documents(rawDocs)
     # Create the vectorstore
     print('Creating vector store....')
