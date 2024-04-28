@@ -6,7 +6,6 @@ import numpy as np
 from abc import abstractmethod
 from typing import List, Optional
 from langchain_community.docstore.in_memory import InMemoryDocstore
-from langchain_core.embeddings import embeddings
 from langchain_core.embeddings.embeddings import Embeddings
 from langchain_core.vectorstores import VectorStore
 from langchain_core.documents import Document
@@ -77,7 +76,7 @@ class HNSWLib(SaveableVectorStore):
         docstore_size = len(self.docstore._dict)
         for i, vector in enumerate(vectors):
             self._index.add_items(np.array(vector), np.array([docstore_size + i]))
-            self.docstore.add({docstore_size + i: documents[i]})
+            self.docstore.add({str(docstore_size + i): documents[i]})
 
     def add_documents(self, documents: List[Document]) -> List[str]:
         texts = [doc.page_content for doc in documents]
@@ -105,10 +104,11 @@ class HNSWLib(SaveableVectorStore):
             print(f"k ({k}) is greater than the number of elements in the index ({total}), setting k to {total}")
             k = total
         labels, distances = self._index.knn_query(query, k)
-        return [(self.docstore.search(str(label)), distance) for label, distance in zip(labels, distances)]
+        return [(self.docstore._dict[str(label)], distance) for label, distance in zip(labels[0], distances[0])]
 
     def similarity_search(self, query: str, k: int = 4) -> List[Document]:
-        return self.similarity_search_by_vector(self._embeddings.embed_query(query), k)
+        results = self.similarity_search_by_vector(self._embeddings.embed_query(query), k)
+        return [result[0] for result in results]
     
     def save(self, directory: str):
         print(f"Saving in directory {directory}")
@@ -134,10 +134,9 @@ class HNSWLib(SaveableVectorStore):
         with open(os.path.join(directory, 'docstore.json'), 'r') as f:
             doc_data = json.load(f)
         for id, value in doc_data:
-            args.docstore.add({id: Document(
+            args.docstore.add({str(id): Document(
                 page_content=value['page_content'], 
-                metadata=value['metadata'],
-                type=value['type']
+                metadata=value['metadata']
             )})
         
         args.index = index

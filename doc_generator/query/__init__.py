@@ -16,6 +16,7 @@ def display_welcome_message(project_name):
     print(f"Welcome to the {project_name} chatbot.")
     print(f"Ask any questions related to the {project_name} codebase, and I'll try to help. Type 'exit' to quit.\n")
 
+
 def query(repo_config: AutodocRepoConfig, user_confg: AutodocUserConfig):
     data_path = os.path.join(repo_config.output, 'docs', 'data')
     embeddings = get_embeddings(repo_config.llms[0])
