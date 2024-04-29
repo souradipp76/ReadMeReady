@@ -40,9 +40,9 @@ def query(repo_config: AutodocRepoConfig, user_confg: AutodocUserConfig):
         print('Thinking...')
         try:
             response = chain.invoke({'question': question, 'chat_history': chat_history})
-            chat_history.append((question, response['text']))
+            chat_history.append((question, response['answer']))
             print('\n\nMarkdown:\n')
-            print(markdown(response['text']))
+            print(markdown(response['answer']))
         except Exception as error:
             print(f"Something went wrong: {error}")
             traceback.print_exc()

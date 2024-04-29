@@ -9,8 +9,8 @@ from doc_generator.types import LLMModelDetails, LLMModels
 
 def get_chat_model(model_name: str, model_kwargs):
     config = AutoConfig.from_pretrained(model_name)
-    config.quantization_config["disable_exllama"] = True
-    config.quantization_config["exllama_config"] = {"version":2}
+    # config.quantization_config["disable_exllama"] = True
+    # config.quantization_config["exllama_config"] = {"version":2}
     tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
     model = AutoModelForCausalLM.from_pretrained(
                 model_name,
@@ -117,7 +117,7 @@ def total_index_cost_estimate(model):
 def get_embeddings(model:str):
     if model == LLMModels.LLAMA2_7B_CHAT_GPTQ.value:
         return HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2",
-                                     # model_kwargs={"device": "cuda"},
+                                     model_kwargs={"device": "cuda"},
                                      encode_kwargs={"normalize_embeddings": True},
                                      )
     else:
