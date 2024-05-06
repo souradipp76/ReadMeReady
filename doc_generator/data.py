@@ -74,13 +74,19 @@ fetch_and_convert_readme_to_csv(repo_urls, 'output_csv_files')
 
 
 
+import requests
+import os
+import pandas as pd
+import base64
+from urllib.parse import urlparse
+
 def fetch_and_concatenate_source_code(repo_urls, output_dir, token):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     
     headers = {
         'Authorization': f'token {token}',
-        'Accept': 'application/vnd.github.v3+json'
+        'Accept': 'application/vnd.github.v3.raw'  # Requests raw content directly
     }
 
     for url in repo_urls:
@@ -98,32 +104,32 @@ def fetch_and_concatenate_source_code(repo_urls, output_dir, token):
             continue
 
         api_url = f'https://api.github.com/repos/{repo_user}/{repo_name}/git/trees/{default_branch}?recursive=true'
-
-        response = requests.get(api_url, headers=headers)
+        response = requests.get(api_url, headers={'Authorization': f'token {token}', 'Accept': 'application/vnd.github.v3+json'})
+        
         if response.status_code == 200:
             data = response.json()
             all_files_content = []
 
             for file in data['tree']:
                 if file['type'] == 'blob' and file['path'].endswith(('.py', '.c', '.cpp', '.java', '.js', '.ts', '.go')):
-                    file_content_response = requests.get(file['url'], headers=headers)
-                    if file_content_response.status_code == 200:
-                        file_content = file_content_response.json()['content']
+                    file_url = f"https://api.github.com/repos/{repo_user}/{repo_name}/contents/{file['path']}?ref={default_branch}"
+                    file_response = requests.get(file_url, headers=headers)
+                    if file_response.status_code == 200:
+                        file_content = file_response.text
                         all_files_content.append(file_content)
 
             concatenated_content = "\n".join(all_files_content)
             df = pd.DataFrame([concatenated_content], columns=['SourceCode'])
-            df.to_csv(os.path.join(output_dir, f'{repo_name}.csv'), index=False)
-            print(f'Saved {repo_name}.csv')
+            df.to_csv(os.path.join(output_dir, f'{repo_name}_context.csv'), index=False)
+            print(f'Saved {repo_name}_context.csv')
         else:
             print(f'Failed to fetch repository data for {repo_name}: {response.status_code}')
 
 # Example usage:
 repo_urls = [
-    'https://github.com/user/repo1',
-    'https://github.com/user/repo2',
+    "https://github.com/context-labs/autodoc"
 ]
 output_directory = 'output_csv_files'
-github_token = 'YOUR_GITHUB_TOKEN'
+github_token = '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'  # Replace with your GitHub access token
 
 fetch_and_concatenate_source_code(repo_urls, output_directory, github_token)
