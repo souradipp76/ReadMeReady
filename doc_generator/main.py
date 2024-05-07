@@ -30,10 +30,10 @@ def main():  # pragma: no cover
     """
     # Example config objects, these need to be defined or imported properly
     repo_config = {
-        "name": "autodoc",
-        "root": "./autodoc",
-        "repository_url": "https://github.com/context-labs/autodoc",
-        "output": "doc_generator/autodoc",
+        "name": "TouchPose",
+        "root": "./TouchPose",
+        "repository_url": "https://github.com/eth-siplab/TouchPose",
+        "output": "doc_generator/TouchPose",
         "llms": ["TheBloke/Llama-2-7B-Chat-GPTQ"],
         "ignore": [
             ".*",
