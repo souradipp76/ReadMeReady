@@ -7,23 +7,31 @@ from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
 from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig, pipeline
 from doc_generator.types import LLMModelDetails, LLMModels
 
-def get_chat_model(model_name: str, model_kwargs):
+def get_llama_chat_model(model_name: str, model_kwargs):
     config = AutoConfig.from_pretrained(model_name)
     config.quantization_config["disable_exllama"] = True
-    config.quantization_config["exllama_config"] = {"version":2}
+    config.quantization_config["exllama_config"] = {"version" : 2}
     tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
     model = AutoModelForCausalLM.from_pretrained(
                 model_name,
                 torch_dtype=torch.float16,
                 trust_remote_code=True,
                 device_map="auto",
-                config = config
+                config=config
             )
     return HuggingFacePipeline(pipeline=pipeline(
             "text-generation",
             model=model,
             tokenizer=tokenizer,
         ), model_kwargs=model_kwargs)
+
+
+def get_openai_chat_model(model: str, temperature=None, streaming=None, model_kwargs=None):
+    return ChatOpenAI(temperature=temperature,
+                      streaming=streaming,
+                      model_name=model,
+                      model_kwargs=model_kwargs)
+
 
 models = {
     LLMModels.GPT3: LLMModelDetails(
