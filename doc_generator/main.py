@@ -31,11 +31,11 @@ def main():  # pragma: no cover
     """
     # Example config objects, these need to be defined or imported properly
     print("Initializing Auto Documentation...")
-    name = prompt("Project Name?\n", default="sample_project")
-    project_root = prompt("Project Root?\n", default="./sample_project")
-    project_url = prompt("Project URL?\n", default="https://github.com/souradipp76/sample_project")
-    output = prompt("Output?\n", default="../data/sample_project")
-    mode = prompt("Documentation Mode?[Readme/Query]\n", default="query")
+    name = prompt("Project Name?\n")
+    project_root = prompt("Project Root?\n")
+    project_url = prompt("Project URL?\n")
+    output = prompt("Output?\n")
+    mode = prompt("Documentation Mode?[Readme/Query]\n")
     print("Initialization Complete.\n")
 
     repo_config = {

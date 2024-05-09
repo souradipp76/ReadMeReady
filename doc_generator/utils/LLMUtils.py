@@ -9,7 +9,7 @@ from doc_generator.types import LLMModelDetails, LLMModels
 
 def get_llama_chat_model(model_name: str, model_kwargs):
     config = AutoConfig.from_pretrained(model_name)
-    config.quantization_config["disable_exllama"] = True
+    config.quantization_config["use_exllama"] = False
     config.quantization_config["exllama_config"] = {"version" : 2}
     tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
     model = AutoModelForCausalLM.from_pretrained(
@@ -75,7 +75,7 @@ models = {
         input_cost_per_1k_tokens=0,
         output_cost_per_1k_tokens=0,
         max_length=4096,
-        llm=get_chat_model(LLMModels.LLAMA2_7B_CHAT_GPTQ.value, model_kwargs={"temperature": 0}),
+        llm=get_llama_chat_model(LLMModels.LLAMA2_7B_CHAT_GPTQ.value, model_kwargs={"temperature": 0}),
         input_tokens=0,
         output_tokens=0,
         succeeded=0,

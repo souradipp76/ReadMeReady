@@ -65,10 +65,11 @@ def generate_readme(repo_config: AutodocRepoConfig, user_confg: AutodocUserConfi
     print('Generating README...')
     headings = ["Description", "Requirements", "Installation", "Usage", "Contributing"]
     for heading in headings:
+        question = f"Provide the README content for the section with heading \"{heading}\"."
         try:
-            response = chain.invoke({'question': heading, 'chat_history': []})
+            response = chain.invoke({'question': question, 'chat_history': []})
             print('\n\nMarkdown:\n')
-            print(markdown(response['answer']))
+            print(markdown(response["answer"]))
         except Exception as error:
             print(f"Something went wrong: {error}")
             traceback.print_exc()

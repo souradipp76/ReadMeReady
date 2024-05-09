@@ -1,15 +1,17 @@
 from langchain.chains.conversational_retrieval.base import ChatVectorDBChain
-from langchain.chains.retrieval_qa.base import VectorDBQA
 from langchain.chains.llm import LLMChain
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 from doc_generator.utils.LLMUtils import get_llama_chat_model, get_openai_chat_model
 
 # Define the prompt template for condensing the follow-up question
-condense_prompt = PromptTemplate.from_template(
+condense_qa_prompt = PromptTemplate.from_template(
     template="<s>[INST]Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.\n\n"
                 "Chat History:\n{chat_history}\nFollow Up Input: {question}\nStandalone question:[/INST]")
 
+condense_readme_prompt = PromptTemplate.from_template(
+    template="<s>[INST]Given the following question, rephrase the question to be a standalone question.\n\n"
+                "Input: {question}\nStandalone question:[/INST]")
 
 def make_qa_prompt(project_name, repository_url, content_type, chat_prompt, target_audience):
     additional_instructions = f"\nHere are some additional instructions for answering questions about {content_type}:\n{chat_prompt}" if chat_prompt else ""
@@ -73,14 +75,14 @@ def make_qa_chain(project_name, repository_url, content_type, chat_prompt, targe
         question_chat_model = get_openai_chat_model(llm, temperature=0.1)
     question_generator = LLMChain(
         llm=question_chat_model,
-        prompt=condense_prompt
+        prompt=condense_qa_prompt
     )
 
     if "llama" in llm.lower():
         doc_chat_model = get_llama_chat_model(llm, {"temperature": 0.2})
     else:
         doc_chat_model = get_openai_chat_model(llm,
-                                               temperature=0.1,
+                                               temperature=0.2,
                                                streaming=bool(on_token_stream),
                                                model_kwargs={
                                                     "frequency_penalty": 0.0,
@@ -103,12 +105,22 @@ def make_qa_chain(project_name, repository_url, content_type, chat_prompt, targe
 def make_readme_chain(project_name, repository_url, content_type, chat_prompt, target_audience, vectorstore, llms, on_token_stream=None):
     llm = llms[1] if len(llms) > 1 else llms[0]
 
+    question_chat_model = None
     doc_chat_model = None
+    if "llama" in llm.lower():
+        question_chat_model = get_llama_chat_model(llm, {"temperature": 0.1})
+    else:
+        question_chat_model = get_openai_chat_model(llm, temperature=0.1)
+    question_generator = LLMChain(
+        llm=question_chat_model,
+        prompt=condense_readme_prompt
+    )
+
     if "llama" in llm.lower():
         doc_chat_model = get_llama_chat_model(llm, {"temperature": 0.2})
     else:
         doc_chat_model = get_openai_chat_model(llm,
-                                               temperature=0.1,
+                                               temperature=0.2,
                                                streaming=bool(on_token_stream),
                                                model_kwargs={
                                                     "frequency_penalty": 0.0,
@@ -121,7 +133,8 @@ def make_readme_chain(project_name, repository_url, content_type, chat_prompt, t
         prompt=readme_prompt
     )
 
-    return VectorDBQA(
+    return ChatVectorDBChain(
         vectorstore=vectorstore,
-        combine_documents_chain=doc_chain
+        combine_docs_chain=doc_chain,
+        question_generator=question_generator
     )
