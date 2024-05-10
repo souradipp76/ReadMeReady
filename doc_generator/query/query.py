@@ -12,6 +12,7 @@ import traceback
 
 chat_history = []
 
+
 def display_welcome_message(project_name):
     print(f"Welcome to the {project_name} chatbot.")
     print(f"Ask any questions related to the {project_name} codebase, and I'll try to help. Type 'exit' to quit.\n")
@@ -63,13 +64,18 @@ def generate_readme(repo_config: AutodocRepoConfig, user_confg: AutodocUserConfi
     clear()
 
     print('Generating README...')
-    headings = ["Description", "Requirements", "Installation", "Usage", "Contributing"]
-    for heading in headings:
-        question = f"Provide the README content for the section with heading \"{heading}\"."
-        try:
-            response = chain.invoke({'question': question, 'chat_history': []})
-            print('\n\nMarkdown:\n')
-            print(markdown(response["answer"]))
-        except Exception as error:
-            print(f"Something went wrong: {error}")
-            traceback.print_exc()
+    with open(os.path.join(data_path, "README.md"), "w", encoding='utf-8') as file:
+        file.write(f"# {repo_config.name}")
+    
+    with open(os.path.join(data_path, "README.md"), "a", encoding='utf-8') as file:
+        headings = ["Description", "Requirements", "Installation", "Usage", "Contributing", "License"]
+        for heading in headings:
+            question = f"Provide the README content for the section with heading \"{heading}\" starting with ## {heading}."
+            try:
+                response = chain.invoke({'question': question, 'chat_history': []})
+                print('\n\nMarkdown:\n')
+                print(markdown(response["answer"]))
+                file.write(markdown(response["answer"]))
+            except Exception as error:
+                print(f"Something went wrong: {error}")
+                traceback.print_exc()

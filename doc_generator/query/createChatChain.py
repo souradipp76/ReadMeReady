@@ -7,11 +7,12 @@ from doc_generator.utils.LLMUtils import get_llama_chat_model, get_openai_chat_m
 # Define the prompt template for condensing the follow-up question
 condense_qa_prompt = PromptTemplate.from_template(
     template="<s>[INST]Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.\n\n"
-                "Chat History:\n{chat_history}\nFollow Up Input: {question}\nStandalone question:[/INST]")
+    "Chat History:\n{chat_history}\nFollow Up Input: {question}\nStandalone question:[/INST]")
 
 condense_readme_prompt = PromptTemplate.from_template(
     template="<s>[INST]Given the following question, rephrase the question to be a standalone question.\n\n"
-                "Input: {question}\nStandalone question:[/INST]")
+    "Input: {question}\nStandalone question:[/INST]")
+
 
 def make_qa_prompt(project_name, repository_url, content_type, chat_prompt, target_audience):
     additional_instructions = f"\nHere are some additional instructions for answering questions about {content_type}:\n{chat_prompt}" if chat_prompt else ""
@@ -42,7 +43,7 @@ def make_qa_prompt(project_name, repository_url, content_type, chat_prompt, targ
 
 def make_readme_prompt(project_name, repository_url, content_type, chat_prompt, target_audience):
     additional_instructions = f"\nHere are some additional instructions for generating readme content about {content_type}:\n{chat_prompt}" if chat_prompt else ""
-    template = f"""<s>[INST]You are an AI assistant for a software project called {project_name}. You are trained on all the {content_type} that makes up this project.
+    template = f"""<s>[INST]<<SYS>>You are an AI assistant for a software project called {project_name}. You are trained on all the {content_type} that makes up this project.
     The {content_type} for the project is located at {repository_url}.
     You are given a repository which might contain several modules and each module will contain a set of files.
     Look at the source code in the repository and you have to generate content for the section of a README.md file following the heading given below. If you use any hyperlinks, they should link back to the github repository shared with you.
@@ -52,9 +53,10 @@ def make_readme_prompt(project_name, repository_url, content_type, chat_prompt, 
     Assume the reader does not know anything about how the project is structured or which folders/files do what and what functions are written in which files and what these functions do.
     If you don't know how to fill up the readme.md file in one of its sections, leave that part blank. Don't try to make up any content.
     Do not include information that is not directly relevant to repository, even though the names of the functions might be common or is frequently used in several other places.
+    Provide only the answer in markdown.
 
-    {additional_instructions}
-    Heading: {{question}}
+    {additional_instructions} <<SYS>>
+    Question: {{question}}
     Context:
     {{context}}
 
