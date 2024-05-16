@@ -1,5 +1,7 @@
 from langchain.chains.conversational_retrieval.base import ChatVectorDBChain
 from langchain.chains.llm import LLMChain
+from langchain.chains import create_retrieval_chain
+from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 from doc_generator.utils.LLMUtils import get_llama_chat_model, get_openai_chat_model
@@ -43,7 +45,7 @@ def make_qa_prompt(project_name, repository_url, content_type, chat_prompt, targ
 
 def make_readme_prompt(project_name, repository_url, content_type, chat_prompt, target_audience):
     additional_instructions = f"\nHere are some additional instructions for generating readme content about {content_type}:\n{chat_prompt}" if chat_prompt else ""
-    template = f"""<s>[INST]<<SYS>>You are an AI assistant for a software project called {project_name}. You are trained on all the {content_type} that makes up this project.
+    template = f"""You are an AI assistant for a software project called {project_name}. You are trained on all the {content_type} that makes up this project.
     The {content_type} for the project is located at {repository_url}.
     You are given a repository which might contain several modules and each module will contain a set of files.
     Look at the source code in the repository and you have to generate content for the section of a README.md file following the heading given below. If you use any hyperlinks, they should link back to the github repository shared with you.
@@ -55,16 +57,16 @@ def make_readme_prompt(project_name, repository_url, content_type, chat_prompt, 
     Do not include information that is not directly relevant to repository, even though the names of the functions might be common or is frequently used in several other places.
     Provide only the answer in markdown.
 
-    {additional_instructions} <<SYS>>
-    Question: {{question}}
+    {additional_instructions}
+    Question: {{input}}
     Context:
     {{context}}
 
     Answer in Markdown:
-    [/INST]"""
+    """
 
     # Return a template object instead of string if you have a class handling it
-    return PromptTemplate(template=template, input_variables=["question", "context"])
+    return PromptTemplate(template=template, input_variables=["input", "context"])
 
 
 def make_qa_chain(project_name, repository_url, content_type, chat_prompt, target_audience, vectorstore, llms, on_token_stream=None):
@@ -107,16 +109,16 @@ def make_qa_chain(project_name, repository_url, content_type, chat_prompt, targe
 def make_readme_chain(project_name, repository_url, content_type, chat_prompt, target_audience, vectorstore, llms, on_token_stream=None):
     llm = llms[1] if len(llms) > 1 else llms[0]
 
-    question_chat_model = None
+    # question_chat_model = None
     doc_chat_model = None
-    if "llama" in llm.lower():
-        question_chat_model = get_llama_chat_model(llm, {"temperature": 0.1})
-    else:
-        question_chat_model = get_openai_chat_model(llm, temperature=0.1)
-    question_generator = LLMChain(
-        llm=question_chat_model,
-        prompt=condense_readme_prompt
-    )
+    # if "llama" in llm.lower():
+    #     question_chat_model = get_llama_chat_model(llm, {"temperature": 0.1})
+    # else:
+    #     question_chat_model = get_openai_chat_model(llm, temperature=0.1)
+    # question_generator = LLMChain(
+    #     llm=question_chat_model,
+    #     prompt=condense_readme_prompt
+    # )
 
     if "llama" in llm.lower():
         doc_chat_model = get_llama_chat_model(llm, {"temperature": 0.2})
@@ -130,13 +132,12 @@ def make_readme_chain(project_name, repository_url, content_type, chat_prompt, t
                                                 })
 
     readme_prompt = make_readme_prompt(project_name, repository_url, content_type, chat_prompt, target_audience)
-    doc_chain = load_qa_chain(
+    doc_chain = create_stuff_documents_chain(
         llm=doc_chat_model,
         prompt=readme_prompt
     )
 
-    return ChatVectorDBChain(
-        vectorstore=vectorstore,
-        combine_docs_chain=doc_chain,
-        question_generator=question_generator
+    return create_retrieval_chain(
+        retriever=vectorstore.as_retriever(),
+        combine_docs_chain=doc_chain
     )

@@ -94,7 +94,7 @@ def main():  # pragma: no cover
     index.index(repo_conf)
     print("Done Indexing !!")
 
-    if mode == "query":
+    if mode.lower() == "query":
         query.query(repo_conf, usr_conf)
     else:
         query.generate_readme(repo_conf, usr_conf)
