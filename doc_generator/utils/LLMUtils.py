@@ -83,6 +83,42 @@ models = {
         succeeded=0,
         failed=0,
         total=0
+    ),
+    LLMModels.LLAMA2_13B_CHAT_GPTQ: LLMModelDetails(
+        name=LLMModels.LLAMA2_13B_CHAT_GPTQ,
+        input_cost_per_1k_tokens=0,
+        output_cost_per_1k_tokens=0,
+        max_length=4096,
+        llm=get_llama_chat_model(LLMModels.LLAMA2_13B_CHAT_GPTQ.value, model_kwargs={"temperature": 0}),
+        input_tokens=0,
+        output_tokens=0,
+        succeeded=0,
+        failed=0,
+        total=0
+    ),
+    LLMModels.LLAMA2_13B_CHAT_GPTQ: LLMModelDetails(
+        name=LLMModels.LLAMA2_13B_CHAT_GPTQ,
+        input_cost_per_1k_tokens=0,
+        output_cost_per_1k_tokens=0,
+        max_length=4096,
+        llm=get_llama_chat_model(LLMModels.LLAMA2_13B_CHAT_GPTQ.value, model_kwargs={"temperature": 0}),
+        input_tokens=0,
+        output_tokens=0,
+        succeeded=0,
+        failed=0,
+        total=0
+    ),
+    LLMModels.CODELLAMA_7B_GPTQ: LLMModelDetails(
+        name=LLMModels.CODELLAMA_7B_GPTQ,
+        input_cost_per_1k_tokens=0,
+        output_cost_per_1k_tokens=0,
+        max_length=8192,
+        llm=get_llama_chat_model(LLMModels.CODELLAMA_7B_GPTQ.value, model_kwargs={"temperature": 0}),
+        input_tokens=0,
+        output_tokens=0,
+        succeeded=0,
+        failed=0,
+        total=0
     )
 }
 

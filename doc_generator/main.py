@@ -31,10 +31,10 @@ def main():  # pragma: no cover
     """
     # Example config objects, these need to be defined or imported properly
     print("Initializing Auto Documentation...")
-    name = prompt("Project Name?\n")
-    project_root = prompt("Project Root?\n")
-    project_url = prompt("Project URL?\n")
-    output = prompt("Output?\n")
+    name = prompt("Project Name?[Example: autodoc]\n")
+    project_root = prompt("Project Root?[Example: ./autodoc]\n")
+    project_url = prompt("Project URL?[Example: https://github.com/context-labs/autodoc]\n")
+    output_dir = prompt("Output Directory?[Example: ./output/autodoc]\n")
     mode = prompt("Documentation Mode?[Readme/Query]\n")
     print("Initialization Complete.\n")
 
@@ -42,8 +42,8 @@ def main():  # pragma: no cover
         "name": name,
         "root": project_root,
         "repository_url": project_url,
-        "output": output,
-        "llms": ["TheBloke/Llama-2-7B-Chat-GPTQ"],
+        "output": output_dir,
+        "llms": ["TheBloke/CodeLlama-7B-GPTQ"],
         "ignore": [
             ".*",
             "*package-lock.json",
@@ -68,7 +68,7 @@ def main():  # pragma: no cover
         "add_questions": False
     }
     user_config = {
-        "llms": ["TheBloke/Llama-2-7B-Chat-GPTQ"]
+        "llms": ["TheBloke/CodeLlama-7B-GPTQ"]
     }
 
     repo_conf = AutodocRepoConfig(
