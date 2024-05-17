@@ -9,8 +9,9 @@ Be creative! do whatever you want!
 """
 from doc_generator.query import query
 from doc_generator.index import index
-from doc_generator.types import AutodocRepoConfig, AutodocUserConfig
+from doc_generator.types import AutodocRepoConfig, AutodocUserConfig, LLMModels
 from prompt_toolkit import prompt
+from prompt_toolkit.completion import WordCompleter
 
 
 def main():  # pragma: no cover
@@ -32,10 +33,23 @@ def main():  # pragma: no cover
     # Example config objects, these need to be defined or imported properly
     print("Initializing Auto Documentation...")
     name = prompt("Project Name?[Example: autodoc]\n")
-    project_root = prompt("Project Root?[Example: ./autodoc]\n")
+    project_root = prompt("Project Root?[Example: ./autodoc]\n",
+                          default=f"./{name}")
     project_url = prompt("Project URL?[Example: https://github.com/context-labs/autodoc]\n")
-    output_dir = prompt("Output Directory?[Example: ./output/autodoc]\n")
-    mode = prompt("Documentation Mode?[Readme/Query]\n")
+    output_dir = prompt("Output Directory?[Example: ./output/autodoc]\n",
+                        default=f"./output/{name}")
+
+    mode_completer = WordCompleter(["Readme", "Query"])
+    mode = prompt("Documentation Mode?[Readme/Query]\n", default="Readme",
+                  completer=mode_completer)
+
+    model_completer = WordCompleter([LLMModels.LLAMA2_7B_CHAT_GPTQ.value,
+                                     LLMModels.LLAMA2_13B_CHAT_GPTQ.value,
+                                     LLMModels.CODELLAMA_7B_GPTQ.value,
+                                     LLMModels.CODELLAMA_13B_GPTQ.value])
+    model = prompt("Which model?\n",
+                   default=LLMModels.LLAMA2_7B_CHAT_GPTQ.value,
+                   completer=model_completer)
     print("Initialization Complete.\n")
 
     repo_config = {
@@ -43,7 +57,7 @@ def main():  # pragma: no cover
         "root": project_root,
         "repository_url": project_url,
         "output": output_dir,
-        "llms": ["TheBloke/CodeLlama-7B-GPTQ"],
+        "llms": [model],
         "ignore": [
             ".*",
             "*package-lock.json",
@@ -68,7 +82,7 @@ def main():  # pragma: no cover
         "add_questions": False
     }
     user_config = {
-        "llms": ["TheBloke/CodeLlama-7B-GPTQ"]
+        "llms": [model]
     }
 
     repo_conf = AutodocRepoConfig(

@@ -10,6 +10,7 @@ class LLMModels(str, Enum):
     LLAMA2_7B_CHAT_GPTQ = "TheBloke/Llama-2-7B-Chat-GPTQ"
     LLAMA2_13B_CHAT_GPTQ = "TheBloke/Llama-2-13B-Chat-GPTQ"
     CODELLAMA_7B_GPTQ = "TheBloke/CodeLlama-7B-GPTQ"
+    CODELLAMA_13B_GPTQ = "TheBloke/CodeLlama-13B-GPTQ"
 
 class Priority(str, Enum):
     COST = 'cost'
