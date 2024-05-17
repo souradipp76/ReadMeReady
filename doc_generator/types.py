@@ -9,8 +9,8 @@ class LLMModels(str, Enum):
     GPT432k = "gpt-4-32k"
     LLAMA2_7B_CHAT_GPTQ = "TheBloke/Llama-2-7B-Chat-GPTQ"
     LLAMA2_13B_CHAT_GPTQ = "TheBloke/Llama-2-13B-Chat-GPTQ"
-    CODELLAMA_7B_GPTQ = "TheBloke/CodeLlama-7B-GPTQ"
-    CODELLAMA_13B_GPTQ = "TheBloke/CodeLlama-13B-GPTQ"
+    CODELLAMA_7B_INSTRUCT_GPTQ = "TheBloke/CodeLlama-7B-Instruct-GPTQ"
+    CODELLAMA_13B_INSTRUCT_GPTQ = "TheBloke/CodeLlama-13B-Instruct-GPTQ"
 
 class Priority(str, Enum):
     COST = 'cost'
