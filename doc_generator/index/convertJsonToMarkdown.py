@@ -1,11 +1,11 @@
-from pathlib import Path
 import json
 from pathlib import Path
-from typing import Any, Dict
 
-from doc_generator.types import AutodocRepoConfig, FileSummary, FolderSummary, ProcessFileParams, TraverseFileSystemParams
+from doc_generator.types import AutodocRepoConfig, FileSummary, \
+    FolderSummary, ProcessFileParams, TraverseFileSystemParams
 from doc_generator.utils.traverseFileSystem import traverseFileSystem
 from doc_generator.utils.FileUtils import get_file_name
+
 
 def convertJsonToMarkdown(config: AutodocRepoConfig):
     projectName = config.name
@@ -44,7 +44,6 @@ def convertJsonToMarkdown(config: AutodocRepoConfig):
         fileName = processFileParams.file_name
         content = filePath.read_text(encoding='utf-8')
 
-
         if not content or len(content) == 0:
             return
 
@@ -67,8 +66,8 @@ def convertJsonToMarkdown(config: AutodocRepoConfig):
             if data.questions:
                 markdown += f"## Questions: \n{data.questions}"
 
-        outputPath = get_file_name(markdownFilePath, '.', '.md')
-        outputPath.write_text(markdown, encoding='utf-8')
+        output_path = get_file_name(markdownFilePath, '.', '.md')
+        output_path.write_text(markdown, encoding='utf-8')
 
     traverseFileSystem(TraverseFileSystemParams(
         str(inputRoot),

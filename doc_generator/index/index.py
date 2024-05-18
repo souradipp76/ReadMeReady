@@ -3,8 +3,8 @@ from pathlib import Path
 from doc_generator.types import AutodocRepoConfig
 
 from .convertJsonToMarkdown import convertJsonToMarkdown
-from .processRepository import processRepository
-from .createVectorStore import createVectorStore
+from .process_repository import processRepository
+from .create_vector_store import create_vector_store
 
 
 def index(config: AutodocRepoConfig):
@@ -59,4 +59,4 @@ def index(config: AutodocRepoConfig):
 
     # Create a vector store from the Markdown documents
     print('Creating vector files...')
-    createVectorStore(config.root, data_path, config.llms)
+    create_vector_store(config.root, data_path, config.llms)
