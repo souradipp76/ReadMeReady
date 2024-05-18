@@ -55,7 +55,7 @@ def make_readme_prompt(project_name, repository_url, content_type, chat_prompt, 
     Assume the reader does not know anything about how the project is structured or which folders/files do what and what functions are written in which files and what these functions do.
     If you don't know how to fill up the readme.md file in one of its sections, leave that part blank. Don't try to make up any content.
     Do not include information that is not directly relevant to repository, even though the names of the functions might be common or is frequently used in several other places.
-    Provide only the answer in markdown.
+    Provide the answer in correct markdown format.
 
     {additional_instructions}
     Question: {{input}}
@@ -109,17 +109,8 @@ def make_qa_chain(project_name, repository_url, content_type, chat_prompt, targe
 def make_readme_chain(project_name, repository_url, content_type, chat_prompt, target_audience, vectorstore, llms, on_token_stream=None):
     llm = llms[1] if len(llms) > 1 else llms[0]
 
-    # question_chat_model = None
     doc_chat_model = None
-    # if "llama" in llm.lower():
-    #     question_chat_model = get_llama_chat_model(llm, {"temperature": 0.1})
-    # else:
-    #     question_chat_model = get_openai_chat_model(llm, temperature=0.1)
-    # question_generator = LLMChain(
-    #     llm=question_chat_model,
-    #     prompt=condense_readme_prompt
-    # )
-
+    print(f"LLM:  {llm.lower()}")
     if "llama" in llm.lower():
         doc_chat_model = get_llama_chat_model(llm, {"temperature": 0.2})
     else:

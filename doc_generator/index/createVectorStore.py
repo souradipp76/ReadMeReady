@@ -50,7 +50,8 @@ class RepoLoader(BaseLoader):
     def load(self) -> List[Document]:
         return processDirectory(self.filePath)
 
-def createVectorStore(root: str, output: str) -> None:
+def createVectorStore(root: str, output: str, llms: List[str]) -> None:
+    llm = llms[1] if len(llms) > 1 else llms[0]
     loader = RepoLoader(root)
     rawDocs = loader.load()
     rawDocs = [doc for doc in rawDocs if doc is not None]
@@ -60,7 +61,7 @@ def createVectorStore(root: str, output: str) -> None:
     docs = textSplitter.split_documents(rawDocs)
     # Create the vectorstore
     print('Creating vector store....')
-    vectorStore = HNSWLib.from_documents(docs, get_embeddings(LLMModels.LLAMA2_7B_CHAT_GPTQ), InMemoryDocstore())
+    vectorStore = HNSWLib.from_documents(docs, get_embeddings(llm), InMemoryDocstore())
 
     print('Saving vector store output....')
     vectorStore.save(output)

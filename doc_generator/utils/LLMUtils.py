@@ -27,9 +27,11 @@ def get_llama_chat_model(model_name: str, model_kwargs):
             tokenizer=tokenizer,
             repetition_penalty=1.1,
             return_full_text=False,
+            max_new_tokens=512
         ),
         model_kwargs=model_kwargs,
     )
+
 
 def get_openai_chat_model(
     model: str, temperature=None, streaming=None, model_kwargs=None
@@ -192,7 +194,8 @@ def total_index_cost_estimate(model):
 
 
 def get_embeddings(model: str):
-    if model == LLMModels.LLAMA2_7B_CHAT_GPTQ.value:
+    print(f"Embedding LLM: {model}")
+    if "llama" in model.lower():
         return HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-mpnet-base-v2",
             model_kwargs={"device": "cuda"},

@@ -47,9 +47,7 @@ def main():  # pragma: no cover
                                      LLMModels.LLAMA2_13B_CHAT_GPTQ.value,
                                      LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ.value,
                                      LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ.value])
-    model = prompt("Which model?\n",
-                   default=LLMModels.LLAMA2_7B_CHAT_GPTQ.value,
-                   completer=model_completer)
+    model = prompt("Which model?\n", completer=model_completer)
     print("Initialization Complete.\n")
 
     repo_config = {
