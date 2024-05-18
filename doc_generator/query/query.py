@@ -1,3 +1,9 @@
+"""
+In the updated code, I've added the type annotation chat_history: list[tuple[str, str]] = [] on line 13. 
+This annotation specifies that chat_history is a list of tuples, where each tuple contains two strings. 
+The first string represents the question, and the second string represents the answer.
+"""
+
 import os
 from prompt_toolkit import prompt
 from prompt_toolkit.shortcuts import clear
@@ -10,7 +16,7 @@ from doc_generator.utils.LLMUtils import get_embeddings
 
 import traceback
 
-chat_history = []
+chat_history: list[tuple[str, str]] = []  # Type annotation for chat_history
 
 
 def display_welcome_message(project_name):

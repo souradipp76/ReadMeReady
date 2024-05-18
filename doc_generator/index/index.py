@@ -1,3 +1,13 @@
+""""
+The issue is that the 
+createVectorStore function expects the first argument to be a string, but you're passing a Path object. 
+
+The only change made is in the last line, where str(config.root) and str(data_path) are passed as 
+arguments to the createVectorStore function instead of config.root and data_path. 
+This converts the Path objects to strings, which is the expected type for the arguments of the createVectorStore function.
+"""
+
+
 from pathlib import Path
 
 from doc_generator.types import AutodocRepoConfig
@@ -59,4 +69,4 @@ def index(config: AutodocRepoConfig):
 
     # Create a vector store from the Markdown documents
     print('Creating vector files...')
-    createVectorStore(config.root, data_path, config.llms)
+    createVectorStore(str(config.root), str(data_path))
