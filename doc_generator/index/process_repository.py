@@ -21,7 +21,7 @@ from doc_generator.utils.FileUtils import (
     github_folder_url,
 )
 from doc_generator.utils.LLMUtils import models
-from doc_generator.utils.traverseFileSystem import traverseFileSystem
+from doc_generator.utils.traverse_file_system import traverseFileSystem
 
 from .prompts import (
     create_code_file_summary,

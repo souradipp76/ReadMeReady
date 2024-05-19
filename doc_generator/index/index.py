@@ -4,7 +4,7 @@ Index
 from pathlib import Path
 from doc_generator.types import AutodocRepoConfig
 
-from .convertJsonToMarkdown import convertJsonToMarkdown
+from .convert_json_to_markdown import convert_json_to_markdown
 from .process_repository import process_repository
 from .create_vector_store import create_vector_store
 
@@ -42,7 +42,7 @@ def index(config: AutodocRepoConfig):
 
     # Convert the JSON files to Markdown
     print('Creating markdown files...')
-    convertJsonToMarkdown(AutodocRepoConfig(
+    convert_json_to_markdown(AutodocRepoConfig(
         name=config.name,
         repository_url=config.repository_url,
         root=str(json_path),

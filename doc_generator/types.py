@@ -1,9 +1,13 @@
+"""
+Types
+"""
 from enum import Enum
 from typing import List, Callable, Optional
-from langchain_openai import ChatOpenAI
-from langchain_experimental.chat_models import Llama2Chat
+from langchain_core.language_models.chat_models import BaseChatModel
+
 
 class LLMModels(str, Enum):
+    """LLM Models"""
     GPT3 = "gpt-3.5-turbo"
     GPT4 = "gpt-4"
     GPT432k = "gpt-4-32k"
@@ -12,19 +16,36 @@ class LLMModels(str, Enum):
     CODELLAMA_7B_INSTRUCT_GPTQ = "TheBloke/CodeLlama-7B-Instruct-GPTQ"
     CODELLAMA_13B_INSTRUCT_GPTQ = "TheBloke/CodeLlama-13B-Instruct-GPTQ"
 
+
 class Priority(str, Enum):
+    """Priority"""
     COST = 'cost'
     PERFORMANCE = 'performance'
 
+
 class AutodocUserConfig:
+    """AutodocUserConfig"""
     def __init__(self, llms: List[LLMModels]):
         self.llms = llms
 
+
 class AutodocRepoConfig:
-    def __init__(self, name: str, repository_url: str, root: str, output: str, llms: List[LLMModels],
-                 priority: Priority, max_concurrent_calls: int, add_questions: bool, ignore: List[str],
-                 file_prompt: str, folder_prompt: str, chat_prompt: str, content_type: str,
-                 target_audience: str, link_hosted: bool):
+    """AutodocRepoConfig"""
+    def __init__(self, name: str,
+                 repository_url: str,
+                 root: str,
+                 output: str,
+                 llms: List[LLMModels],
+                 priority: Priority,
+                 max_concurrent_calls: int,
+                 add_questions: bool,
+                 ignore: List[str],
+                 file_prompt: str,
+                 folder_prompt: str,
+                 chat_prompt: str,
+                 content_type: str,
+                 target_audience: str,
+                 link_hosted: bool):
         self.name = name
         self.repository_url = repository_url
         self.root = root
@@ -41,8 +62,14 @@ class AutodocRepoConfig:
         self.target_audience = target_audience
         self.link_hosted = link_hosted
 
+
 class FileSummary:
-    def __init__(self, file_name: str, file_path: str, url: str, summary: str, questions: Optional[str],
+    """FileSummary"""
+    def __init__(self, file_name: str,
+                 file_path: str,
+                 url: str,
+                 summary: str,
+                 questions: Optional[str],
                  checksum: str):
         self.file_name = file_name
         self.file_path = file_path
@@ -51,9 +78,16 @@ class FileSummary:
         self.questions = questions
         self.checksum = checksum
 
+
 class ProcessFileParams:
-    def __init__(self, file_name: str, file_path: str, project_name: str, content_type: str, file_prompt: str,
-                 target_audience: str, link_hosted: bool):
+    """ProcessFileParams"""
+    def __init__(self, file_name: str,
+                 file_path: str,
+                 project_name: str,
+                 content_type: str,
+                 file_prompt: str,
+                 target_audience: str,
+                 link_hosted: bool):
         self.file_name = file_name
         self.file_path = file_path
         self.project_name = project_name
@@ -62,9 +96,17 @@ class ProcessFileParams:
         self.target_audience = target_audience
         self.link_hosted = link_hosted
 
+
 class FolderSummary:
-    def __init__(self, folder_name: str, folder_path: str, url: str, files: List[FileSummary], 
-                 folders: List['FolderSummary'], summary: str, questions: str, checksum: str):
+    """FolderSummary"""
+    def __init__(self, folder_name: str,
+                 folder_path: str,
+                 url: str,
+                 files: List[FileSummary],
+                 folders: List['FolderSummary'],
+                 summary: str,
+                 questions: str,
+                 checksum: str):
         self.folder_name = folder_name
         self.folder_path = folder_path
         self.url = url
@@ -74,9 +116,18 @@ class FolderSummary:
         self.questions = questions
         self.checksum = checksum
 
+
 class ProcessFolderParams:
-    def __init__(self, input_path: str, folder_name: str, folder_path: str, project_name: str, content_type: str, 
-                 folder_prompt: str, target_audience: str, link_hosted: bool, should_ignore: Callable[[str], bool]):
+    """ProcessFolderParams"""
+    def __init__(self, input_path: str,
+                 folder_name: str,
+                 folder_path: str,
+                 project_name: str,
+                 content_type: str,
+                 folder_prompt: str,
+                 target_audience: str,
+                 link_hosted: bool,
+                 should_ignore: Callable[[str], bool]):
         self.input_path = input_path
         self.folder_name = folder_name
         self.folder_path = folder_path
@@ -87,10 +138,19 @@ class ProcessFolderParams:
         self.link_hosted = link_hosted
         self.should_ignore = should_ignore
 
+
 class TraverseFileSystemParams:
-    def __init__(self, input_path: str, project_name: str, process_file: Optional[Callable[[ProcessFileParams], 
-                 None]], process_folder: Optional[Callable[[ProcessFolderParams], None]], ignore: List[str], 
-                 file_prompt: str, folder_prompt: str, content_type: str, target_audience: str, 
+    """TraverseFileSystemParams"""
+    def __init__(self, input_path: str,
+                 project_name: str,
+                 process_file: Optional[Callable[[ProcessFileParams], None]],
+                 process_folder: Optional[Callable[[ProcessFolderParams],
+                                                   None]],
+                 ignore: List[str],
+                 file_prompt: str,
+                 folder_prompt: str,
+                 content_type: str,
+                 target_audience: str,
                  link_hosted: bool):
         self.input_path = input_path
         self.project_name = project_name
@@ -103,10 +163,19 @@ class TraverseFileSystemParams:
         self.target_audience = target_audience
         self.link_hosted = link_hosted
 
+
 class LLMModelDetails:
-    def __init__(self, name: LLMModels, input_cost_per_1k_tokens: float, output_cost_per_1k_tokens: float,
-                 max_length: int, llm: Llama2Chat, input_tokens: int, output_tokens: int, succeeded: int,
-                 failed: int, total: int):
+    """LLMModelDetails"""
+    def __init__(self, name: LLMModels,
+                 input_cost_per_1k_tokens: float,
+                 output_cost_per_1k_tokens: float,
+                 max_length: int,
+                 llm: BaseChatModel,
+                 input_tokens: int,
+                 output_tokens: int,
+                 succeeded: int,
+                 failed: int,
+                 total: int):
         self.name = name
         self.input_cost_per_1k_tokens = input_cost_per_1k_tokens
         self.output_cost_per_1k_tokens = output_cost_per_1k_tokens

@@ -1,22 +1,30 @@
-from pathlib import Path
-from doc_generator.types import TraverseFileSystemParams, ProcessFolderParams, ProcessFileParams
+"""
+Traverse File System
+"""
 import fnmatch
+from pathlib import Path
+
 import magic
-import traceback
+
+from doc_generator.types import (ProcessFileParams, ProcessFolderParams,
+                                 TraverseFileSystemParams)
 
 
-def traverseFileSystem(params: TraverseFileSystemParams):
+def traverse_file_system(params: TraverseFileSystemParams):
+    """Traverse File System"""
     try:
-        inputPath = Path(params.input_path)
-        if not inputPath.exists():
+        input_path = Path(params.input_path)
+        if not input_path.exists():
             print('The provided folder path does not exist.')
             return
 
-        def should_ignore(fileName: str):
-            return any(fnmatch.fnmatch(fileName, pattern) for pattern in params.ignore)
+        def should_ignore(file_name: str):
+            return any(fnmatch.fnmatch(file_name, pattern)
+                       for pattern in params.ignore)
 
-        def dfs(currentPath: Path):
-            contents = [entry for entry in currentPath.iterdir() if not should_ignore(entry.name)]
+        def dfs(current_path: Path):
+            contents = [entry for entry in current_path.iterdir()
+                        if not should_ignore(entry.name)]
 
             # Process directories first
             for entry in contents:
@@ -38,14 +46,15 @@ def traverseFileSystem(params: TraverseFileSystemParams):
             # Process files
             for entry in contents:
                 if entry.is_file():
-                    filePath = str(entry)
-                    with open(filePath, 'rb') as file:
+                    file_path = str(entry)
+                    with open(file_path, 'rb') as file:
                         content = file.read()
-                        if magic.from_buffer(content, mime=True).startswith('text/'):
+                        if magic.from_buffer(content, mime=True) \
+                                .startswith('text/'):
                             if params.process_file:
                                 params.process_file(ProcessFileParams(
                                     entry.name,
-                                    filePath,
+                                    file_path,
                                     params.project_name,
                                     params.content_type,
                                     params.file_prompt,
@@ -53,9 +62,8 @@ def traverseFileSystem(params: TraverseFileSystemParams):
                                     params.link_hosted
                                 ))
 
-        dfs(inputPath)
+        dfs(input_path)
 
-    except Exception as e:
+    except RuntimeError as e:
         print(f"Error during traversal: {e}")
-        # print(traceback.format_exc())
 
