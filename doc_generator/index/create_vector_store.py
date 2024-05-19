@@ -83,7 +83,7 @@ def create_vector_store(root: str, output: str, llms: List[LLMModels]) -> None:
     print('Creating vector store....')
     vector_store = HNSWLib.from_documents(docs,
                                           get_embeddings(llm.name),
-                                          InMemoryDocstore())
+                                          docstore=InMemoryDocstore())
 
     print('Saving vector store output....')
     vector_store.save(output)
