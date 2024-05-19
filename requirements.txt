@@ -1,3 +1,4 @@
+torch
 langchain 
 markdown2 
 langchain_openai 
