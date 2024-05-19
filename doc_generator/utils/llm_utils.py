@@ -7,7 +7,6 @@ import torch
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
-from pydantic import SecretStr
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 from doc_generator.types import LLMModelDetails, LLMModels
 
@@ -54,8 +53,8 @@ def get_openai_api_key():
     """Get OpenAI API Key"""
     api_key = os.getenv("OPENAI_API_KEY")
     if api_key is not None:
-        return SecretStr(api_key)
-    return SecretStr("")
+        return api_key
+    return ""
 
 
 models = {
@@ -122,21 +121,21 @@ models = {
         failed=0,
         total=0,
     ),
-    LLMModels.LLAMA2_13B_CHAT_GPTQ: LLMModelDetails(
-        name=LLMModels.LLAMA2_13B_CHAT_GPTQ,
-        input_cost_per_1k_tokens=0,
-        output_cost_per_1k_tokens=0,
-        max_length=4096,
-        llm=get_llama_chat_model(
-            LLMModels.LLAMA2_13B_CHAT_GPTQ.value,
-            model_kwargs={"temperature": 0}
-        ),
-        input_tokens=0,
-        output_tokens=0,
-        succeeded=0,
-        failed=0,
-        total=0,
-    ),
+    # LLMModels.LLAMA2_13B_CHAT_GPTQ: LLMModelDetails(
+    #     name=LLMModels.LLAMA2_13B_CHAT_GPTQ,
+    #     input_cost_per_1k_tokens=0,
+    #     output_cost_per_1k_tokens=0,
+    #     max_length=4096,
+    #     llm=get_llama_chat_model(
+    #         LLMModels.LLAMA2_13B_CHAT_GPTQ.value,
+    #         model_kwargs={"temperature": 0}
+    #     ),
+    #     input_tokens=0,
+    #     output_tokens=0,
+    #     succeeded=0,
+    #     failed=0,
+    #     total=0,
+    # ),
     LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ: LLMModelDetails(
         name=LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ,
         input_cost_per_1k_tokens=0,
@@ -152,21 +151,21 @@ models = {
         failed=0,
         total=0,
     ),
-    LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ: LLMModelDetails(
-        name=LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ,
-        input_cost_per_1k_tokens=0,
-        output_cost_per_1k_tokens=0,
-        max_length=8192,
-        llm=get_llama_chat_model(
-            LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ.value,
-            model_kwargs={"temperature": 0}
-        ),
-        input_tokens=0,
-        output_tokens=0,
-        succeeded=0,
-        failed=0,
-        total=0,
-    ),
+    # LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ: LLMModelDetails(
+    #     name=LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ,
+    #     input_cost_per_1k_tokens=0,
+    #     output_cost_per_1k_tokens=0,
+    #     max_length=8192,
+    #     llm=get_llama_chat_model(
+    #         LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ.value,
+    #         model_kwargs={"temperature": 0}
+    #     ),
+    #     input_tokens=0,
+    #     output_tokens=0,
+    #     succeeded=0,
+    #     failed=0,
+    #     total=0,
+    # ),
 }
 
 

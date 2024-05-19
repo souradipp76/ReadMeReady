@@ -27,7 +27,7 @@ def display_welcome_message(project_name):
 def query(repo_config: AutodocRepoConfig, user_confg: AutodocUserConfig):
     """Query"""
     data_path = os.path.join(repo_config.output, 'docs', 'data')
-    embeddings = get_embeddings(repo_config.llms[0])
+    embeddings = get_embeddings(repo_config.llms[0].value)
     vector_store = HNSWLib.load(data_path, embeddings)
     chain = make_qa_chain(repo_config.name,
                           repo_config.repository_url,
@@ -64,7 +64,7 @@ def generate_readme(repo_config: AutodocRepoConfig,
                     user_confg: AutodocUserConfig):
     """Generate README"""
     data_path = os.path.join(repo_config.output, 'docs', 'data')
-    embeddings = get_embeddings(repo_config.llms[0])
+    embeddings = get_embeddings(repo_config.llms[0].value)
     vector_store = HNSWLib.load(data_path, embeddings)
     chain = make_readme_chain(repo_config.name,
                               repo_config.repository_url,

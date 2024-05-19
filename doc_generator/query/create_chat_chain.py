@@ -179,7 +179,7 @@ def make_readme_chain(project_name,
                       on_token_stream=None):
     """Make Readme Chain"""
     llm = llms[1] if len(llms) > 1 else llms[0]
-
+    llm = llm.value
     doc_chat_model = None
     print(f"LLM:  {llm.lower()}")
     if "llama" in llm.lower():

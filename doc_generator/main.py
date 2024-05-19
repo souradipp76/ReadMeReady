@@ -49,7 +49,16 @@ def main():  # pragma: no cover
          LLMModels.LLAMA2_13B_CHAT_GPTQ.value,
          LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ.value,
          LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ.value])
-    model = prompt("Which model?\n", completer=model_completer)
+    model_name = prompt("Which model?\n", completer=model_completer)
+    match model_name:
+        case LLMModels.LLAMA2_13B_CHAT_GPTQ.value:
+            model = LLMModels.LLAMA2_13B_CHAT_GPTQ
+        case LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ.value:
+            model = LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ
+        case LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ.value:
+            model = LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ
+        case _:
+            model = LLMModels.LLAMA2_7B_CHAT_GPTQ
     print("Initialization Complete.\n")
 
     repo_config = {
