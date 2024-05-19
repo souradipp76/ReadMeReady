@@ -9,10 +9,10 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
 from langchain_core.document_loaders import BaseLoader
 from doc_generator.utils.HNSWLib import HNSWLib, InMemoryDocstore
-from doc_generator.utils.LLMUtils import get_embeddings
+from doc_generator.utils.LLMUtils import get_embeddings, LLMModels
 
 
-def process_file(file_path: str) -> Document:
+def process_file(file_path: str):
     """
     Process File
     """
@@ -66,7 +66,7 @@ class RepoLoader(BaseLoader):
         return process_directory(self.file_path)
 
 
-def create_vector_store(root: str, output: str, llms: List[str]) -> None:
+def create_vector_store(root: str, output: str, llms: List[LLMModels]) -> None:
     """
     Create Vector Store
     """
@@ -82,7 +82,7 @@ def create_vector_store(root: str, output: str, llms: List[str]) -> None:
     # Create the vectorstore
     print('Creating vector store....')
     vector_store = HNSWLib.from_documents(docs,
-                                          get_embeddings(llm),
+                                          get_embeddings(llm.name),
                                           InMemoryDocstore())
 
     print('Saving vector store output....')

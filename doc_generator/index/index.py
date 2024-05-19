@@ -1,13 +1,16 @@
+"""
+Index
+"""
 from pathlib import Path
-
 from doc_generator.types import AutodocRepoConfig
 
 from .convertJsonToMarkdown import convertJsonToMarkdown
-from .process_repository import processRepository
+from .process_repository import process_repository
 from .create_vector_store import create_vector_store
 
 
 def index(config: AutodocRepoConfig):
+    """Index"""
     json_path = Path(config.output) / 'docs' / 'json'
     markdown_path = Path(config.output) / 'docs' / 'markdown'
     data_path = Path(config.output) / 'docs' / 'data'
@@ -19,7 +22,7 @@ def index(config: AutodocRepoConfig):
 
     # Process the repository to create JSON files
     print('Processing repository...')
-    processRepository(AutodocRepoConfig(
+    process_repository(AutodocRepoConfig(
         name=config.name,
         repository_url=config.repository_url,
         root=config.root,
@@ -59,4 +62,4 @@ def index(config: AutodocRepoConfig):
 
     # Create a vector store from the Markdown documents
     print('Creating vector files...')
-    create_vector_store(config.root, data_path, config.llms)
+    create_vector_store(str(config.root), str(data_path), config.llms)

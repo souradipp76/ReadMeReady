@@ -16,7 +16,7 @@ def get_max_prompt_length(prompts: List[str], model: LLMModels) -> int:
 
 def select_model(prompts: List[str],
                  llms: List[LLMModels],
-                 models: Dict[LLMModels, LLMModelDetails], 
+                 models: Dict[LLMModels, LLMModelDetails],
                  priority: Priority) -> Optional[LLMModelDetails]:
     """Select Model"""
     if priority == Priority.COST:
