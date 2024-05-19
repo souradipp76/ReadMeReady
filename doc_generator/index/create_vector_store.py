@@ -9,7 +9,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
 from langchain_core.document_loaders import BaseLoader
 from doc_generator.utils.HNSWLib import HNSWLib, InMemoryDocstore
-from doc_generator.utils.LLMUtils import get_embeddings, LLMModels
+from doc_generator.utils.llm_utils import get_embeddings, LLMModels
 
 
 def process_file(file_path: str):

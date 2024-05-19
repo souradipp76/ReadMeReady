@@ -7,7 +7,7 @@ from pathlib import Path
 from doc_generator.types import AutodocRepoConfig, FileSummary, \
     FolderSummary, ProcessFileParams, TraverseFileSystemParams
 from doc_generator.utils.traverse_file_system import traverse_file_system
-from doc_generator.utils.FileUtils import get_file_name
+from doc_generator.utils.file_utils import get_file_name
 
 
 def convert_json_to_markdown(config: AutodocRepoConfig):

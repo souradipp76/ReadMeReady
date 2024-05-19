@@ -8,11 +8,11 @@ from markdown2 import markdown
 from prompt_toolkit import prompt
 from prompt_toolkit.shortcuts import clear
 
-from doc_generator.query.createChatChain import (make_qa_chain,
-                                                 make_readme_chain)
+from doc_generator.query.create_chat_chain import (make_qa_chain,
+                                                   make_readme_chain)
 from doc_generator.types import AutodocRepoConfig, AutodocUserConfig
 from doc_generator.utils.HNSWLib import HNSWLib
-from doc_generator.utils.LLMUtils import get_embeddings
+from doc_generator.utils.llm_utils import get_embeddings
 
 chat_history: list[tuple[str, str]] = []
 

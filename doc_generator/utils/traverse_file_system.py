@@ -66,4 +66,3 @@ def traverse_file_system(params: TraverseFileSystemParams):
 
     except RuntimeError as e:
         print(f"Error during traversal: {e}")
-

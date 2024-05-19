@@ -1,14 +1,19 @@
+"""
+LLM Utils
+"""
 import os
 import torch
 
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
-from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig, pipeline
+from pydantic import SecretStr
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 from doc_generator.types import LLMModelDetails, LLMModels
 
 
 def get_llama_chat_model(model_name: str, model_kwargs):
+    """Get LLAMA2 Chat Model"""
     # config = AutoConfig.from_pretrained(model_name)
     # config.quantization_config["use_exllama"] = False
     # config.quantization_config["exllama_config"] = {"version" : 2}
@@ -36,12 +41,21 @@ def get_llama_chat_model(model_name: str, model_kwargs):
 def get_openai_chat_model(
     model: str, temperature=None, streaming=None, model_kwargs=None
 ):
+    """Get OpenAI Chat Model"""
     return ChatOpenAI(
         temperature=temperature,
         streaming=streaming,
-        model_name=model,
+        model=model,
         model_kwargs=model_kwargs,
     )
+
+
+def get_openai_api_key():
+    """Get OpenAI API Key"""
+    api_key = os.getenv("OPENAI_API_KEY")
+    if api_key is not None:
+        return SecretStr(api_key)
+    return SecretStr("")
 
 
 models = {
@@ -52,8 +66,8 @@ models = {
         max_length=3050,
         llm=ChatOpenAI(
             temperature=0.1,
-            openai_api_key=os.getenv("OPENAI_API_KEY"),
-            model_name=LLMModels.GPT3,
+            api_key=get_openai_api_key(),
+            model=LLMModels.GPT3,
         ),
         input_tokens=0,
         output_tokens=0,
@@ -68,8 +82,8 @@ models = {
         max_length=8192,
         llm=ChatOpenAI(
             temperature=0.1,
-            openai_api_key=os.getenv("OPENAI_API_KEY"),
-            model_name=LLMModels.GPT4,
+            api_key=get_openai_api_key(),
+            model=LLMModels.GPT4,
         ),
         input_tokens=0,
         output_tokens=0,
@@ -84,8 +98,8 @@ models = {
         max_length=32768,
         llm=ChatOpenAI(
             temperature=0.1,
-            openai_api_key=os.getenv("OPENAI_API_KEY"),
-            model_name=LLMModels.GPT4,
+            api_key=get_openai_api_key(),
+            model=LLMModels.GPT4,
         ),
         input_tokens=0,
         output_tokens=0,
@@ -99,7 +113,8 @@ models = {
         output_cost_per_1k_tokens=0,
         max_length=4096,
         llm=get_llama_chat_model(
-            LLMModels.LLAMA2_7B_CHAT_GPTQ.value, model_kwargs={"temperature": 0}
+            LLMModels.LLAMA2_7B_CHAT_GPTQ.value,
+            model_kwargs={"temperature": 0}
         ),
         input_tokens=0,
         output_tokens=0,
@@ -107,27 +122,29 @@ models = {
         failed=0,
         total=0,
     ),
-    # LLMModels.LLAMA2_13B_CHAT_GPTQ: LLMModelDetails(
-    #     name=LLMModels.LLAMA2_13B_CHAT_GPTQ,
-    #     input_cost_per_1k_tokens=0,
-    #     output_cost_per_1k_tokens=0,
-    #     max_length=4096,
-    #     llm=get_llama_chat_model(
-    #         LLMModels.LLAMA2_13B_CHAT_GPTQ.value, model_kwargs={"temperature": 0}
-    #     ),
-    #     input_tokens=0,
-    #     output_tokens=0,
-    #     succeeded=0,
-    #     failed=0,
-    #     total=0,
-    # ),
+    LLMModels.LLAMA2_13B_CHAT_GPTQ: LLMModelDetails(
+        name=LLMModels.LLAMA2_13B_CHAT_GPTQ,
+        input_cost_per_1k_tokens=0,
+        output_cost_per_1k_tokens=0,
+        max_length=4096,
+        llm=get_llama_chat_model(
+            LLMModels.LLAMA2_13B_CHAT_GPTQ.value,
+            model_kwargs={"temperature": 0}
+        ),
+        input_tokens=0,
+        output_tokens=0,
+        succeeded=0,
+        failed=0,
+        total=0,
+    ),
     LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ: LLMModelDetails(
         name=LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ,
         input_cost_per_1k_tokens=0,
         output_cost_per_1k_tokens=0,
         max_length=8192,
         llm=get_llama_chat_model(
-            LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ.value, model_kwargs={"temperature": 0}
+            LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ.value,
+            model_kwargs={"temperature": 0}
         ),
         input_tokens=0,
         output_tokens=0,
@@ -135,24 +152,26 @@ models = {
         failed=0,
         total=0,
     ),
-    # LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ: LLMModelDetails(
-    #     name=LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ,
-    #     input_cost_per_1k_tokens=0,
-    #     output_cost_per_1k_tokens=0,
-    #     max_length=8192,
-    #     llm=get_llama_chat_model(
-    #         LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ.value, model_kwargs={"temperature": 0}
-    #     ),
-    #     input_tokens=0,
-    #     output_tokens=0,
-    #     succeeded=0,
-    #     failed=0,
-    #     total=0,
-    # ),
+    LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ: LLMModelDetails(
+        name=LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ,
+        input_cost_per_1k_tokens=0,
+        output_cost_per_1k_tokens=0,
+        max_length=8192,
+        llm=get_llama_chat_model(
+            LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ.value,
+            model_kwargs={"temperature": 0}
+        ),
+        input_tokens=0,
+        output_tokens=0,
+        succeeded=0,
+        failed=0,
+        total=0,
+    ),
 }
 
 
 def print_model_details(models):
+    """Print Model Details"""
     output = []
     for model_details in models.values():
         result = {
@@ -185,6 +204,7 @@ def print_model_details(models):
 
 
 def total_index_cost_estimate(model):
+    """Total Index Cost Estimate"""
     total_cost = sum(
         (model.input_tokens / 1000) * model.input_cost_per_1k_tokens
         + (model.output_tokens / 1000) * model.output_cost_per_1k_tokens
@@ -194,7 +214,7 @@ def total_index_cost_estimate(model):
 
 
 def get_embeddings(model: str):
-    print(f"Embedding LLM: {model}")
+    """Get Embeddings"""
     if "llama" in model.lower():
         return HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-mpnet-base-v2",

@@ -15,13 +15,13 @@ from doc_generator.types import (
     ProcessFolderParams,
     TraverseFileSystemParams,
 )
-from doc_generator.utils.FileUtils import (
+from doc_generator.utils.file_utils import (
     get_file_name,
     github_file_url,
     github_folder_url,
 )
-from doc_generator.utils.LLMUtils import models
-from doc_generator.utils.traverse_file_system import traverseFileSystem
+from doc_generator.utils.llm_utils import models
+from doc_generator.utils.traverse_file_system import traverse_file_system
 
 from .prompts import (
     create_code_file_summary,
@@ -75,7 +75,7 @@ def process_repository(config: AutodocRepoConfig, dry_run=False):
             config.target_audience,
             config.link_hosted,
         )
-        traverseFileSystem(params)
+        traverse_file_system(params)
         return {"files": files, "folders": folders}
 
     def process_file(process_file_params: ProcessFileParams):
@@ -121,6 +121,7 @@ def process_repository(config: AutodocRepoConfig, dry_run=False):
         model = select_model(prompts, config.llms, models, config.priority)
         if not is_model(model):
             return
+        assert model is not None
 
         encoding = tiktoken.encoding_for_model(model.name)
         summary_length = len(encoding.encode(summary_prompt))
@@ -146,10 +147,10 @@ def process_repository(config: AutodocRepoConfig, dry_run=False):
 
             write_file(output_path, output_content)
 
-            model.inputTokens += summary_length + (
+            model.input_tokens += summary_length + (
                 question_length if config.add_questions else 0
             )
-            model.outputTokens += 1000  # Example token adjustment
+            model.output_tokens += 1000  # Example token adjustment
             model.total += 1
             model.succeeded += 1
 
@@ -180,10 +181,10 @@ def process_repository(config: AutodocRepoConfig, dry_run=False):
         file_summaries = []
         for f in contents:
             entry_path = Path(folder_path) / f
-            if entry_path.is_file() and f.name != "summary.json":
+            if entry_path.is_file() and f != "summary.json":
                 file = read_file(entry_path)
                 if len(file) > 0:
-                    file_summaries.append(json.dumps(file))
+                    file_summaries.append(json.loads(file))
         folder_summaries = []
         for f in contents:
             entry_path = Path(folder_path) / f
@@ -191,7 +192,7 @@ def process_repository(config: AutodocRepoConfig, dry_run=False):
                 summary_file_path = Path(entry_path) / "summary.json"
                 file = read_file(summary_file_path)
                 if len(file) > 0:
-                    folder_summaries.append(json.dumps(file))
+                    folder_summaries.append(json.loads(file))
         summary_prompt = folder_summary_prompt(
             folder_path,
             process_folder_params.project_name,
@@ -205,7 +206,7 @@ def process_repository(config: AutodocRepoConfig, dry_run=False):
                              config.priority)
         if not is_model(model):
             return
-
+        assert model is not None
         summary = call_llm(summary_prompt, model.llm)
 
         folder_summary = FolderSummary(
@@ -239,18 +240,18 @@ def process_repository(config: AutodocRepoConfig, dry_run=False):
         config.target_audience,
         config.link_hosted,
     )
-    traverseFileSystem(params)
+    traverse_file_system(params)
     print("Processing complete.")
 
 
 def calculate_checksum(contents: list[str]):
     """Calculate Checksum"""
     checksums = [
-        hashlib.md5(content).hexdigest()
+        hashlib.md5(content.encode()).hexdigest()
         for content in contents
         ]
     concatenated_checksum = "".join(checksums)
-    final_checksum = hashlib.md5(concatenated_checksum)
+    final_checksum = hashlib.md5(concatenated_checksum.encode())
     return final_checksum.hexdigest()
 
 
