@@ -44,7 +44,8 @@ class HNSWLib(SaveableVectorStore):
         super().__init__()
         self.args = args
         self._embeddings = embeddings
-        self._index = args.index
+        self._index = args.index if args.index \
+            else hnswlib.Index(args.space, args.num_dimensions)
         self.docstore = args.docstore if args.docstore else InMemoryDocstore()
 
     def add_texts(self, texts: Iterable[str],
