@@ -44,8 +44,7 @@ class HNSWLib(SaveableVectorStore):
         super().__init__()
         self.args = args
         self._embeddings = embeddings
-        self._index = args.index if args.index \
-            else hnswlib.Index(args.space, args.num_dimensions)
+        self._index = args.index
         self.docstore = args.docstore if args.docstore else InMemoryDocstore()
 
     def add_texts(self, texts: Iterable[str],
@@ -86,6 +85,7 @@ class HNSWLib(SaveableVectorStore):
             raise ValueError(f"Vectors must have the same length as the \
                              number of dimensions \
                              ({self.args.num_dimensions})")
+        assert self._index is not None
         capacity = self._index.get_max_elements()
         needed = self._index.element_count + len(vectors)
         if needed > capacity:
@@ -117,7 +117,6 @@ class HNSWLib(SaveableVectorStore):
     @staticmethod
     def from_documents(documents: List[Document], embedding: Embeddings,
                        **kwargs: Any) -> "HNSWLib":
-        print(kwargs)
         args = HNSWLibArgs(space='cosine', docstore=kwargs['docstore'])
         hnsw = HNSWLib(embedding, args)
         hnsw.add_documents(documents)
@@ -129,6 +128,7 @@ class HNSWLib(SaveableVectorStore):
             raise ValueError(f"Query vector must have the same length as the \
                              number of dimensions \
                              ({self.args.num_dimensions})")
+        assert self._index is not None
         total = self._index.element_count
         if k > total:
             print(f"k ({k}) is greater than the number of elements in the \
@@ -148,6 +148,7 @@ class HNSWLib(SaveableVectorStore):
         print(f"Saving in directory {directory}")
         if not os.path.exists(directory):
             os.makedirs(directory)
+        assert self._index is not None
         self._index.save_index(os.path.join(directory, 'hnswlib.index'))
         with open(os.path.join(directory, 'docstore.json'), 'w') as f:
             docstore_data = []
