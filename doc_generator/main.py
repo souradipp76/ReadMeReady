@@ -45,26 +45,26 @@ def main():  # pragma: no cover
                   completer=mode_completer)
 
     model_completer = WordCompleter(
-        [LLMModels.LLAMA2_7B_CHAT_GPTQ.value,
-         LLMModels.LLAMA2_13B_CHAT_GPTQ.value,
-         LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ.value,
-         LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ.value,
+        [LLMModels.LLAMA2_7B_CHAT_HF.value,
+         LLMModels.LLAMA2_13B_CHAT_HF.value,
+         LLMModels.CODELLAMA_7B_INSTRUCT_HF.value,
+         LLMModels.CODELLAMA_13B_INSTRUCT_HF.value,
          LLMModels.GOOGLE_GEMMA_2B_INSTRUCT.value,
          LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value])
     model_name = prompt("Which model?\n", completer=model_completer)
     match model_name:
-        case LLMModels.LLAMA2_13B_CHAT_GPTQ.value:
-            model = LLMModels.LLAMA2_13B_CHAT_GPTQ
-        case LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ.value:
-            model = LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ
-        case LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ.value:
-            model = LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ
+        case LLMModels.LLAMA2_13B_CHAT_HF.value:
+            model = LLMModels.LLAMA2_13B_CHAT_HF
+        case LLMModels.CODELLAMA_7B_INSTRUCT_HF.value:
+            model = LLMModels.CODELLAMA_7B_INSTRUCT_HF
+        case LLMModels.CODELLAMA_13B_INSTRUCT_HF.value:
+            model = LLMModels.CODELLAMA_13B_INSTRUCT_HF
         case LLMModels.GOOGLE_GEMMA_2B_INSTRUCT.value:
             model = LLMModels.GOOGLE_GEMMA_2B_INSTRUCT
         case LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value:
             model = LLMModels.GOOGLE_GEMMA_7B_INSTRUCT
         case _:
-            model = LLMModels.LLAMA2_7B_CHAT_GPTQ
+            model = LLMModels.LLAMA2_7B_CHAT_HF
     print("Initialization Complete.\n")
 
     repo_config = {

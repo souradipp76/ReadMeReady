@@ -132,21 +132,21 @@ models = {
         failed=0,
         total=0,
     ),
-    LLMModels.LLAMA2_7B_CHAT_GPTQ: LLMModelDetails(
-        name=LLMModels.LLAMA2_7B_CHAT_GPTQ,
-        input_cost_per_1k_tokens=0,
-        output_cost_per_1k_tokens=0,
-        max_length=4096,
-        llm=get_llama_chat_model(
-            LLMModels.LLAMA2_7B_CHAT_GPTQ.value,
-            model_kwargs={"temperature": 0}
-        ),
-        input_tokens=0,
-        output_tokens=0,
-        succeeded=0,
-        failed=0,
-        total=0,
-    ),
+    # LLMModels.LLAMA2_7B_CHAT_GPTQ: LLMModelDetails(
+    #     name=LLMModels.LLAMA2_7B_CHAT_GPTQ,
+    #     input_cost_per_1k_tokens=0,
+    #     output_cost_per_1k_tokens=0,
+    #     max_length=4096,
+    #     llm=get_llama_chat_model(
+    #         LLMModels.LLAMA2_7B_CHAT_GPTQ.value,
+    #         model_kwargs={"temperature": 0}
+    #     ),
+    #     input_tokens=0,
+    #     output_tokens=0,
+    #     succeeded=0,
+    #     failed=0,
+    #     total=0,
+    # ),
     # LLMModels.LLAMA2_13B_CHAT_GPTQ: LLMModelDetails(
     #     name=LLMModels.LLAMA2_13B_CHAT_GPTQ,
     #     input_cost_per_1k_tokens=0,
@@ -162,13 +162,43 @@ models = {
     #     failed=0,
     #     total=0,
     # ),
-    LLMModels.GOOGLE_GEMMA_2B_INSTRUCT: LLMModelDetails(
-        name=LLMModels.GOOGLE_GEMMA_2B_INSTRUCT,
+    # LLMModels.GOOGLE_GEMMA_2B_INSTRUCT: LLMModelDetails(
+    #     name=LLMModels.GOOGLE_GEMMA_2B_INSTRUCT,
+    #     input_cost_per_1k_tokens=0,
+    #     output_cost_per_1k_tokens=0,
+    #     max_length=8192,
+    #     llm=get_gemma_chat_model(
+    #         LLMModels.GOOGLE_GEMMA_2B_INSTRUCT.value,
+    #         model_kwargs={"temperature": 0}
+    #     ),
+    #     input_tokens=0,
+    #     output_tokens=0,
+    #     succeeded=0,
+    #     failed=0,
+    #     total=0,
+    # ),
+    # LLMModels.GOOGLE_GEMMA_7B_INSTRUCT: LLMModelDetails(
+    #     name=LLMModels.GOOGLE_GEMMA_7B_INSTRUCT,
+    #     input_cost_per_1k_tokens=0,
+    #     output_cost_per_1k_tokens=0,
+    #     max_length=8192,
+    #     llm=get_gemma_chat_model(
+    #         LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value,
+    #         model_kwargs={"temperature": 0}
+    #     ),
+    #     input_tokens=0,
+    #     output_tokens=0,
+    #     succeeded=0,
+    #     failed=0,
+    #     total=0,
+    # ),
+    LLMModels.CODELLAMA_7B_INSTRUCT_HF: LLMModelDetails(
+        name=LLMModels.CODELLAMA_7B_INSTRUCT_HF,
         input_cost_per_1k_tokens=0,
         output_cost_per_1k_tokens=0,
         max_length=8192,
-        llm=get_gemma_chat_model(
-            LLMModels.GOOGLE_GEMMA_2B_INSTRUCT.value,
+        llm=get_llama_chat_model(
+            LLMModels.CODELLAMA_7B_INSTRUCT_HF.value,
             model_kwargs={"temperature": 0}
         ),
         input_tokens=0,
@@ -177,13 +207,13 @@ models = {
         failed=0,
         total=0,
     ),
-    # LLMModels.GOOGLE_GEMMA_7B_INSTRUCT: LLMModelDetails(
-    #     name=LLMModels.GOOGLE_GEMMA_7B_INSTRUCT,
+    # LLMModels.CODELLAMA_13B_INSTRUCT_HF: LLMModelDetails(
+    #     name=LLMModels.CODELLAMA_13B_INSTRUCT_HF,
     #     input_cost_per_1k_tokens=0,
     #     output_cost_per_1k_tokens=0,
     #     max_length=8192,
-    #     llm=get_gemma_chat_model(
-    #         LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value,
+    #     llm=get_llama_chat_model(
+    #         LLMModels.CODELLAMA_13B_INSTRUCT_HF.value,
     #         model_kwargs={"temperature": 0}
     #     ),
     #     input_tokens=0,
