@@ -15,6 +15,8 @@ class LLMModels(str, Enum):
     LLAMA2_13B_CHAT_GPTQ = "TheBloke/Llama-2-13B-Chat-GPTQ"
     CODELLAMA_7B_INSTRUCT_GPTQ = "TheBloke/CodeLlama-7B-Instruct-GPTQ"
     CODELLAMA_13B_INSTRUCT_GPTQ = "TheBloke/CodeLlama-13B-Instruct-GPTQ"
+    GOOGLE_GEMMA_2B_INSTRUCT = "google/gemma-2b-it"
+    GOOGLE_GEMMA_7B_INSTRUCT = "google/gemma-7b-it"
 
 
 class Priority(str, Enum):

@@ -8,6 +8,7 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 from doc_generator.utils.llm_utils import (get_llama_chat_model,
+                                           get_gemma_chat_model, 
                                            get_openai_chat_model)
 
 # Define the prompt template for condensing the follow-up question
@@ -134,6 +135,8 @@ def make_qa_chain(project_name,
     doc_chat_model = None
     if "llama" in llm.lower():
         question_chat_model = get_llama_chat_model(llm, {"temperature": 0.1})
+    elif "gemma" in llm.lower():
+        question_chat_model = get_gemma_chat_model(llm, {"temperature": 0.1})
     else:
         question_chat_model = get_openai_chat_model(llm, temperature=0.1)
     question_generator = LLMChain(
@@ -143,6 +146,8 @@ def make_qa_chain(project_name,
 
     if "llama" in llm.lower():
         doc_chat_model = get_llama_chat_model(llm, {"temperature": 0.2})
+    elif "gemma" in llm.lower():
+        question_chat_model = get_gemma_chat_model(llm, {"temperature": 0.2})
     else:
         doc_chat_model = get_openai_chat_model(llm,
                                                temperature=0.2,
@@ -184,6 +189,8 @@ def make_readme_chain(project_name,
     print(f"LLM:  {llm.lower()}")
     if "llama" in llm.lower():
         doc_chat_model = get_llama_chat_model(llm, {"temperature": 0.2})
+    elif "gemma" in llm.lower():
+        doc_chat_model = get_gemma_chat_model(llm, {"temperature": 0.2})
     else:
         doc_chat_model = get_openai_chat_model(llm,
                                                temperature=0.2,

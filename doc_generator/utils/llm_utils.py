@@ -11,6 +11,32 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 from doc_generator.types import LLMModelDetails, LLMModels
 
 
+def get_gemma_chat_model(model_name: str, model_kwargs):
+    """Get GEMMA Chat Model"""
+    # config = AutoConfig.from_pretrained(model_name)
+    # config.quantization_config["use_exllama"] = False
+    # config.quantization_config["exllama_config"] = {"version" : 2}
+    tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
+    model = AutoModelForCausalLM.from_pretrained(
+        model_name,
+        torch_dtype=torch.float16,
+        trust_remote_code=True,
+        device_map="auto",
+        # config=config,
+    )
+    return HuggingFacePipeline(
+        pipeline=pipeline(
+            "text-generation",
+            model=model,
+            tokenizer=tokenizer,
+            repetition_penalty=1.1,
+            return_full_text=False,
+            max_new_tokens=512
+        ),
+        model_kwargs=model_kwargs,
+    )
+
+
 def get_llama_chat_model(model_name: str, model_kwargs):
     """Get LLAMA2 Chat Model"""
     # config = AutoConfig.from_pretrained(model_name)
@@ -136,13 +162,13 @@ models = {
     #     failed=0,
     #     total=0,
     # ),
-    LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ: LLMModelDetails(
-        name=LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ,
+    LLMModels.GOOGLE_GEMMA_2B_INSTRUCT: LLMModelDetails(
+        name=LLMModels.GOOGLE_GEMMA_2B_INSTRUCT,
         input_cost_per_1k_tokens=0,
         output_cost_per_1k_tokens=0,
         max_length=8192,
-        llm=get_llama_chat_model(
-            LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ.value,
+        llm=get_gemma_chat_model(
+            LLMModels.GOOGLE_GEMMA_2B_INSTRUCT.value,
             model_kwargs={"temperature": 0}
         ),
         input_tokens=0,
@@ -151,6 +177,36 @@ models = {
         failed=0,
         total=0,
     ),
+    # LLMModels.GOOGLE_GEMMA_7B_INSTRUCT: LLMModelDetails(
+    #     name=LLMModels.GOOGLE_GEMMA_7B_INSTRUCT,
+    #     input_cost_per_1k_tokens=0,
+    #     output_cost_per_1k_tokens=0,
+    #     max_length=8192,
+    #     llm=get_gemma_chat_model(
+    #         LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value,
+    #         model_kwargs={"temperature": 0}
+    #     ),
+    #     input_tokens=0,
+    #     output_tokens=0,
+    #     succeeded=0,
+    #     failed=0,
+    #     total=0,
+    # ),
+    # LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ: LLMModelDetails(
+    #     name=LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ,
+    #     input_cost_per_1k_tokens=0,
+    #     output_cost_per_1k_tokens=0,
+    #     max_length=8192,
+    #     llm=get_llama_chat_model(
+    #         LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ.value,
+    #         model_kwargs={"temperature": 0}
+    #     ),
+    #     input_tokens=0,
+    #     output_tokens=0,
+    #     succeeded=0,
+    #     failed=0,
+    #     total=0,
+    # ),
     # LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ: LLMModelDetails(
     #     name=LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ,
     #     input_cost_per_1k_tokens=0,
@@ -214,7 +270,7 @@ def total_index_cost_estimate(model):
 
 def get_embeddings(model: str):
     """Get Embeddings"""
-    if "llama" in model.lower():
+    if "llama" in model.lower() or "gemma" in model.lower():
         return HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-mpnet-base-v2",
             model_kwargs={"device": "cuda"},
