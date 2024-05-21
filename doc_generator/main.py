@@ -48,7 +48,9 @@ def main():  # pragma: no cover
         [LLMModels.LLAMA2_7B_CHAT_GPTQ.value,
          LLMModels.LLAMA2_13B_CHAT_GPTQ.value,
          LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ.value,
-         LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ.value])
+         LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ.valu,
+         LLMModels.GOOGLE_GEMMA_2B_INSTRUCT,
+         LLMModels.GOOGLE_GEMMA_7B_INSTRUCT])
     model_name = prompt("Which model?\n", completer=model_completer)
     match model_name:
         case LLMModels.LLAMA2_13B_CHAT_GPTQ.value:
@@ -57,6 +59,10 @@ def main():  # pragma: no cover
             model = LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ
         case LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ.value:
             model = LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ
+        case LLMModels.GOOGLE_GEMMA_2B_INSTRUCT.value:
+            model = LLMModels.GOOGLE_GEMMA_2B_INSTRUCT
+        case LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value:
+            model = LLMModels.GOOGLE_GEMMA_7B_INSTRUCT
         case _:
             model = LLMModels.LLAMA2_7B_CHAT_GPTQ
     print("Initialization Complete.\n")
