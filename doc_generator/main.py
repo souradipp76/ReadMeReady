@@ -48,9 +48,9 @@ def main():  # pragma: no cover
         [LLMModels.LLAMA2_7B_CHAT_GPTQ.value,
          LLMModels.LLAMA2_13B_CHAT_GPTQ.value,
          LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ.value,
-         LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ.valu,
-         LLMModels.GOOGLE_GEMMA_2B_INSTRUCT,
-         LLMModels.GOOGLE_GEMMA_7B_INSTRUCT])
+         LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ.value,
+         LLMModels.GOOGLE_GEMMA_2B_INSTRUCT.value,
+         LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value])
     model_name = prompt("Which model?\n", completer=model_completer)
     match model_name:
         case LLMModels.LLAMA2_13B_CHAT_GPTQ.value:
