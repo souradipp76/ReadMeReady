@@ -24,7 +24,7 @@ def get_gemma_chat_model(model_name: str, model_kwargs):
         bnb_4bit_compute_dtype=torch.bfloat16,
     )
 
-    tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
+    tokenizer = get_tokenizer(model_name)
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
         torch_dtype=torch.float16,
@@ -58,6 +58,7 @@ def get_llama_chat_model(model_name: str, model_kwargs):
     )
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
+    tokenizer.pad_token = tokenizer.eos_token
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
         torch_dtype=torch.float16,
@@ -213,13 +214,13 @@ models = {
     #     failed=0,
     #     total=0,
     # ),
-    LLMModels.CODELLAMA_7B_INSTRUCT_HF: LLMModelDetails(
-        name=LLMModels.CODELLAMA_7B_INSTRUCT_HF,
+    LLMModels.LLAMA2_7B_CHAT_HF: LLMModelDetails(
+        name=LLMModels.LLAMA2_7B_CHAT_HF,
         input_cost_per_1k_tokens=0,
         output_cost_per_1k_tokens=0,
-        max_length=8192,
+        max_length=4096,
         llm=get_llama_chat_model(
-            LLMModels.CODELLAMA_7B_INSTRUCT_HF.value,
+            LLMModels.LLAMA2_7B_CHAT_HF.value,
             model_kwargs={"temperature": 0}
         ),
         input_tokens=0,
@@ -228,6 +229,36 @@ models = {
         failed=0,
         total=0,
     ),
+    # LLMModels.LLAMA2_13B_CHAT_GPTQ: LLMModelDetails(
+    #     name=LLMModels.LLAMA2_13B_CHAT_GPTQ,
+    #     input_cost_per_1k_tokens=0,
+    #     output_cost_per_1k_tokens=0,
+    #     max_length=4096,
+    #     llm=get_llama_chat_model(
+    #         LLMModels.LLAMA2_13B_CHAT_GPTQ.value,
+    #         model_kwargs={"temperature": 0}
+    #     ),
+    #     input_tokens=0,
+    #     output_tokens=0,
+    #     succeeded=0,
+    #     failed=0,
+    #     total=0,
+    # ),
+    # LLMModels.CODELLAMA_7B_INSTRUCT_HF: LLMModelDetails(
+    #     name=LLMModels.CODELLAMA_7B_INSTRUCT_HF,
+    #     input_cost_per_1k_tokens=0,
+    #     output_cost_per_1k_tokens=0,
+    #     max_length=8192,
+    #     llm=get_llama_chat_model(
+    #         LLMModels.CODELLAMA_7B_INSTRUCT_HF.value,
+    #         model_kwargs={"temperature": 0}
+    #     ),
+    #     input_tokens=0,
+    #     output_tokens=0,
+    #     succeeded=0,
+    #     failed=0,
+    #     total=0,
+    # ),
     # LLMModels.CODELLAMA_13B_INSTRUCT_HF: LLMModelDetails(
     #     name=LLMModels.CODELLAMA_13B_INSTRUCT_HF,
     #     input_cost_per_1k_tokens=0,
