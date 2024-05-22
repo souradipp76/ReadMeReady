@@ -25,10 +25,12 @@ def select_model(prompts: List[str],
                     get_max_prompt_length(prompts, model_enum):
                 return models[model_enum]
         return None
-    else:
+    elif priority == Priority.PERFORMANCE:
         for model_enum in [LLMModels.GPT4, LLMModels.GPT432k, LLMModels.GPT3]:
             if model_enum in llms:
                 if models[model_enum].max_length > \
                         get_max_prompt_length(prompts, model_enum):
                     return models[model_enum]
         return None
+    else:
+        return models[llms[0]]

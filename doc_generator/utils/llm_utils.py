@@ -7,23 +7,30 @@ import torch
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+from transformers import (AutoModelForCausalLM,
+                          AutoTokenizer,
+                          BitsAndBytesConfig,
+                          pipeline)
 
 from doc_generator.types import LLMModelDetails, LLMModels
 
 
 def get_gemma_chat_model(model_name: str, model_kwargs):
     """Get GEMMA Chat Model"""
-    # config = AutoConfig.from_pretrained(model_name)
-    # config.quantization_config["use_exllama"] = False
-    # config.quantization_config["exllama_config"] = {"version" : 2}
+    bnb_config = BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_use_double_quant=True,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_compute_dtype=torch.bfloat16,
+    )
+
     tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
         torch_dtype=torch.float16,
         trust_remote_code=True,
         device_map="auto",
-        # config=config,
+        quantization_config=bnb_config
     )
     return HuggingFacePipeline(
         pipeline=pipeline(
@@ -40,16 +47,23 @@ def get_gemma_chat_model(model_name: str, model_kwargs):
 
 def get_llama_chat_model(model_name: str, model_kwargs):
     """Get LLAMA2 Chat Model"""
-    # config = AutoConfig.from_pretrained(model_name)
-    # config.quantization_config["use_exllama"] = False
-    # config.quantization_config["exllama_config"] = {"version" : 2}
+
+    bnb_config = BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_use_double_quant=True,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_compute_dtype=torch.bfloat16,
+        # use_exllama=False,
+        # exllama_config={"version": 2}
+    )
+
     tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
         torch_dtype=torch.float16,
         trust_remote_code=True,
         device_map="auto",
-        # config=config,
+        quantization_config=bnb_config
     )
     return HuggingFacePipeline(
         pipeline=pipeline(
@@ -82,6 +96,12 @@ def get_openai_api_key():
     if api_key is not None:
         return api_key
     return ""
+
+
+def get_tokenizer(model_name: str):
+    """Get Tokenizer"""
+    tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
+    return tokenizer
 
 
 models = {

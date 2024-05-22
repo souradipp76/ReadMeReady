@@ -20,7 +20,7 @@ from doc_generator.utils.file_utils import (
     github_file_url,
     github_folder_url,
 )
-from doc_generator.utils.llm_utils import models
+from doc_generator.utils.llm_utils import models, get_tokenizer
 from doc_generator.utils.traverse_file_system import traverse_file_system
 
 from .prompts import (
@@ -123,9 +123,14 @@ def process_repository(config: AutodocRepoConfig, dry_run=False):
             return
         assert model is not None
 
-        encoding = tiktoken.encoding_for_model(model.name)
-        summary_length = len(encoding.encode(summary_prompt))
-        question_length = len(encoding.encode(questions_prompt))
+        if "gpt" in model.name.lower():
+            encoding = tiktoken.encoding_for_model(model.name)
+            summary_length = len(encoding.encode(summary_prompt))
+            question_length = len(encoding.encode(questions_prompt))
+        else:
+            encoding = get_tokenizer(model.name)
+            summary_length = len(encoding.tokenize(summary_prompt))
+            question_length = len(encoding.tokenize(questions_prompt))
 
         if not dry_run:
             responses = [call_llm(prompt, model.llm) for prompt in prompts]
