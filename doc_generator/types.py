@@ -11,16 +11,18 @@ class LLMModels(str, Enum):
     GPT3 = "gpt-3.5-turbo"
     GPT4 = "gpt-4"
     GPT432k = "gpt-4-32k"
-    # LLAMA2_7B_CHAT_GPTQ = "TheBloke/Llama-2-7B-Chat-GPTQ"
-    # LLAMA2_13B_CHAT_GPTQ = "TheBloke/Llama-2-13B-Chat-GPTQ"
-    # CODELLAMA_7B_INSTRUCT_GPTQ = "TheBloke/CodeLlama-7B-Instruct-GPTQ"
-    # CODELLAMA_13B_INSTRUCT_GPTQ = "TheBloke/CodeLlama-13B-Instruct-GPTQ"
+    LLAMA2_7B_CHAT_GPTQ = "TheBloke/Llama-2-7B-Chat-GPTQ"
+    LLAMA2_13B_CHAT_GPTQ = "TheBloke/Llama-2-13B-Chat-GPTQ"
+    CODELLAMA_7B_INSTRUCT_GPTQ = "TheBloke/CodeLlama-7B-Instruct-GPTQ"
+    CODELLAMA_13B_INSTRUCT_GPTQ = "TheBloke/CodeLlama-13B-Instruct-GPTQ"
     LLAMA2_7B_CHAT_HF = "meta-llama/Llama-2-7b-chat-hf"
     LLAMA2_13B_CHAT_HF = "meta-llama/Llama-2-13b-chat-hf"
     CODELLAMA_7B_INSTRUCT_HF = "meta-llama/CodeLlama-7b-Instruct-hf"
     CODELLAMA_13B_INSTRUCT_HF = "meta-llama/CodeLlama-13b-Instruct-hf"
     GOOGLE_GEMMA_2B_INSTRUCT = "google/gemma-2b-it"
     GOOGLE_GEMMA_7B_INSTRUCT = "google/gemma-7b-it"
+    GOOGLE_CODEGEMMA_2B_INSTRUCT = "google/codegemma-2b-it"
+    GOOGLE_CODEGEMMA_7B_INSTRUCT = "google/codegemma-7b-it"
 
 
 class Priority(str, Enum):

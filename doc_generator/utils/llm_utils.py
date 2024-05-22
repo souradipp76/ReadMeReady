@@ -2,12 +2,13 @@
 LLM Utils
 """
 import os
-import torch
 
+import torch
 from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+
 from doc_generator.types import LLMModelDetails, LLMModels
 
 
@@ -162,13 +163,13 @@ models = {
     #     failed=0,
     #     total=0,
     # ),
-    # LLMModels.GOOGLE_GEMMA_2B_INSTRUCT: LLMModelDetails(
-    #     name=LLMModels.GOOGLE_GEMMA_2B_INSTRUCT,
+    # LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ: LLMModelDetails(
+    #     name=LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ,
     #     input_cost_per_1k_tokens=0,
     #     output_cost_per_1k_tokens=0,
     #     max_length=8192,
-    #     llm=get_gemma_chat_model(
-    #         LLMModels.GOOGLE_GEMMA_2B_INSTRUCT.value,
+    #     llm=get_llama_chat_model(
+    #         LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ.value,
     #         model_kwargs={"temperature": 0}
     #     ),
     #     input_tokens=0,
@@ -177,13 +178,13 @@ models = {
     #     failed=0,
     #     total=0,
     # ),
-    # LLMModels.GOOGLE_GEMMA_7B_INSTRUCT: LLMModelDetails(
-    #     name=LLMModels.GOOGLE_GEMMA_7B_INSTRUCT,
+    # LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ: LLMModelDetails(
+    #     name=LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ,
     #     input_cost_per_1k_tokens=0,
     #     output_cost_per_1k_tokens=0,
     #     max_length=8192,
-    #     llm=get_gemma_chat_model(
-    #         LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value,
+    #     llm=get_llama_chat_model(
+    #         LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ.value,
     #         model_kwargs={"temperature": 0}
     #     ),
     #     input_tokens=0,
@@ -222,13 +223,13 @@ models = {
     #     failed=0,
     #     total=0,
     # ),
-    # LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ: LLMModelDetails(
-    #     name=LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ,
+    # LLMModels.GOOGLE_GEMMA_2B_INSTRUCT: LLMModelDetails(
+    #     name=LLMModels.GOOGLE_GEMMA_2B_INSTRUCT,
     #     input_cost_per_1k_tokens=0,
     #     output_cost_per_1k_tokens=0,
     #     max_length=8192,
-    #     llm=get_llama_chat_model(
-    #         LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ.value,
+    #     llm=get_gemma_chat_model(
+    #         LLMModels.GOOGLE_GEMMA_2B_INSTRUCT.value,
     #         model_kwargs={"temperature": 0}
     #     ),
     #     input_tokens=0,
@@ -237,13 +238,13 @@ models = {
     #     failed=0,
     #     total=0,
     # ),
-    # LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ: LLMModelDetails(
-    #     name=LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ,
+    # LLMModels.GOOGLE_GEMMA_7B_INSTRUCT: LLMModelDetails(
+    #     name=LLMModels.GOOGLE_GEMMA_7B_INSTRUCT,
     #     input_cost_per_1k_tokens=0,
     #     output_cost_per_1k_tokens=0,
     #     max_length=8192,
-    #     llm=get_llama_chat_model(
-    #         LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ.value,
+    #     llm=get_gemma_chat_model(
+    #         LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value,
     #         model_kwargs={"temperature": 0}
     #     ),
     #     input_tokens=0,

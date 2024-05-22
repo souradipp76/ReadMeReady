@@ -77,7 +77,8 @@ def generate_readme(repo_config: AutodocRepoConfig,
     clear()
 
     print('Generating README...')
-    readme_path = os.path.join(data_path, f"README.md")
+    readme_path = os.path.join(data_path,
+                               f"README_{repo_config.llms[0].name}.md")
     with open(readme_path, "w", encoding='utf-8') as file:
         file.write(f"# {repo_config.name}")
 
