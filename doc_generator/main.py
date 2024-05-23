@@ -44,14 +44,14 @@ def main():  # pragma: no cover
     mode = prompt("Documentation Mode?[Readme/Query]\n", default="Readme",
                   completer=mode_completer)
 
-    model_completer = WordCompleter(
-        [LLMModels.LLAMA2_7B_CHAT_HF.value,
-         LLMModels.LLAMA2_13B_CHAT_HF.value,
-         LLMModels.CODELLAMA_7B_INSTRUCT_HF.value,
-         LLMModels.CODELLAMA_13B_INSTRUCT_HF.value,
-         LLMModels.GOOGLE_GEMMA_2B_INSTRUCT.value,
-         LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value])
-    model_name = prompt("Which model?\n", completer=model_completer)
+    # model_completer = WordCompleter(
+    #     [LLMModels.LLAMA2_7B_CHAT_HF.value,
+    #      LLMModels.LLAMA2_13B_CHAT_HF.value,
+    #      LLMModels.CODELLAMA_7B_INSTRUCT_HF.value,
+    #      LLMModels.CODELLAMA_13B_INSTRUCT_HF.value,
+    #      LLMModels.GOOGLE_GEMMA_2B_INSTRUCT.value,
+    #      LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value])
+    model_name = prompt("Which model?\n")
     match model_name:
         case LLMModels.LLAMA2_13B_CHAT_HF.value:
             model = LLMModels.LLAMA2_13B_CHAT_HF
