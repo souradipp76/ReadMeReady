@@ -33,4 +33,5 @@ def select_model(prompts: List[str],
                     return models[model_enum]
         return None
     else:
-        return models[llms[0]]
+        # return models[llms[0]]
+        return None

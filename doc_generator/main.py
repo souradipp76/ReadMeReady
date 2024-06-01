@@ -7,8 +7,9 @@ Be creative! do whatever you want!
 - Start a web application
 - Import things from your .base module
 """
-from prompt_toolkit import prompt
-from prompt_toolkit.completion import WordCompleter
+from pathlib import Path
+import questionary
+from urllib.parse import urlparse
 from doc_generator.query import query
 from doc_generator.index import index
 from doc_generator.types import AutodocRepoConfig, AutodocUserConfig, LLMModels
@@ -32,26 +33,56 @@ def main():  # pragma: no cover
     """
     # Example config objects, these need to be defined or imported properly
     print("Initializing Auto Documentation...")
-    name = prompt("Project Name?[Example: autodoc]\n")
-    project_root = prompt("Project Root?[Example: ./autodoc]\n",
-                          default=f"./{name}")
-    project_url = prompt(
-        "Project URL?[Example: https://github.com/context-labs/autodoc]\n")
-    output_dir = prompt("Output Directory?[Example: ./output/autodoc]\n",
-                        default=f"./output/{name}")
 
-    mode_completer = WordCompleter(["Readme", "Query"])
-    mode = prompt("Documentation Mode?[Readme/Query]\n", default="Readme",
-                  completer=mode_completer)
+    def url_validator(x):
+        try:
+            result = urlparse(x)
+            return all([result.scheme, result.netloc])
+        except AttributeError:
+            return False
 
-    # model_completer = WordCompleter(
-    #     [LLMModels.LLAMA2_7B_CHAT_HF.value,
-    #      LLMModels.LLAMA2_13B_CHAT_HF.value,
-    #      LLMModels.CODELLAMA_7B_INSTRUCT_HF.value,
-    #      LLMModels.CODELLAMA_13B_INSTRUCT_HF.value,
-    #      LLMModels.GOOGLE_GEMMA_2B_INSTRUCT.value,
-    #      LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value])
-    model_name = prompt("Which model?\n")
+    name = questionary.text(
+        message="Project Name?[Example: doc_generator]").ask()
+    project_root = questionary.path(
+        message='Project Root?[Example: ./doc_generator/]',
+        only_directories=True,
+        default=f"./{name}/").ask()
+    project_url = questionary.text(
+        message="Project URL?[Example: https://github.com/souradippal76/doc_generator]",
+        validate=url_validator).ask()
+    output_dir = questionary.path(
+        message='Output Directory?[Example: ./output/doc_generator/]',
+        only_directories=True,
+        default=f"./output/{name}/").ask()
+    mode = questionary.select(
+        message="Documentation Mode?",
+        choices=["Readme", "Query"],
+        default="Readme").ask()
+    model_name = questionary.select(
+        message="Which model?",
+        choices=[
+            LLMModels.LLAMA2_7B_CHAT_GPTQ.value,
+            LLMModels.LLAMA2_13B_CHAT_GPTQ.value,
+            LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ.value,
+            LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ.value,
+            LLMModels.LLAMA2_7B_CHAT_HF.value,
+            LLMModels.LLAMA2_13B_CHAT_HF.value,
+            LLMModels.CODELLAMA_7B_INSTRUCT_HF.value,
+            LLMModels.CODELLAMA_13B_INSTRUCT_HF.value,
+            LLMModels.GOOGLE_GEMMA_2B_INSTRUCT.value,
+            LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value
+        ],
+        default=LLMModels.LLAMA2_7B_CHAT_GPTQ.value).ask()
+    peft = questionary.confirm(
+        message="Is finetuned?",
+        default=False).ask()
+    
+    peft_model_path = None
+    if peft:
+        peft_model_path = questionary.path(
+            message='Finetuned Model Path?[Example: ./output/model/]',
+            only_directories=True).ask()
+
     match model_name:
         case LLMModels.LLAMA2_7B_CHAT_GPTQ.value:
             model = LLMModels.LLAMA2_7B_CHAT_GPTQ
@@ -81,6 +112,7 @@ def main():  # pragma: no cover
         "repository_url": project_url,
         "output": output_dir,
         "llms": [model],
+        "peft_model_path": peft_model_path,
         "ignore": [
             ".*",
             "*package-lock.json",
@@ -115,7 +147,7 @@ def main():  # pragma: no cover
         "content_type": "docs",
         "target_audience": "smart developer",
         "link_hosted": True,
-        "priority": 'performance',
+        "priority": None,
         "max_concurrent_calls": 50,
         "add_questions": False
     }
@@ -129,6 +161,7 @@ def main():  # pragma: no cover
         root=repo_config["root"],
         output=repo_config["output"],
         llms=repo_config["llms"],
+        peft_model_path=repo_config["peft_model_path"],
         priority=repo_config["priority"],
         max_concurrent_calls=repo_config["max_concurrent_calls"],
         add_questions=repo_config["add_questions"],

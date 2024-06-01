@@ -38,6 +38,7 @@ def index(config: AutodocRepoConfig):
         content_type=config.content_type,
         target_audience=config.target_audience,
         link_hosted=config.link_hosted,
+        peft_model_path=config.peft_model_path
     ))
 
     # Convert the JSON files to Markdown
@@ -58,6 +59,7 @@ def index(config: AutodocRepoConfig):
         content_type=config.content_type,
         target_audience=config.target_audience,
         link_hosted=config.link_hosted,
+        peft_model_path=config.peft_model_path
     ))
 
     # Create a vector store from the Markdown documents

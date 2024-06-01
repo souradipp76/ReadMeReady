@@ -53,12 +53,14 @@ class AutodocRepoConfig:
                  chat_prompt: str,
                  content_type: str,
                  target_audience: str,
-                 link_hosted: bool):
+                 link_hosted: bool,
+                 peft_model_path: str = None):
         self.name = name
         self.repository_url = repository_url
         self.root = root
         self.output = output
         self.llms = llms
+        self.peft_model_path = peft_model_path
         self.priority = priority
         self.max_concurrent_calls = max_concurrent_calls
         self.add_questions = add_questions

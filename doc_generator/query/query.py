@@ -72,7 +72,8 @@ def generate_readme(repo_config: AutodocRepoConfig,
                               repo_config.chat_prompt,
                               repo_config.target_audience,
                               vector_store,
-                              user_confg.llms)
+                              user_confg.llms,
+                              repo_config.peft_model_path)
 
     clear()
 
@@ -84,12 +85,20 @@ def generate_readme(repo_config: AutodocRepoConfig,
 
     with open(readme_path, "a", encoding='utf-8') as file:
         headings = [
-            "Description",
-            "Requirements",
+            # "Description",
+            # "Requirements",
+            # "Installation",
+            # "Usage",
+            # "Contributing",
+            # "License"
+            "Status",
+            "Magenta",
+            "Getting Started",
+            "Magenta Repo",
             "Installation",
-            "Usage",
-            "Contributing",
-            "License"
+            "Using Magenta",
+            "Development Environment",
+            "PIP Release"
             ]
         for heading in headings:
             question = f"Provide the README content for the section with \

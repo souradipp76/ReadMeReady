@@ -1,6 +1,7 @@
 """
 Process Repository
 """
+import os
 import hashlib
 import json
 from pathlib import Path
@@ -123,14 +124,14 @@ def process_repository(config: AutodocRepoConfig, dry_run=False):
             return
         assert model is not None
 
-        if "gpt" in model.name.lower():
+        if "llama" in model.name.lower() or "gemma" in model.name.lower():
+            encoding = get_tokenizer(model.name.value)
+            summary_length = len(encoding.tokenize(summary_prompt))
+            question_length = len(encoding.tokenize(questions_prompt))
+        else:
             encoding = tiktoken.encoding_for_model(model.name)
             summary_length = len(encoding.encode(summary_prompt))
             question_length = len(encoding.encode(questions_prompt))
-        else:
-            encoding = get_tokenizer(model.name)
-            summary_length = len(encoding.tokenize(summary_prompt))
-            question_length = len(encoding.tokenize(questions_prompt))
 
         if not dry_run:
             responses = [call_llm(prompt, model.llm) for prompt in prompts]
@@ -144,9 +145,13 @@ def process_repository(config: AutodocRepoConfig, dry_run=False):
                 checksum=new_checksum,
             )
 
-            output_path = get_file_name(markdown_file_path, ".", ".json")
+            os.makedirs(markdown_file_path.as_posix()
+                        .replace(file_name, ""), exist_ok=True)
+            output_path = get_file_name(markdown_file_path.as_posix(),
+                                        ".", ".json")
             output_content = (
-                json.dumps(file_summary, indent=2)
+                json.dumps(file_summary, indent=2, 
+                           default=lambda o: o.__dict__)
                 if file_summary.summary else ""
             )
 
@@ -226,7 +231,9 @@ def process_repository(config: AutodocRepoConfig, dry_run=False):
         )
 
         output_path = Path(folder_path) / "summary.json"
-        write_file(str(output_path), json.dumps(folder_summary, indent=2))
+        write_file(str(output_path), 
+                   json.dumps(folder_summary, indent=2, 
+                              default=lambda o: o.__dict__))
 
     files_folders_count = files_and_folders(config)
     print(
@@ -265,7 +272,9 @@ def should_reindex(content_path, name, new_checksum):
     json_path = Path(content_path) / name
     try:
         with open(json_path, "r", encoding="utf-8") as file:
-            old_checksum = json.load(file)["checksum"]
+            data = json.load(file)
+            data = json.loads(data)
+            old_checksum = data["checksum"]
         return old_checksum != new_checksum
     except FileNotFoundError:
         return True

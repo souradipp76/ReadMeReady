@@ -25,7 +25,7 @@ def process_file(file_path: str):
         metadata = {'source': file_path}
         doc = Document(page_content=file_contents, metadata=metadata)
         return doc
-    except OSError as e:
+    except Exception as e:
         print(f"Error reading file {file_path}: {str(e)}")
         return None
 

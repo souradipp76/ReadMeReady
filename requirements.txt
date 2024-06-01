@@ -3,7 +3,8 @@ langchain
 markdown2 
 langchain_openai 
 langchain_experimental 
-hnswlib 
+hnswlib
+questionary
 accelerate
 bitsandbytes 
 optimum 

@@ -12,6 +12,7 @@ from transformers import (AutoModelForCausalLM,
                           BitsAndBytesConfig,
                           pipeline)
 
+from peft import PeftModel
 from doc_generator.types import LLMModelDetails, LLMModels
 
 
@@ -32,6 +33,11 @@ def get_gemma_chat_model(model_name: str, model_kwargs):
         device_map="auto",
         quantization_config=bnb_config
     )
+
+    if "peft_model_path" in model_kwargs and model_kwargs["peft_model_path"] is not None:
+        PEFT_MODEL = model_kwargs["peft_model_path"]
+        model = PeftModel.from_pretrained(model, PEFT_MODEL)
+
     return HuggingFacePipeline(
         pipeline=pipeline(
             "text-generation",
@@ -66,6 +72,11 @@ def get_llama_chat_model(model_name: str, model_kwargs):
         device_map="auto",
         # quantization_config=bnb_config
     )
+
+    if "peft_model" in model_kwargs and model_kwargs["peft_model"] is not None:
+        PEFT_MODEL = model_kwargs["peft_model"]
+        model = PeftModel.from_pretrained(model, PEFT_MODEL)
+
     return HuggingFacePipeline(
         pipeline=pipeline(
             "text-generation",
@@ -154,21 +165,21 @@ models = {
         failed=0,
         total=0,
     ),
-    # LLMModels.LLAMA2_7B_CHAT_GPTQ: LLMModelDetails(
-    #     name=LLMModels.LLAMA2_7B_CHAT_GPTQ,
-    #     input_cost_per_1k_tokens=0,
-    #     output_cost_per_1k_tokens=0,
-    #     max_length=4096,
-    #     llm=get_llama_chat_model(
-    #         LLMModels.LLAMA2_7B_CHAT_GPTQ.value,
-    #         model_kwargs={"temperature": 0}
-    #     ),
-    #     input_tokens=0,
-    #     output_tokens=0,
-    #     succeeded=0,
-    #     failed=0,
-    #     total=0,
-    # ),
+    LLMModels.LLAMA2_7B_CHAT_GPTQ: LLMModelDetails(
+        name=LLMModels.LLAMA2_7B_CHAT_GPTQ,
+        input_cost_per_1k_tokens=0,
+        output_cost_per_1k_tokens=0,
+        max_length=4096,
+        llm=get_llama_chat_model(
+            LLMModels.LLAMA2_7B_CHAT_GPTQ.value,
+            model_kwargs={"temperature": 0}
+        ),
+        input_tokens=0,
+        output_tokens=0,
+        succeeded=0,
+        failed=0,
+        total=0,
+    ),
     # LLMModels.LLAMA2_13B_CHAT_GPTQ: LLMModelDetails(
     #     name=LLMModels.LLAMA2_13B_CHAT_GPTQ,
     #     input_cost_per_1k_tokens=0,
@@ -274,21 +285,21 @@ models = {
     #     failed=0,
     #     total=0,
     # ),
-    LLMModels.GOOGLE_GEMMA_2B_INSTRUCT: LLMModelDetails(
-        name=LLMModels.GOOGLE_GEMMA_2B_INSTRUCT,
-        input_cost_per_1k_tokens=0,
-        output_cost_per_1k_tokens=0,
-        max_length=8192,
-        llm=get_gemma_chat_model(
-            LLMModels.GOOGLE_GEMMA_2B_INSTRUCT.value,
-            model_kwargs={"temperature": 0}
-        ),
-        input_tokens=0,
-        output_tokens=0,
-        succeeded=0,
-        failed=0,
-        total=0,
-    ),
+    # LLMModels.GOOGLE_GEMMA_2B_INSTRUCT: LLMModelDetails(
+    #     name=LLMModels.GOOGLE_GEMMA_2B_INSTRUCT,
+    #     input_cost_per_1k_tokens=0,
+    #     output_cost_per_1k_tokens=0,
+    #     max_length=8192,
+    #     llm=get_gemma_chat_model(
+    #         LLMModels.GOOGLE_GEMMA_2B_INSTRUCT.value,
+    #         model_kwargs={"temperature": 0}
+    #     ),
+    #     input_tokens=0,
+    #     output_tokens=0,
+    #     succeeded=0,
+    #     failed=0,
+    #     total=0,
+    # ),
     # LLMModels.GOOGLE_GEMMA_7B_INSTRUCT: LLMModelDetails(
     #     name=LLMModels.GOOGLE_GEMMA_7B_INSTRUCT,
     #     input_cost_per_1k_tokens=0,

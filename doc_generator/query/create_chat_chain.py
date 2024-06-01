@@ -181,6 +181,7 @@ def make_readme_chain(project_name,
                       target_audience,
                       vectorstore,
                       llms,
+                      peft_model=None,
                       on_token_stream=None):
     """Make Readme Chain"""
     llm = llms[1] if len(llms) > 1 else llms[0]
@@ -188,9 +189,13 @@ def make_readme_chain(project_name,
     doc_chat_model = None
     print(f"LLM:  {llm.lower()}")
     if "llama" in llm.lower():
-        doc_chat_model = get_llama_chat_model(llm, {"temperature": 0.2})
+        doc_chat_model = get_llama_chat_model(llm, 
+                                              {"temperature": 0.2, 
+                                               "peft_model": peft_model})
     elif "gemma" in llm.lower():
-        doc_chat_model = get_gemma_chat_model(llm, {"temperature": 0.2})
+        doc_chat_model = get_gemma_chat_model(llm, 
+                                              {"temperature": 0.2, 
+                                               "peft_model": peft_model})
     else:
         doc_chat_model = get_openai_chat_model(llm,
                                                temperature=0.2,
