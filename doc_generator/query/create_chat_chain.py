@@ -100,7 +100,7 @@ def make_readme_prompt(project_name,
     Assume the reader does not know anything about how the project is \
     structured or which folders/files do what and what functions are written \
     in which files and what these functions do.
-    If you don't know how to fill up the readme.md file in one of its \
+    If you don't know how to fill up the README.md file in one of its \
     sections, leave that part blank. Don't try to make up any content.
     Do not include information that is not directly relevant to repository, \
     even though the names of the functions might be common or is frequently \
@@ -108,7 +108,8 @@ def make_readme_prompt(project_name,
     Provide the answer in correct markdown format.
 
     {additional_instructions}
-    Question: {{input}}
+    Question: Provide the README content for the section with \
+                heading \"{{input}}\" starting with {{input}}.
     Context:
     {{context}}
 

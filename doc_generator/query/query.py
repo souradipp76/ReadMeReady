@@ -91,22 +91,20 @@ def generate_readme(repo_config: AutodocRepoConfig,
             # "Usage",
             # "Contributing",
             # "License"
-            "Status",
-            "Magenta",
-            "Getting Started",
-            "Magenta Repo",
-            "Installation",
-            "Using Magenta",
-            "Development Environment",
-            "PIP Release"
+            "## Description",
+            "## Installation",
+            "### For rapid experimentation",
+            "### As a package",
+            "## Documentation",
+            "## Available models",
+            "## Contributing"
             ]
         for heading in headings:
-            question = f"Provide the README content for the section with \
-                heading \"{heading}\" starting with ## {heading}."
+            question = f"{heading}"
             try:
                 response = chain.invoke({'input': question})
                 print('\n\nMarkdown:\n')
-                print(response["answer"])
+                print(markdown(response["answer"]))
                 file.write(markdown(response["answer"]))
             except RuntimeError as error:
                 print(f"Something went wrong: {error}")
