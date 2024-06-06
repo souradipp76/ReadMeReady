@@ -31,7 +31,8 @@ def get_gemma_chat_model(model_name: str, model_kwargs):
         torch_dtype=torch.float16,
         trust_remote_code=True,
         device_map="auto",
-        quantization_config=bnb_config
+        quantization_config=bnb_config,
+        token=os.environ['HF_TOKEN']
     )
 
     if "peft_model_path" in model_kwargs and model_kwargs["peft_model_path"] is not None:
@@ -82,7 +83,7 @@ def get_llama_chat_model(model_name: str, model_kwargs):
             "text-generation",
             model=model,
             tokenizer=tokenizer,
-            repetition_penalty=1.1,
+            repetition_penalty=1.2,
             return_full_text=False,
             max_new_tokens=512
         ),
@@ -112,7 +113,9 @@ def get_openai_api_key():
 
 def get_tokenizer(model_name: str):
     """Get Tokenizer"""
-    tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
+    tokenizer = AutoTokenizer.from_pretrained(model_name, 
+                                              token=os.environ['HF_TOKEN'], 
+                                              use_fast=True)
     return tokenizer
 
 

@@ -12,7 +12,7 @@ from huggingface_hub import notebook_login
 from peft import LoraConfig, PeftConfig, PeftModel, get_peft_model, prepare_model_for_kbit_training
 from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 os.environ['CUDA_LAUNCH_BLOCKING']="1"
 os.environ['TORCH_USE_CUDA_DSA'] = "1"
 
@@ -61,7 +61,7 @@ config = LoraConfig(
 
 model = get_peft_model(model, config)
 
-df = pd.read_csv("readme_qa_cleaned_small_v3.csv")
+df = pd.read_csv("readme_qa_cleaned_small_v4.csv")
 
 target_audience = "smart developer"
 content_type = "docs"
@@ -102,10 +102,10 @@ data = data.shuffle().map(generate_and_tokenize_prompt)
 training_args = transformers.TrainingArguments(
     per_device_train_batch_size=1,
     gradient_accumulation_steps=1,
-    num_train_epochs=1,
+    num_train_epochs=3,
     learning_rate=1e-4,
     fp16=True,
-    output_dir="outputs_llama2-7b-chat-gptq_v6",
+    output_dir="outputs_llama2-7b-chat-gptq_v7",
     optim="paged_adamw_8bit",
     lr_scheduler_type="cosine",
     warmup_ratio=0.01,
@@ -137,8 +137,8 @@ trainer.train()
 # model.config.use_cache = False
 # trainer.train()
 
-model.save_pretrained("outputs_llama2-7b-chat-gptq_v6/trained-model")
-PEFT_MODEL = "outputs_llama2-7b-chat-gptq_v6/trained-model"
+model.save_pretrained("outputs_llama2-7b-chat-gptq_v7/trained-model")
+PEFT_MODEL = "outputs_llama2-7b-chat-gptq_v7/trained-model"
 
 config = PeftConfig.from_pretrained(PEFT_MODEL)
 model = AutoModelForCausalLM.from_pretrained(
@@ -156,10 +156,10 @@ model = PeftModel.from_pretrained(model, PEFT_MODEL)
 
 generation_config = model.generation_config
 generation_config.max_new_tokens = 512
-generation_config.temperature = 0.1
+generation_config.temperature = 0.7
 # generation_config.top_p = 0.7
 # generation_config.num_return_sequences = 1
-generation_config.repetition_penalty = 1.1
+generation_config.repetition_penalty = 1.2
 generation_config.pad_token_id = tokenizer.eos_token_id
 generation_config.eos_token_id = tokenizer.eos_token_id
 
