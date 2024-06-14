@@ -88,4 +88,4 @@ Read the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
 ## License
 
-Read the [LICENSE.md](LICENSE.md) file.
+Read the [LICENSE](LICENSE) file.
