@@ -97,7 +97,7 @@ This project uses [semantic versioning](https://semver.org/) and tags releases w
 Every time a new tag is created and pushed to the remote repo, github actions will
 automatically create a new release on github and trigger a release on PyPI.
 
-For this to work you need to setup a secret called `PIPY_API_TOKEN` on the project settings>secrets, 
+For this to work you need to setup a secret called `PYPI_API_TOKEN` on the project settings>secrets, 
 this token can be generated on [pypi.org](https://pypi.org/account/).
 
 To trigger a new release all you need to do is.
