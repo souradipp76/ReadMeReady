@@ -85,12 +85,20 @@ def generate_readme(repo_config: AutodocRepoConfig,
 
     with open(readme_path, "a", encoding='utf-8') as file:
         headings = [
-            "## Description",
-            "## Requirements",
-            "## Installation",
-            "## Usage",
-            "## Contributing",
-            "## License"
+            "## NAME",
+            "## DESCRIPTION",
+            "## USAGE",
+            "## INSTALLATION",
+            "### REQUIREMENTS",
+            "### MANUAL",
+            "### AUTOMATIC",
+            "#### Linux",
+            "#### OS X",
+            "## Windows",
+            "## KNOWN ISSUES",
+            "## REPORTING BUGS",
+            "## AUTHORS",
+            "## COPYRIGHT"
             ]
         for heading in headings:
             question = f"{heading}"
