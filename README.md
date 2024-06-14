@@ -1,4 +1,4 @@
-# doc_generator
+# ReadMeReady
 
 [![codecov](https://codecov.io/gh/souradipp76/doc_generator/branch/main/graph/badge.svg?token=doc_generator_token_here)](https://codecov.io/gh/souradipp76/doc_generator)
 [![CI](https://github.com/souradipp76/doc_generator/actions/workflows/main.yml/badge.svg)](https://github.com/souradipp76/doc_generator/actions/workflows/main.yml)
