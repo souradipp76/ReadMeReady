@@ -1,7 +1,7 @@
 <h1 align="center"> ReadMeReady</h1>
 
 <p align="center">
-  Generate code documentation in seconds.
+  Generate code documentation in Markdown format in seconds.
 </p>
 
 [![codecov](https://codecov.io/gh/souradipp76/doc_generator/branch/main/graph/badge.svg?token=doc_generator_token_here)](https://codecov.io/gh/souradipp76/doc_generator)

@@ -32,7 +32,7 @@ def read_requirements(path):
 setup(
     name="doc_generator",
     version=read("doc_generator", "VERSION"),
-    description="Awesome doc_generator created by souradipp76",
+    description="Generate code documentation in Markdown format in seconds.",
     url="https://github.com/souradipp76/doc_generator/",
     long_description=read("README.md"),
     long_description_content_type="text/markdown",
