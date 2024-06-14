@@ -1,13 +1,10 @@
 import pandas as pd
-import json
 import os
 from pprint import pprint
 import bitsandbytes as bnb
 import torch
-import torch.nn as nn
 import transformers
-from datasets import load_dataset, Dataset
-from huggingface_hub import notebook_login
+from datasets import Dataset
 
 from peft import LoraConfig, PeftConfig, PeftModel, get_peft_model, prepare_model_for_kbit_training
 from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
@@ -61,16 +58,12 @@ config = LoraConfig(
 
 model = get_peft_model(model, config)
 
-df = pd.read_csv("readme_qa_cleaned_small_v4.csv")
+df = pd.read_csv("readme_qa.csv")
 
 target_audience = "smart developer"
 content_type = "docs"
 
 def generate_prompt(data_point):
-#     return f"""
-#             {data_point["Question"]}. 
-#             Answer as briefly as possible: {data_point["Answer"]}
-#             """.strip()
     return f"""You are an AI assistant for a software project called {data_point["Repo"]}. You are trained on all the {content_type} that makes up this project.
     The docs for the project is located at {data_point["Repo Url"]}.
     You are given a repository which might contain several modules and each module will contain a set of files.
@@ -137,8 +130,8 @@ trainer.train()
 # model.config.use_cache = False
 # trainer.train()
 
-model.save_pretrained("outputs_llama2-7b-chat-gptq_v7/trained-model")
-PEFT_MODEL = "outputs_llama2-7b-chat-gptq_v7/trained-model"
+model.save_pretrained("outputs/trained-model")
+PEFT_MODEL = "outputs/trained-model"
 
 config = PeftConfig.from_pretrained(PEFT_MODEL)
 model = AutoModelForCausalLM.from_pretrained(
@@ -162,8 +155,6 @@ generation_config.temperature = 0.7
 generation_config.repetition_penalty = 1.2
 generation_config.pad_token_id = tokenizer.eos_token_id
 generation_config.eos_token_id = tokenizer.eos_token_id
-
-import numpy as np
 
 project_name = df["Repo"].values[147]
 repository_url = df["Repo Url"].values[147]
