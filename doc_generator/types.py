@@ -54,7 +54,7 @@ class AutodocRepoConfig:
                  content_type: str,
                  target_audience: str,
                  link_hosted: bool,
-                 peft_model_path: str = None):
+                 peft_model_path: str | None):
         self.name = name
         self.repository_url = repository_url
         self.root = root
