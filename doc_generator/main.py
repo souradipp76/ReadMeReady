@@ -7,7 +7,6 @@ Be creative! do whatever you want!
 - Start a web application
 - Import things from your .base module
 """
-from pathlib import Path
 import questionary
 from urllib.parse import urlparse
 from doc_generator.query import query
@@ -48,7 +47,8 @@ def main():  # pragma: no cover
         only_directories=True,
         default=f"./{name}/").ask()
     project_url = questionary.text(
-        message="Project URL?[Example: https://github.com/souradippal76/doc_generator]",
+        message="Project URL?[Example: \
+            https://github.com/souradippal76/doc_generator]",
         validate=url_validator).ask()
     output_dir = questionary.path(
         message='Output Directory?[Example: ./output/doc_generator/]',
@@ -76,7 +76,7 @@ def main():  # pragma: no cover
     peft = questionary.confirm(
         message="Is finetuned?",
         default=False).ask()
-    
+
     peft_model_path = None
     if peft:
         peft_model_path = questionary.path(

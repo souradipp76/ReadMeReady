@@ -35,7 +35,8 @@ def get_gemma_chat_model(model_name: str, model_kwargs):
         token=os.environ['HF_TOKEN']
     )
 
-    if "peft_model_path" in model_kwargs and model_kwargs["peft_model_path"] is not None:
+    if "peft_model_path" in model_kwargs and \
+            model_kwargs["peft_model_path"] is not None:
         PEFT_MODEL = model_kwargs["peft_model_path"]
         model = PeftModel.from_pretrained(model, PEFT_MODEL)
 
@@ -55,14 +56,14 @@ def get_gemma_chat_model(model_name: str, model_kwargs):
 def get_llama_chat_model(model_name: str, model_kwargs):
     """Get LLAMA2 Chat Model"""
 
-    bnb_config = BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_use_double_quant=True,
-        bnb_4bit_quant_type="nf4",
-        bnb_4bit_compute_dtype=torch.bfloat16,
-        # use_exllama=False,
-        # exllama_config={"version": 2}
-    )
+    # bnb_config = BitsAndBytesConfig(
+    #     load_in_4bit=True,
+    #     bnb_4bit_use_double_quant=True,
+    #     bnb_4bit_quant_type="nf4",
+    #     bnb_4bit_compute_dtype=torch.bfloat16,
+    #     # use_exllama=False,
+    #     # exllama_config={"version": 2}
+    # )
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
     tokenizer.pad_token = tokenizer.eos_token
@@ -113,8 +114,8 @@ def get_openai_api_key():
 
 def get_tokenizer(model_name: str):
     """Get Tokenizer"""
-    tokenizer = AutoTokenizer.from_pretrained(model_name, 
-                                              token=os.environ['HF_TOKEN'], 
+    tokenizer = AutoTokenizer.from_pretrained(model_name,
+                                              token=os.environ['HF_TOKEN'],
                                               use_fast=True)
     return tokenizer
 

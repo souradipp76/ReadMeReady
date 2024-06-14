@@ -150,7 +150,7 @@ def process_repository(config: AutodocRepoConfig, dry_run=False):
             output_path = get_file_name(markdown_file_path.as_posix(),
                                         ".", ".json")
             output_content = (
-                json.dumps(file_summary, indent=2, 
+                json.dumps(file_summary, indent=2,
                            default=lambda o: o.__dict__)
                 if file_summary.summary else ""
             )
@@ -231,8 +231,8 @@ def process_repository(config: AutodocRepoConfig, dry_run=False):
         )
 
         output_path = Path(folder_path) / "summary.json"
-        write_file(str(output_path), 
-                   json.dumps(folder_summary, indent=2, 
+        write_file(str(output_path),
+                   json.dumps(folder_summary, indent=2,
                               default=lambda o: o.__dict__))
 
     files_folders_count = files_and_folders(config)
