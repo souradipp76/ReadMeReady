@@ -11,3 +11,4 @@ optimum
 auto-gptq 
 python-magic 
 sentence_transformers
+pymarkdownlnt
