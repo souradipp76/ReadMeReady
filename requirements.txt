@@ -8,7 +8,7 @@ questionary
 accelerate
 bitsandbytes 
 optimum 
-auto-gptq 
+auto-gptq; sys_platform == 'linux'
 python-magic 
 sentence_transformers
 pymarkdownlnt

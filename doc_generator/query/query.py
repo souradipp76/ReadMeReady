@@ -110,3 +110,27 @@ def generate_readme(repo_config: AutodocRepoConfig,
             except RuntimeError as error:
                 print(f"Something went wrong: {error}")
                 traceback.print_exc()
+
+def generate_readme_section(prompt, repo_config: AutodocRepoConfig,
+                    user_confg: AutodocUserConfig):
+    """Generate README"""
+    data_path = os.path.join(repo_config.output, 'docs', 'data')
+    embeddings = get_embeddings(repo_config.llms[0].value)
+    vector_store = HNSWLib.load(data_path, embeddings)
+    chain = make_readme_chain(repo_config.name,
+                              repo_config.repository_url,
+                              repo_config.content_type,
+                              repo_config.chat_prompt,
+                              repo_config.target_audience,
+                              vector_store,
+                              user_confg.llms,
+                              repo_config.peft_model_path)
+    try:
+        response = chain.invoke({'input': prompt})
+        print('\n\nMarkdown:\n')
+        print(markdown(response["answer"]))
+        return markdown(response["answer"])
+    except RuntimeError as error:
+        print(f"Something went wrong: {error}")
+        traceback.print_exc()
+        return "Something went wrong. Try again."
