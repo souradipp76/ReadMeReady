@@ -7,6 +7,7 @@ import torch
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from huggingface_hub import hf_hub_download
 from transformers import (AutoModelForCausalLM,
                           AutoTokenizer,
                           BitsAndBytesConfig,
@@ -18,20 +19,22 @@ from doc_generator.types import LLMModelDetails, LLMModels
 
 def get_gemma_chat_model(model_name: str, model_kwargs):
     """Get GEMMA Chat Model"""
-    bnb_config = BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_use_double_quant=True,
-        bnb_4bit_quant_type="nf4",
-        bnb_4bit_compute_dtype=torch.bfloat16,
-    )
-
-    tokenizer = get_tokenizer(model_name)
+    # bnb_config = BitsAndBytesConfig(
+    #     load_in_4bit=True,
+    #     bnb_4bit_use_double_quant=True,
+    #     bnb_4bit_quant_type="nf4",
+    #     bnb_4bit_compute_dtype=torch.bfloat16,
+    # )
+    gguf_file = model_kwargs['gguf_file']
+    model_path = hf_hub_download(model_name, gguf_file)
+    tokenizer = get_tokenizer(model_name, gguf_file)
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
-        torch_dtype=torch.float16,
-        trust_remote_code=True,
-        device_map="auto",
-        quantization_config=bnb_config,
+        gguf_file=gguf_file,
+        # torch_dtype=torch.float16,
+        # trust_remote_code=True,
+        device_map=model_kwargs['device'],
+        # quantization_config=bnb_config,
         token=os.environ['HF_TOKEN']
     )
 
@@ -65,13 +68,16 @@ def get_llama_chat_model(model_name: str, model_kwargs):
     #     # exllama_config={"version": 2}
     # )
 
-    tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
+    gguf_file = model_kwargs['gguf_file']
+    model_path = hf_hub_download(model_name, gguf_file)
+    tokenizer = get_tokenizer(model_name, gguf_file)
     tokenizer.pad_token = tokenizer.eos_token
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
-        torch_dtype=torch.float16,
-        trust_remote_code=True,
-        device_map="auto",
+        gguf_file=gguf_file,
+        # torch_dtype=torch.float16,
+        # trust_remote_code=True,
+        device_map=model_kwargs['device'],
         # quantization_config=bnb_config
     )
 
@@ -112,11 +118,14 @@ def get_openai_api_key():
     return ""
 
 
-def get_tokenizer(model_name: str):
+def get_tokenizer(model_name: str, gguf_file=None):
     """Get Tokenizer"""
-    tokenizer = AutoTokenizer.from_pretrained(model_name,
-                                              token=os.environ['HF_TOKEN'],
-                                              use_fast=True)
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_name,
+        gguf_file=gguf_file,
+        token=os.environ['HF_TOKEN'],
+    #   use_fast=True
+    )
     return tokenizer
 
 
@@ -169,156 +178,139 @@ models = {
         failed=0,
         total=0,
     ),
+    LLMModels.TINYLLAMA_1p1B_CHAT_GGUF: LLMModelDetails(
+        name=LLMModels.TINYLLAMA_1p1B_CHAT_GGUF,
+        input_cost_per_1k_tokens=0,
+        output_cost_per_1k_tokens=0,
+        max_length=4096,
+        llm=None,
+        input_tokens=0,
+        output_tokens=0,
+        succeeded=0,
+        failed=0,
+        total=0,
+        gguf_file='tinyllama-1.1b-chat-v1.0.Q6_K.gguf'
+    ),
     LLMModels.LLAMA2_7B_CHAT_GPTQ: LLMModelDetails(
         name=LLMModels.LLAMA2_7B_CHAT_GPTQ,
         input_cost_per_1k_tokens=0,
         output_cost_per_1k_tokens=0,
         max_length=4096,
-        llm=get_llama_chat_model(
-            LLMModels.LLAMA2_7B_CHAT_GPTQ.value,
-            model_kwargs={"temperature": 0}
-        ),
+        llm=None,
         input_tokens=0,
         output_tokens=0,
         succeeded=0,
         failed=0,
         total=0,
     ),
-    # LLMModels.LLAMA2_13B_CHAT_GPTQ: LLMModelDetails(
-    #     name=LLMModels.LLAMA2_13B_CHAT_GPTQ,
-    #     input_cost_per_1k_tokens=0,
-    #     output_cost_per_1k_tokens=0,
-    #     max_length=4096,
-    #     llm=get_llama_chat_model(
-    #         LLMModels.LLAMA2_13B_CHAT_GPTQ.value,
-    #         model_kwargs={"temperature": 0}
-    #     ),
-    #     input_tokens=0,
-    #     output_tokens=0,
-    #     succeeded=0,
-    #     failed=0,
-    #     total=0,
-    # ),
-    # LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ: LLMModelDetails(
-    #     name=LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ,
-    #     input_cost_per_1k_tokens=0,
-    #     output_cost_per_1k_tokens=0,
-    #     max_length=8192,
-    #     llm=get_llama_chat_model(
-    #         LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ.value,
-    #         model_kwargs={"temperature": 0}
-    #     ),
-    #     input_tokens=0,
-    #     output_tokens=0,
-    #     succeeded=0,
-    #     failed=0,
-    #     total=0,
-    # ),
-    # LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ: LLMModelDetails(
-    #     name=LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ,
-    #     input_cost_per_1k_tokens=0,
-    #     output_cost_per_1k_tokens=0,
-    #     max_length=8192,
-    #     llm=get_llama_chat_model(
-    #         LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ.value,
-    #         model_kwargs={"temperature": 0}
-    #     ),
-    #     input_tokens=0,
-    #     output_tokens=0,
-    #     succeeded=0,
-    #     failed=0,
-    #     total=0,
-    # ),
-    # LLMModels.LLAMA2_7B_CHAT_HF: LLMModelDetails(
-    #     name=LLMModels.LLAMA2_7B_CHAT_HF,
-    #     input_cost_per_1k_tokens=0,
-    #     output_cost_per_1k_tokens=0,
-    #     max_length=4096,
-    #     llm=get_llama_chat_model(
-    #         LLMModels.LLAMA2_7B_CHAT_HF.value,
-    #         model_kwargs={"temperature": 0}
-    #     ),
-    #     input_tokens=0,
-    #     output_tokens=0,
-    #     succeeded=0,
-    #     failed=0,
-    #     total=0,
-    # ),
-    # LLMModels.LLAMA2_13B_CHAT_GPTQ: LLMModelDetails(
-    #     name=LLMModels.LLAMA2_13B_CHAT_GPTQ,
-    #     input_cost_per_1k_tokens=0,
-    #     output_cost_per_1k_tokens=0,
-    #     max_length=4096,
-    #     llm=get_llama_chat_model(
-    #         LLMModels.LLAMA2_13B_CHAT_GPTQ.value,
-    #         model_kwargs={"temperature": 0}
-    #     ),
-    #     input_tokens=0,
-    #     output_tokens=0,
-    #     succeeded=0,
-    #     failed=0,
-    #     total=0,
-    # ),
-    # LLMModels.CODELLAMA_7B_INSTRUCT_HF: LLMModelDetails(
-    #     name=LLMModels.CODELLAMA_7B_INSTRUCT_HF,
-    #     input_cost_per_1k_tokens=0,
-    #     output_cost_per_1k_tokens=0,
-    #     max_length=8192,
-    #     llm=get_llama_chat_model(
-    #         LLMModels.CODELLAMA_7B_INSTRUCT_HF.value,
-    #         model_kwargs={"temperature": 0}
-    #     ),
-    #     input_tokens=0,
-    #     output_tokens=0,
-    #     succeeded=0,
-    #     failed=0,
-    #     total=0,
-    # ),
-    # LLMModels.CODELLAMA_13B_INSTRUCT_HF: LLMModelDetails(
-    #     name=LLMModels.CODELLAMA_13B_INSTRUCT_HF,
-    #     input_cost_per_1k_tokens=0,
-    #     output_cost_per_1k_tokens=0,
-    #     max_length=8192,
-    #     llm=get_llama_chat_model(
-    #         LLMModels.CODELLAMA_13B_INSTRUCT_HF.value,
-    #         model_kwargs={"temperature": 0}
-    #     ),
-    #     input_tokens=0,
-    #     output_tokens=0,
-    #     succeeded=0,
-    #     failed=0,
-    #     total=0,
-    # ),
-    # LLMModels.GOOGLE_GEMMA_2B_INSTRUCT: LLMModelDetails(
-    #     name=LLMModels.GOOGLE_GEMMA_2B_INSTRUCT,
-    #     input_cost_per_1k_tokens=0,
-    #     output_cost_per_1k_tokens=0,
-    #     max_length=8192,
-    #     llm=get_gemma_chat_model(
-    #         LLMModels.GOOGLE_GEMMA_2B_INSTRUCT.value,
-    #         model_kwargs={"temperature": 0}
-    #     ),
-    #     input_tokens=0,
-    #     output_tokens=0,
-    #     succeeded=0,
-    #     failed=0,
-    #     total=0,
-    # ),
-    # LLMModels.GOOGLE_GEMMA_7B_INSTRUCT: LLMModelDetails(
-    #     name=LLMModels.GOOGLE_GEMMA_7B_INSTRUCT,
-    #     input_cost_per_1k_tokens=0,
-    #     output_cost_per_1k_tokens=0,
-    #     max_length=8192,
-    #     llm=get_gemma_chat_model(
-    #         LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value,
-    #         model_kwargs={"temperature": 0}
-    #     ),
-    #     input_tokens=0,
-    #     output_tokens=0,
-    #     succeeded=0,
-    #     failed=0,
-    #     total=0,
-    # ),
+    LLMModels.LLAMA2_13B_CHAT_GPTQ: LLMModelDetails(
+        name=LLMModels.LLAMA2_13B_CHAT_GPTQ,
+        input_cost_per_1k_tokens=0,
+        output_cost_per_1k_tokens=0,
+        max_length=4096,
+        llm=None,
+        input_tokens=0,
+        output_tokens=0,
+        succeeded=0,
+        failed=0,
+        total=0,
+    ),
+    LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ: LLMModelDetails(
+        name=LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ,
+        input_cost_per_1k_tokens=0,
+        output_cost_per_1k_tokens=0,
+        max_length=8192,
+        llm=None,
+        input_tokens=0,
+        output_tokens=0,
+        succeeded=0,
+        failed=0,
+        total=0,
+    ),
+    LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ: LLMModelDetails(
+        name=LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ,
+        input_cost_per_1k_tokens=0,
+        output_cost_per_1k_tokens=0,
+        max_length=8192,
+        llm=None,
+        input_tokens=0,
+        output_tokens=0,
+        succeeded=0,
+        failed=0,
+        total=0,
+    ),
+    LLMModels.LLAMA2_7B_CHAT_HF: LLMModelDetails(
+        name=LLMModels.LLAMA2_7B_CHAT_HF,
+        input_cost_per_1k_tokens=0,
+        output_cost_per_1k_tokens=0,
+        max_length=4096,
+        llm=None,
+        input_tokens=0,
+        output_tokens=0,
+        succeeded=0,
+        failed=0,
+        total=0,
+    ),
+    LLMModels.LLAMA2_13B_CHAT_GPTQ: LLMModelDetails(
+        name=LLMModels.LLAMA2_13B_CHAT_GPTQ,
+        input_cost_per_1k_tokens=0,
+        output_cost_per_1k_tokens=0,
+        max_length=4096,
+        llm=None,
+        input_tokens=0,
+        output_tokens=0,
+        succeeded=0,
+        failed=0,
+        total=0,
+    ),
+    LLMModels.CODELLAMA_7B_INSTRUCT_HF: LLMModelDetails(
+        name=LLMModels.CODELLAMA_7B_INSTRUCT_HF,
+        input_cost_per_1k_tokens=0,
+        output_cost_per_1k_tokens=0,
+        max_length=8192,
+        llm=None,
+        input_tokens=0,
+        output_tokens=0,
+        succeeded=0,
+        failed=0,
+        total=0,
+    ),
+    LLMModels.CODELLAMA_13B_INSTRUCT_HF: LLMModelDetails(
+        name=LLMModels.CODELLAMA_13B_INSTRUCT_HF,
+        input_cost_per_1k_tokens=0,
+        output_cost_per_1k_tokens=0,
+        max_length=8192,
+        llm=None,
+        input_tokens=0,
+        output_tokens=0,
+        succeeded=0,
+        failed=0,
+        total=0,
+    ),
+    LLMModels.GOOGLE_GEMMA_2B_INSTRUCT: LLMModelDetails(
+        name=LLMModels.GOOGLE_GEMMA_2B_INSTRUCT,
+        input_cost_per_1k_tokens=0,
+        output_cost_per_1k_tokens=0,
+        max_length=8192,
+        llm=None,
+        input_tokens=0,
+        output_tokens=0,
+        succeeded=0,
+        failed=0,
+        total=0,
+    ),
+    LLMModels.GOOGLE_GEMMA_7B_INSTRUCT: LLMModelDetails(
+        name=LLMModels.GOOGLE_GEMMA_7B_INSTRUCT,
+        input_cost_per_1k_tokens=0,
+        output_cost_per_1k_tokens=0,
+        max_length=8192,
+        llm=None,
+        input_tokens=0,
+        output_tokens=0,
+        succeeded=0,
+        failed=0,
+        total=0,
+    ),
 }
 
 
@@ -365,12 +357,12 @@ def total_index_cost_estimate(model):
     return total_cost
 
 
-def get_embeddings(model: str):
+def get_embeddings(model: str, device: str):
     """Get Embeddings"""
     if "llama" in model.lower() or "gemma" in model.lower():
         return HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-mpnet-base-v2",
-            model_kwargs={"device": "cuda"},
+            model_kwargs={"device": device},
             encode_kwargs={"normalize_embeddings": True},
         )
     else:

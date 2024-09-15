@@ -66,7 +66,7 @@ class RepoLoader(BaseLoader):
         return process_directory(self.file_path)
 
 
-def create_vector_store(root: str, output: str, llms: List[LLMModels]) -> None:
+def create_vector_store(root: str, output: str, llms: List[LLMModels], device: str) -> None:
     """
     Create Vector Store
     """
@@ -76,14 +76,18 @@ def create_vector_store(root: str, output: str, llms: List[LLMModels]) -> None:
     raw_docs = [doc for doc in raw_docs if doc is not None]
     # Split the text into chunks
     print(f"Splitting text into chunks for {len(raw_docs)} docs")
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000,
-                                                   chunk_overlap=100)
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1000,
+        chunk_overlap=100
+    )
     docs = text_splitter.split_documents(raw_docs)
     # Create the vectorstore
     print('Creating vector store....')
-    vector_store = HNSWLib.from_documents(docs,
-                                          get_embeddings(llm.name),
-                                          docstore=InMemoryDocstore())
+    vector_store = HNSWLib.from_documents(
+        docs,
+        get_embeddings(llm.name, device),
+        docstore=InMemoryDocstore()
+    )
 
     print('Saving vector store output....')
     vector_store.save(output)

@@ -1,13 +1,16 @@
 """
 Create Chat Chain
 """
+from typing import List
 from langchain.chains.conversational_retrieval.base import ChatVectorDBChain
 from langchain.chains.llm import LLMChain
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
-from doc_generator.utils.llm_utils import (get_llama_chat_model,
+from doc_generator.types import LLMModels
+from doc_generator.utils.llm_utils import (models,
+                                           get_llama_chat_model,
                                            get_gemma_chat_model,
                                            get_openai_chat_model)
 
@@ -132,31 +135,51 @@ def make_qa_chain(project_name,
                   on_token_stream=None):
     """Make QA Chain"""
     llm = llms[1] if len(llms) > 1 else llms[0]
+    llm_name = llm.value
+    print(f"LLM:  {llm_name.lower()}")
     question_chat_model = None
     doc_chat_model = None
-    if "llama" in llm.lower():
-        question_chat_model = get_llama_chat_model(llm, {"temperature": 0.1})
-    elif "gemma" in llm.lower():
-        question_chat_model = get_gemma_chat_model(llm, {"temperature": 0.1})
+    model_kwargs = {
+        "temperature": 0.1
+    }
+
+    if "llama" in llm_name.lower():
+        if "gguf" in llm_name.lower():
+            model_kwargs['gguf_file'] = models[llm].gguf_file
+        question_chat_model = get_llama_chat_model(llm_name, model_kwargs)
+    elif "gemma" in llm_name.lower():
+        if "gguf" in llm_name.lower():
+            model_kwargs['gguf_file'] = models[llm].gguf_file
+        question_chat_model = get_gemma_chat_model(llm_name, model_kwargs)
     else:
-        question_chat_model = get_openai_chat_model(llm, temperature=0.1)
+        question_chat_model = get_openai_chat_model(llm_name, temperature=0.1)
+    
     question_generator = LLMChain(
         llm=question_chat_model,
         prompt=condense_qa_prompt
     )
 
-    if "llama" in llm.lower():
-        doc_chat_model = get_llama_chat_model(llm, {"temperature": 0.2})
-    elif "gemma" in llm.lower():
-        question_chat_model = get_gemma_chat_model(llm, {"temperature": 0.2})
+    model_kwargs = {
+        "temperature": 0.2
+    }
+    if "llama" in llm_name.lower():
+        if "gguf" in llm_name.lower():
+            model_kwargs['gguf_file'] = models[llm].gguf_file
+        doc_chat_model = get_llama_chat_model(llm_name, model_kwargs)
+    elif "gemma" in llm_name.lower():
+        if "gguf" in llm_name.lower():
+            model_kwargs['gguf_file'] = models[llm].gguf_file
+        question_chat_model = get_gemma_chat_model(llm_name, model_kwargs)
     else:
-        doc_chat_model = get_openai_chat_model(llm,
-                                               temperature=0.2,
-                                               streaming=bool(on_token_stream),
-                                               model_kwargs={
-                                                    "frequency_penalty": 0.0,
-                                                    "presence_penalty": 0.0,
-                                                })
+        doc_chat_model = get_openai_chat_model(
+            llm,
+            temperature=0.2,
+            streaming=bool(on_token_stream),
+            model_kwargs={
+                "frequency_penalty": 0.0,
+                "presence_penalty": 0.0,
+            }
+        )
 
     qa_prompt = make_qa_prompt(project_name,
                                repository_url,
@@ -181,36 +204,44 @@ def make_readme_chain(project_name,
                       chat_prompt,
                       target_audience,
                       vectorstore,
-                      llms,
+                      llms: List[LLMModels],
                       peft_model=None,
                       on_token_stream=None):
     """Make Readme Chain"""
     llm = llms[1] if len(llms) > 1 else llms[0]
-    llm = llm.value
+    llm_name = llm.value
     doc_chat_model = None
-    print(f"LLM:  {llm.lower()}")
-    if "llama" in llm.lower():
-        doc_chat_model = get_llama_chat_model(llm,
-                                              {"temperature": 0.2,
-                                               "peft_model": peft_model})
-    elif "gemma" in llm.lower():
-        doc_chat_model = get_gemma_chat_model(llm,
-                                              {"temperature": 0.2,
-                                               "peft_model": peft_model})
+    print(f"LLM:  {llm_name.lower()}")
+    model_kwargs = {
+        "temperature": 0.2,
+        "peft_model": peft_model
+    }
+    if "llama" in llm_name.lower():
+        if "gguf" in llm_name.lower():
+            model_kwargs['gguf_file'] = models[llm].gguf_file
+        doc_chat_model = get_llama_chat_model(llm_name, model_kwargs)
+    elif "gemma" in llm_name.lower():
+        if "gguf" in llm_name.lower():
+            model_kwargs['gguf_file'] = models[llm].gguf_file
+        doc_chat_model = get_gemma_chat_model(llm_name, model_kwargs)
     else:
-        doc_chat_model = get_openai_chat_model(llm,
-                                               temperature=0.2,
-                                               streaming=bool(on_token_stream),
-                                               model_kwargs={
-                                                    "frequency_penalty": 0.0,
-                                                    "presence_penalty": 0.0,
-                                                })
+        doc_chat_model = get_openai_chat_model(
+            llm_name,
+            temperature=0.2,
+            streaming=bool(on_token_stream),
+            model_kwargs={
+                "frequency_penalty": 0.0,
+                "presence_penalty": 0.0,
+            }
+        )
 
-    readme_prompt = make_readme_prompt(project_name,
-                                       repository_url,
-                                       content_type,
-                                       chat_prompt,
-                                       target_audience)
+    readme_prompt = make_readme_prompt(
+        project_name,
+        repository_url,
+        content_type,
+        chat_prompt,
+        target_audience
+    )
     doc_chain = create_stuff_documents_chain(
         llm=doc_chat_model,
         prompt=readme_prompt

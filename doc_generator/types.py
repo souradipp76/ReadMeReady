@@ -11,6 +11,7 @@ class LLMModels(str, Enum):
     GPT3 = "gpt-3.5-turbo"
     GPT4 = "gpt-4"
     GPT432k = "gpt-4-32k"
+    TINYLLAMA_1p1B_CHAT_GGUF = "TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF"
     LLAMA2_7B_CHAT_GPTQ = "TheBloke/Llama-2-7B-Chat-GPTQ"
     LLAMA2_13B_CHAT_GPTQ = "TheBloke/Llama-2-13B-Chat-GPTQ"
     CODELLAMA_7B_INSTRUCT_GPTQ = "TheBloke/CodeLlama-7B-Instruct-GPTQ"
@@ -54,7 +55,8 @@ class AutodocRepoConfig:
                  content_type: str,
                  target_audience: str,
                  link_hosted: bool,
-                 peft_model_path: str | None):
+                 peft_model_path: str | None,
+                 device: str):
         self.name = name
         self.repository_url = repository_url
         self.root = root
@@ -71,6 +73,7 @@ class AutodocRepoConfig:
         self.content_type = content_type
         self.target_audience = target_audience
         self.link_hosted = link_hosted
+        self.device = device
 
 
 class FileSummary:
@@ -185,7 +188,8 @@ class LLMModelDetails:
                  output_tokens: int,
                  succeeded: int,
                  failed: int,
-                 total: int):
+                 total: int,
+                 gguf_file = None):
         self.name = name
         self.input_cost_per_1k_tokens = input_cost_per_1k_tokens
         self.output_cost_per_1k_tokens = output_cost_per_1k_tokens
@@ -196,3 +200,4 @@ class LLMModelDetails:
         self.succeeded = succeeded
         self.failed = failed
         self.total = total
+        self.gguf_file = gguf_file
