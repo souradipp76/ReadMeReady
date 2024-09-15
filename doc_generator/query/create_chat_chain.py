@@ -131,7 +131,8 @@ def make_qa_chain(project_name,
                   chat_prompt,
                   target_audience,
                   vectorstore,
-                  llms,
+                  llms: List[LLMModels],
+                  device: str ="cpu",
                   on_token_stream=None):
     """Make QA Chain"""
     llm = llms[1] if len(llms) > 1 else llms[0]
@@ -140,7 +141,8 @@ def make_qa_chain(project_name,
     question_chat_model = None
     doc_chat_model = None
     model_kwargs = {
-        "temperature": 0.1
+        "temperature": 0.1,
+        "device": device
     }
 
     if "llama" in llm_name.lower():
@@ -160,7 +162,8 @@ def make_qa_chain(project_name,
     )
 
     model_kwargs = {
-        "temperature": 0.2
+        "temperature": 0.2,
+        "device": device
     }
     if "llama" in llm_name.lower():
         if "gguf" in llm_name.lower():
@@ -198,15 +201,18 @@ def make_qa_chain(project_name,
     )
 
 
-def make_readme_chain(project_name,
-                      repository_url,
-                      content_type,
-                      chat_prompt,
-                      target_audience,
-                      vectorstore,
-                      llms: List[LLMModels],
-                      peft_model=None,
-                      on_token_stream=None):
+def make_readme_chain(
+        project_name,
+        repository_url,
+        content_type,
+        chat_prompt,
+        target_audience,
+        vectorstore,
+        llms: List[LLMModels],
+        peft_model = None,
+        device: str = "cpu",
+        on_token_stream=None
+    ):
     """Make Readme Chain"""
     llm = llms[1] if len(llms) > 1 else llms[0]
     llm_name = llm.value
@@ -214,7 +220,8 @@ def make_readme_chain(project_name,
     print(f"LLM:  {llm_name.lower()}")
     model_kwargs = {
         "temperature": 0.2,
-        "peft_model": peft_model
+        "peft_model": peft_model,
+        "device": device
     }
     if "llama" in llm_name.lower():
         if "gguf" in llm_name.lower():

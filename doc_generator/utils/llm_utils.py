@@ -4,8 +4,8 @@ LLM Utils
 import os
 
 import torch
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFacePipeline
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from huggingface_hub import hf_hub_download
 from transformers import (AutoModelForCausalLM,
@@ -182,7 +182,7 @@ models = {
         name=LLMModels.TINYLLAMA_1p1B_CHAT_GGUF,
         input_cost_per_1k_tokens=0,
         output_cost_per_1k_tokens=0,
-        max_length=4096,
+        max_length=2048,
         llm=None,
         input_tokens=0,
         output_tokens=0,

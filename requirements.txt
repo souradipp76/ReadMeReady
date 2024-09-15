@@ -1,14 +1,15 @@
 torch
-langchain 
-markdown2 
-langchain_openai 
-langchain_experimental 
+langchain
+markdown2
+langchain_openai
+langchain_experimental
+langchain_huggingface
 hnswlib
 questionary
 accelerate
-bitsandbytes 
-optimum 
+bitsandbytes
+optimum
 auto-gptq; sys_platform == 'linux'
-python-magic 
+python-magic
 sentence_transformers
 pymarkdownlnt

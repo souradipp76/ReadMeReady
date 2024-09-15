@@ -5,10 +5,6 @@ import git
 from streamlit_monaco import st_monaco
 from pymarkdown.api import PyMarkdownApi
 
-from doc_generator.query import query
-from doc_generator.index import index
-from doc_generator.types import AutodocRepoConfig, AutodocUserConfig, LLMModels
-
 # App title
 st.set_page_config(page_title="Readme Generator")
 
@@ -27,12 +23,21 @@ with st.sidebar:
     #         st.success('Proceed to entering your prompt message!', icon='👉')
     # os.environ['REPLICATE_API_TOKEN'] = replicate_api
 
-    openai_api_key = st.text_input('Enter OpenAI API Key:', type='password')
+    openai_api_key = "dummy"
+    # openai_api_key = st.text_input('Enter OpenAI API Key:', type='password')
     os.environ['OPENAI_API_KEY'] = openai_api_key
+
+    hf_token = st.text_input('Enter HuggingFace token:', type='password')
+    os.environ['HF_TOKEN'] = hf_token
+
+    from doc_generator.query import query
+    from doc_generator.index import index
+    from doc_generator.types import AutodocRepoConfig, AutodocUserConfig, LLMModels
 
     with st.form("my_form"):
         st.subheader('Models and parameters')
         options = [
+            LLMModels.TINYLLAMA_1p1B_CHAT_GGUF.value,
             LLMModels.LLAMA2_7B_CHAT_GPTQ.value,
             LLMModels.LLAMA2_13B_CHAT_GPTQ.value,
             LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ.value,
@@ -45,27 +50,55 @@ with st.sidebar:
             LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value
         ]
         llm = st.selectbox('Choose a model', options, key='llm')
+        device = st.selectbox('Choose a device', ["cpu", "gpu"], key='device')
         temperature = st.slider('temperature', min_value=0.01, max_value=1.0, value=0.1, step=0.01)
         top_p = st.slider('top_p', min_value=0.01, max_value=1.0, value=0.9, step=0.01)
-        max_length = st.slider('max_length', min_value=32, max_value=128, value=120, step=8)
+        max_length = st.slider('max_length', min_value=512, max_value=4096, value=2048, step=512)
 
         st.subheader('Repo Config')
         name = st.text_input(label='Project Name', placeholder="repo")
         project_url = st.text_input(label='Project URL', placeholder = "https://github.com/username/repo")
-        project_root = "../data/"
-        output_dir = os.path.join("./output", name)
+        project_root = os.path.join(".", name)
+        output_dir = os.path.join(os.path.join(project_root, "output"), name)
         # is_peft = st.checkbox(label="Is finetuned?")
         # peft_model_path = st.text_input(label='Finetuned Model Path', placeholder="./output/model/")
         submitted = st.form_submit_button("Submit")
         if submitted:
-            shutil.rmtree(project_root)
-            repo = git.Repo.clone_from(project_url, os.path.join(project_root, name))
+            try:
+                repo = git.Repo.clone_from(project_url, project_root)
+            except:
+                st.toast('Project already exists.')
+
+            match llm:
+                case LLMModels.TINYLLAMA_1p1B_CHAT_GGUF.value:
+                    model = LLMModels.TINYLLAMA_1p1B_CHAT_GGUF
+                case LLMModels.LLAMA2_7B_CHAT_GPTQ.value:
+                    model = LLMModels.LLAMA2_7B_CHAT_GPTQ
+                case LLMModels.LLAMA2_13B_CHAT_GPTQ.value:
+                    model = LLMModels.LLAMA2_13B_CHAT_GPTQ
+                case LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ.value:
+                    model = LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ
+                case LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ.value:
+                    model = LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ
+                case LLMModels.LLAMA2_13B_CHAT_HF.value:
+                    model = LLMModels.LLAMA2_13B_CHAT_HF
+                case LLMModels.CODELLAMA_7B_INSTRUCT_HF.value:
+                    model = LLMModels.CODELLAMA_7B_INSTRUCT_HF
+                case LLMModels.CODELLAMA_13B_INSTRUCT_HF.value:
+                    model = LLMModels.CODELLAMA_13B_INSTRUCT_HF
+                case LLMModels.GOOGLE_GEMMA_2B_INSTRUCT.value:
+                    model = LLMModels.GOOGLE_GEMMA_2B_INSTRUCT
+                case LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value:
+                    model = LLMModels.GOOGLE_GEMMA_7B_INSTRUCT
+                case _:
+                    model = LLMModels.LLAMA2_7B_CHAT_HF
+        
             repo_config = {
                 "name": name,
                 "root": project_root,
                 "repository_url": project_url,
                 "output": output_dir,
-                "llms": [llm],
+                "llms": [model],
                 "peft_model_path": None,
                 "ignore": [
                     ".*",
@@ -103,10 +136,11 @@ with st.sidebar:
                 "link_hosted": True,
                 "priority": None,
                 "max_concurrent_calls": 50,
-                "add_questions": False
+                "add_questions": False,
+                "device": device,
             }
             user_config = {
-                "llms": [llm]
+                "llms": [model]
             }
 
             repo_conf = AutodocRepoConfig(
@@ -126,10 +160,14 @@ with st.sidebar:
                 content_type=repo_config["content_type"],
                 target_audience=repo_config["target_audience"],
                 link_hosted=repo_config["link_hosted"],
+                device=repo_config["device"]
             )
             usr_conf = AutodocUserConfig(llms=user_config['llms'])
-            index.index(**repo_config)
-            
+            index.index(repo_conf)
+            st.session_state.repo_conf = repo_conf
+            st.session_state.usr_conf = usr_conf
+            st.toast('Repository indexing done.')
+
     st.markdown('📖 Learn how to build this app in this [blog](https://blog.streamlit.io/how-to-build-a-llama-2-chatbot/)!')
 
 
@@ -182,7 +220,7 @@ if st.download_button(
 
 # Store LLM generated responses
 if "messages" not in st.session_state.keys():
-    st.session_state.messages = [{"role": "assistant", "content": "Provide a heading to generate README section?"}]
+    st.session_state.messages = [{"role": "assistant", "content": "Provide a heading to generate README section starting with ##?"}]
 
 # Display or clear chat messages
 for message in st.session_state.messages:
@@ -190,7 +228,7 @@ for message in st.session_state.messages:
         st.write(message["content"])
 
 def clear_chat_history():
-    st.session_state.messages = [{"role": "assistant", "content": "Provide a heading to generate README section?"}]
+    st.session_state.messages = [{"role": "assistant", "content": "Provide a heading to generate README section starting with ##?"}]
 st.sidebar.button('Clear Chat History', on_click=clear_chat_history)
 
 
@@ -204,7 +242,7 @@ if prompt := st.chat_input(disabled=not openai_api_key):
 if st.session_state.messages[-1]["role"] != "assistant":
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
-            response = query.generate_readme_section(prompt, **repo_config, **user_config)
+            response = query.generate_readme_section(prompt, st.session_state.repo_conf, st.session_state.usr_conf)
             placeholder = st.empty()
             full_response = ''
             for item in response:
