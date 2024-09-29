@@ -48,7 +48,7 @@ def main():  # pragma: no cover
         default=f"./{name}/").ask()
     project_url = questionary.text(
         message="Project URL?[Example: \
-            https://github.com/souradippal76/doc_generator]",
+            https://github.com/username/doc_generator]",
         validate=url_validator).ask()
     output_dir = questionary.path(
         message='Output Directory?[Example: ./output/doc_generator/]',
