@@ -9,10 +9,12 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 from doc_generator.types import LLMModels
-from doc_generator.utils.llm_utils import (models,
-                                           get_llama_chat_model,
-                                           get_gemma_chat_model,
-                                           get_openai_chat_model)
+from doc_generator.utils.llm_utils import (
+    models,
+    get_llama_chat_model,
+    get_gemma_chat_model,
+    get_openai_chat_model
+)
 
 # Define the prompt template for condensing the follow-up question
 condense_qa_prompt = PromptTemplate.from_template(
@@ -72,8 +74,10 @@ def make_qa_prompt(project_name,
         Answer in Markdown:
         [/INST]"""
 
-    return PromptTemplate(template=template,
-                          input_variables=["question", "context"])
+    return PromptTemplate(
+        template=template,
+        input_variables=["question", "context"]
+    )
 
 
 def make_readme_prompt(project_name,
@@ -92,10 +96,10 @@ def make_readme_prompt(project_name,
     You are given a repository which might contain several modules and each \
     module will contain a set of files.
     Look at the source code in the repository and you have to generate \
-    content for the section of a README.md file following the heading given \
-    below. If you use any hyperlinks, they should link back to the github \
-    repository shared with you.
-    You should only use hyperlinks that are explicitly listed in the context. \
+    content for the section of a README.md file following the Heading given \
+    below starting with ## based on the Context. If you use any hyperlinks, \
+    they should link back to the github repository shared with you.
+    You should only use hyperlinks that are explicitly listed in the Context. \
     Do NOT make up a hyperlink that is not listed.
 
     Assume the reader is a {target_audience} but is not deeply familiar with \
@@ -111,11 +115,12 @@ def make_readme_prompt(project_name,
     Provide the answer in correct markdown format.
 
     {additional_instructions}
-    Question: Provide the README content for the section with \
-                heading \"{{input}}\" starting with {{input}}.
+
     Context:
     {{context}}
 
+    Question: Provide the README content for the section with \
+            Heading \"{{input}}\" starting with ##{{input}}.
     Answer in Markdown:
     """
 
@@ -148,11 +153,11 @@ def make_qa_chain(project_name,
     if "llama" in llm_name.lower():
         if "gguf" in llm_name.lower():
             model_kwargs['gguf_file'] = models[llm].gguf_file
-        question_chat_model = get_llama_chat_model(llm_name, model_kwargs)
+        question_chat_model = get_llama_chat_model(llm_name, model_kwargs=model_kwargs)
     elif "gemma" in llm_name.lower():
         if "gguf" in llm_name.lower():
             model_kwargs['gguf_file'] = models[llm].gguf_file
-        question_chat_model = get_gemma_chat_model(llm_name, model_kwargs)
+        question_chat_model = get_gemma_chat_model(llm_name, model_kwargs=model_kwargs)
     else:
         question_chat_model = get_openai_chat_model(llm_name, temperature=0.1)
     
@@ -168,11 +173,11 @@ def make_qa_chain(project_name,
     if "llama" in llm_name.lower():
         if "gguf" in llm_name.lower():
             model_kwargs['gguf_file'] = models[llm].gguf_file
-        doc_chat_model = get_llama_chat_model(llm_name, model_kwargs)
+        doc_chat_model = get_llama_chat_model(llm_name, bool(on_token_stream), model_kwargs)
     elif "gemma" in llm_name.lower():
         if "gguf" in llm_name.lower():
             model_kwargs['gguf_file'] = models[llm].gguf_file
-        question_chat_model = get_gemma_chat_model(llm_name, model_kwargs)
+        question_chat_model = get_gemma_chat_model(llm_name, bool(on_token_stream), model_kwargs)
     else:
         doc_chat_model = get_openai_chat_model(
             llm,
@@ -226,11 +231,11 @@ def make_readme_chain(
     if "llama" in llm_name.lower():
         if "gguf" in llm_name.lower():
             model_kwargs['gguf_file'] = models[llm].gguf_file
-        doc_chat_model = get_llama_chat_model(llm_name, model_kwargs)
+        doc_chat_model = get_llama_chat_model(llm_name, bool(on_token_stream), model_kwargs)
     elif "gemma" in llm_name.lower():
         if "gguf" in llm_name.lower():
             model_kwargs['gguf_file'] = models[llm].gguf_file
-        doc_chat_model = get_gemma_chat_model(llm_name, model_kwargs)
+        doc_chat_model = get_gemma_chat_model(llm_name, bool(on_token_stream), model_kwargs)
     else:
         doc_chat_model = get_openai_chat_model(
             llm_name,

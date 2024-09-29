@@ -6,12 +6,12 @@ from streamlit_monaco import st_monaco
 from pymarkdown.api import PyMarkdownApi
 
 # App title
-st.set_page_config(page_title="Readme Generator")
+st.set_page_config(page_title="Readme Generator", layout="wide",page_icon="🏎💨",)
 
 # Replicate Credentials
 with st.sidebar:
-    st.title('Readme Generator')
-    st.write('This document generator is created using the open-source LLM models.')
+    st.title(':rainbow[Readme Generator]')
+    st.write('This is document generator which uses open-source LLM models.')
     # if 'REPLICATE_API_TOKEN' in st.secrets:
     #     st.success('API key already provided!', icon='✅')
     #     replicate_api = st.secrets['REPLICATE_API_TOKEN']
@@ -35,7 +35,7 @@ with st.sidebar:
     from doc_generator.types import AutodocRepoConfig, AutodocUserConfig, LLMModels
 
     with st.form("my_form"):
-        st.subheader('Models and parameters')
+        st.subheader('Model and Parameters')
         options = [
             LLMModels.TINYLLAMA_1p1B_CHAT_GGUF.value,
             LLMModels.LLAMA2_7B_CHAT_GPTQ.value,
@@ -55,19 +55,20 @@ with st.sidebar:
         top_p = st.slider('top_p', min_value=0.01, max_value=1.0, value=0.9, step=0.01)
         max_length = st.slider('max_length', min_value=512, max_value=4096, value=2048, step=512)
 
-        st.subheader('Repo Config')
-        name = st.text_input(label='Project Name', placeholder="repo")
-        project_url = st.text_input(label='Project URL', placeholder = "https://github.com/username/repo")
+        st.subheader('Repository Config')
+        name = st.text_input(label='Repository Name', placeholder="repo")
+        project_url = st.text_input(label='Repository URL', placeholder = "https://github.com/username/repo")
         project_root = os.path.join(".", name)
-        output_dir = os.path.join(os.path.join(project_root, "output"), name)
+        output_dir = os.path.join("output", name)
         # is_peft = st.checkbox(label="Is finetuned?")
         # peft_model_path = st.text_input(label='Finetuned Model Path', placeholder="./output/model/")
         submitted = st.form_submit_button("Submit")
         if submitted:
+            st.toast('Indexing repository...')
             try:
                 repo = git.Repo.clone_from(project_url, project_root)
             except:
-                st.toast('Project already exists.')
+                print('Project already exists.')
 
             match llm:
                 case LLMModels.TINYLLAMA_1p1B_CHAT_GGUF.value:
@@ -162,33 +163,31 @@ with st.sidebar:
                 link_hosted=repo_config["link_hosted"],
                 device=repo_config["device"]
             )
-            usr_conf = AutodocUserConfig(llms=user_config['llms'])
+            usr_conf = AutodocUserConfig(llms=user_config['llms'], streaming=True)
             index.index(repo_conf)
             st.session_state.repo_conf = repo_conf
             st.session_state.usr_conf = usr_conf
+            st.session_state.chain = query.init_readme_chain(st.session_state.repo_conf, st.session_state.usr_conf)
             st.toast('Repository indexing done.')
+            
 
-    st.markdown('📖 Learn how to build this app in this [blog](https://blog.streamlit.io/how-to-build-a-llama-2-chatbot/)!')
+    # st.markdown('📖 Learn how to build this app in this [blog](https://blog.streamlit.io/how-to-build-a-llama-2-chatbot/)!')
 
 
 # Markdown editor
 st.title("Markdown Editor")
-default_readme_content = "# Hello world"
+default_readme_content = "# "+ name
 if "readme_content" not in st.session_state.keys():
     st.session_state.readme_content = default_readme_content
 
 content = st_monaco(
     value=st.session_state.readme_content, 
-    height="600px", 
+    # height="600px", 
     language="markdown",
     lineNumbers=True,
     minimap=False,
     theme="vs-dark",
 )
-
-if st.button(label="Save"):
-    st.session_state.readme_content = content
-    st.success("Saved")
 
 def validate_markdown():
     error_str = ""
@@ -196,27 +195,40 @@ def validate_markdown():
     if len(errors.scan_failures) > 0:
         print(errors.scan_failures)
         error_str = "\n".join([f'Line {failure.line_number}: Col {failure.column_number}: {failure.rule_id}: {failure.rule_description} {failure.extra_error_information} ({failure.rule_name})' for failure in errors.scan_failures])
-    return error_str  
+    return error_str
 
-if st.button("Validate"):
-    error_str = validate_markdown()
-    if not error_str:
-        error_str = "No error"
-    validate_container = st.empty()
-    validate_container.text_area(
-        "Validation Results",
-        value=error_str,
-        height=150,
-    )
+col1, col2, col3 = st.columns(3)
 
-if st.download_button(
-    label="Download",
-    data=st.session_state.readme_content,
-    file_name="README.md",
-    mime="text/markdown",
-):
-    st.success("Downloaded")
+# Add buttons to each column
+with col1:
+    if st.button(label="Save"):
+        st.session_state.readme_content = content
+        st.success("Saved")
 
+with col2:
+    if st.button("Validate"):
+        error_str = validate_markdown()
+        if not error_str:
+            error_str = "No error"
+        validate_container = st.empty()
+        validate_container.text_area(
+            "Validation Results",
+            value=error_str,
+            height=150,
+        )
+
+with col3:
+    if st.download_button(
+        label="Download",
+        data=st.session_state.readme_content,
+        file_name="README.md",
+        mime="text/markdown",
+    ):
+        st.success("Downloaded")
+
+
+with st.expander("Preview", expanded=False):
+    st.markdown(st.session_state.readme_content, unsafe_allow_html=True) 
 
 # Store LLM generated responses
 if "messages" not in st.session_state.keys():
@@ -242,14 +254,20 @@ if prompt := st.chat_input(disabled=not openai_api_key):
 if st.session_state.messages[-1]["role"] != "assistant":
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
-            response = query.generate_readme_section(prompt, st.session_state.repo_conf, st.session_state.usr_conf)
-            placeholder = st.empty()
-            full_response = ''
-            for item in response:
-                full_response += item
-                placeholder.markdown(full_response)
-            placeholder.markdown(full_response)
+            if "chain" not in st.session_state.keys():
+                placeholder = st.empty()
+                full_response = 'Please initialize model and repository!!'
+                placeholder.text(full_response)
+            else:
+                chain = st.session_state.chain
+                placeholder = st.empty()
+                full_response = ''
+                for chunk in chain.stream({'input': prompt}):
+                    print(chunk)
+                    if answer_chunk := chunk.get("answer"):
+                        full_response += answer_chunk
+                        placeholder.markdown(full_response)
+                # placeholder.markdown(full_response)
             
     message = {"role": "assistant", "content": full_response}
     st.session_state.messages.append(message)
-    st.session_state.readme_content += full_response

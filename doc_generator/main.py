@@ -11,7 +11,12 @@ import questionary
 from urllib.parse import urlparse
 from doc_generator.query import query
 from doc_generator.index import index
-from doc_generator.types import AutodocRepoConfig, AutodocUserConfig, LLMModels
+from doc_generator.types import (
+    AutodocRepoConfig, 
+    AutodocUserConfig, 
+    AutodocReadmeConfig, 
+    LLMModels
+)
 
 
 def main():  # pragma: no cover
@@ -58,6 +63,12 @@ def main():  # pragma: no cover
         message="Documentation Mode?",
         choices=["Readme", "Query"],
         default="Readme").ask()
+    
+    if mode.lower() == "readme":
+        headings = questionary.text(
+            message="List of Readme Headings?(comma separated)[Example: #Introduction,##Usage]"
+        ).ask()
+
     model_name = questionary.select(
         message="Which model?",
         choices=[
@@ -186,10 +197,12 @@ def main():  # pragma: no cover
 
     usr_conf = AutodocUserConfig(llms=user_config['llms'])
 
+    readme_conf = AutodocReadmeConfig(headings = headings)
+
     index.index(repo_conf)
     print("Done Indexing !!")
 
     if mode.lower() == "query":
         query.query(repo_conf, usr_conf)
     else:
-        query.generate_readme(repo_conf, usr_conf)
+        query.generate_readme(repo_conf, usr_conf, readme_conf)

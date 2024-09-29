@@ -4,8 +4,7 @@ LLM Utils
 import os
 
 import torch
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_huggingface import HuggingFacePipeline
+from langchain_huggingface import HuggingFaceEmbeddings, HuggingFacePipeline
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from huggingface_hub import hf_hub_download
 from transformers import (AutoModelForCausalLM,
@@ -17,7 +16,7 @@ from peft import PeftModel
 from doc_generator.types import LLMModelDetails, LLMModels
 
 
-def get_gemma_chat_model(model_name: str, model_kwargs):
+def get_gemma_chat_model(model_name: str, streaming=False, model_kwargs=None):
     """Get GEMMA Chat Model"""
     # bnb_config = BitsAndBytesConfig(
     #     load_in_4bit=True,
@@ -56,7 +55,7 @@ def get_gemma_chat_model(model_name: str, model_kwargs):
     )
 
 
-def get_llama_chat_model(model_name: str, model_kwargs):
+def get_llama_chat_model(model_name: str, streaming=False, model_kwargs=None):
     """Get LLAMA2 Chat Model"""
 
     # bnb_config = BitsAndBytesConfig(
@@ -189,7 +188,7 @@ models = {
         succeeded=0,
         failed=0,
         total=0,
-        gguf_file='tinyllama-1.1b-chat-v1.0.Q6_K.gguf'
+        gguf_file='tinyllama-1.1b-chat-v1.0.Q2_K.gguf'
     ),
     LLMModels.LLAMA2_7B_CHAT_GPTQ: LLMModelDetails(
         name=LLMModels.LLAMA2_7B_CHAT_GPTQ,
@@ -361,7 +360,7 @@ def get_embeddings(model: str, device: str):
     """Get Embeddings"""
     if "llama" in model.lower() or "gemma" in model.lower():
         return HuggingFaceEmbeddings(
-            model_name="sentence-transformers/all-mpnet-base-v2",
+            model_name="sentence-transformers/all-MiniLM-L6-v2",
             model_kwargs={"device": device},
             encode_kwargs={"normalize_embeddings": True},
         )

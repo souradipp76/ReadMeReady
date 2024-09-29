@@ -31,11 +31,16 @@ class Priority(str, Enum):
     COST = 'cost'
     PERFORMANCE = 'performance'
 
+class AutodocReadmeConfig:
+    """AutodocReadmeConfig"""
+    def __init__(self, headings: str):
+        self.headings = headings.split(",")
 
 class AutodocUserConfig:
     """AutodocUserConfig"""
-    def __init__(self, llms: List[LLMModels]):
+    def __init__(self, llms: List[LLMModels], streaming: bool = False):
         self.llms = llms
+        self.streaming = streaming
 
 
 class AutodocRepoConfig:

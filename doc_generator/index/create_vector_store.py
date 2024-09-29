@@ -1,6 +1,7 @@
 """
 Create Vector Store
 """
+import fnmatch
 import os
 from pathlib import Path
 from typing import List
@@ -12,13 +13,20 @@ from doc_generator.utils.HNSWLib import HNSWLib, InMemoryDocstore
 from doc_generator.utils.llm_utils import get_embeddings, LLMModels
 
 
-def process_file(file_path: str):
+def should_ignore(file_name: str, ignore: List[str]):
+    return any(fnmatch.fnmatch(file_name, pattern)
+                for pattern in ignore)
+
+def process_file(file_path: str, ignore: List[str]):
     """
     Process File
     """
     def read_file(path):
         with open(path, 'r', encoding='utf8') as file:
             return file.read()
+
+    if should_ignore(file_path, ignore):
+        return None
 
     try:
         file_contents = read_file(file_path)
@@ -30,7 +38,7 @@ def process_file(file_path: str):
         return None
 
 
-def process_directory(directory_path: str) -> List[Document]:
+def process_directory(directory_path: str, ignore: List[str]) -> List[Document]:
     """
     Process Directory
     """
@@ -43,12 +51,14 @@ def process_directory(directory_path: str) -> List[Document]:
                                 Did you run `sh download.sh`?") from e
 
     for file in files:
+        if should_ignore(file, ignore):
+            continue
         file_path = Path(directory_path) / file
         if file_path.is_dir():
-            nested_docs = process_directory(str(file_path))
+            nested_docs = process_directory(str(file_path), ignore)
             docs.extend(nested_docs)
         else:
-            doc = process_file(str(file_path))
+            doc = process_file(str(file_path), ignore)
             docs.append(doc)
 
     return docs
@@ -58,20 +68,21 @@ class RepoLoader(BaseLoader):
     """
     RepoLoader
     """
-    def __init__(self, file_path: str):
+    def __init__(self, file_path: str, ignore: List[str]):
         super().__init__()
         self.file_path = file_path
+        self.ignore = ignore
 
     def load(self) -> List[Document]:
-        return process_directory(self.file_path)
+        return process_directory(self.file_path, self.ignore)
 
 
-def create_vector_store(root: str, output: str, llms: List[LLMModels], device: str) -> None:
+def create_vector_store(root: str, output: str, ignore: List[str], llms: List[LLMModels], device: str) -> None:
     """
     Create Vector Store
     """
     llm = llms[1] if len(llms) > 1 else llms[0]
-    loader = RepoLoader(root)
+    loader = RepoLoader(root, ignore)
     raw_docs = loader.load()
     raw_docs = [doc for doc in raw_docs if doc is not None]
     # Split the text into chunks

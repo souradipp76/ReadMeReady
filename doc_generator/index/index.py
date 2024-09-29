@@ -66,4 +66,4 @@ def index(config: AutodocRepoConfig):
 
     # Create a vector store from the Markdown documents
     print('Creating vector files...')
-    create_vector_store(str(config.root), str(data_path), config.llms, config.device)
+    create_vector_store(str(config.root), str(data_path), config.ignore, config.llms, config.device)
