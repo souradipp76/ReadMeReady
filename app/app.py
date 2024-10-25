@@ -2,26 +2,16 @@ import streamlit as st
 import os
 import shutil
 import git
-from streamlit_monaco import st_monaco
+from streamlit_ace import st_ace
 from pymarkdown.api import PyMarkdownApi
 
 # App title
-st.set_page_config(page_title="Readme Generator", layout="wide",page_icon="🏎💨",)
+st.set_page_config(page_title="Readme Generator", layout="wide",page_icon=":material/graphic_eq:")
 
-# Replicate Credentials
+# Credentials and COnfiguration
 with st.sidebar:
     st.title(':rainbow[Readme Generator]')
-    st.write('This is document generator which uses open-source LLM models.')
-    # if 'REPLICATE_API_TOKEN' in st.secrets:
-    #     st.success('API key already provided!', icon='✅')
-    #     replicate_api = st.secrets['REPLICATE_API_TOKEN']
-    # else:
-    #     replicate_api = st.text_input('Enter Replicate API token:', type='password')
-    #     if not (replicate_api.startswith('r8_') and len(replicate_api)==40):
-    #         st.warning('Please enter your credentials!', icon='⚠️')
-    #     else:
-    #         st.success('Proceed to entering your prompt message!', icon='👉')
-    # os.environ['REPLICATE_API_TOKEN'] = replicate_api
+    st.write('This is a Readme generator app which uses open-source large language models.')
 
     openai_api_key = "dummy"
     # openai_api_key = st.text_input('Enter OpenAI API Key:', type='password')
@@ -35,7 +25,7 @@ with st.sidebar:
     from doc_generator.types import AutodocRepoConfig, AutodocUserConfig, LLMModels
 
     with st.form("my_form"):
-        st.subheader('Model and Parameters')
+        st.subheader('Model')
         options = [
             LLMModels.TINYLLAMA_1p1B_CHAT_GGUF.value,
             LLMModels.LLAMA2_7B_CHAT_GPTQ.value,
@@ -47,22 +37,24 @@ with st.sidebar:
             LLMModels.CODELLAMA_7B_INSTRUCT_HF.value,
             LLMModels.CODELLAMA_13B_INSTRUCT_HF.value,
             LLMModels.GOOGLE_GEMMA_2B_INSTRUCT.value,
-            LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value
+            LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value,
+            LLMModels.GOOGLE_GEMMA_2B_INSTRUCT_GGUF.value
         ]
         llm = st.selectbox('Choose a model', options, key='llm')
         device = st.selectbox('Choose a device', ["cpu", "gpu"], key='device')
+        st.subheader('Parameters')
         temperature = st.slider('temperature', min_value=0.01, max_value=1.0, value=0.1, step=0.01)
         top_p = st.slider('top_p', min_value=0.01, max_value=1.0, value=0.9, step=0.01)
         max_length = st.slider('max_length', min_value=512, max_value=4096, value=2048, step=512)
 
-        st.subheader('Repository Config')
-        name = st.text_input(label='Repository Name', placeholder="repo")
-        project_url = st.text_input(label='Repository URL', placeholder = "https://github.com/username/repo")
+        st.subheader('Repository Configuration')
+        name = st.text_input(label='Name', placeholder="example_repo")
+        project_url = st.text_input(label='GitHub Link', placeholder = "https://github.com/username/example_repo")
         project_root = os.path.join(".", name)
         output_dir = os.path.join("output", name)
         # is_peft = st.checkbox(label="Is finetuned?")
         # peft_model_path = st.text_input(label='Finetuned Model Path', placeholder="./output/model/")
-        submitted = st.form_submit_button("Submit")
+        submitted = st.form_submit_button("Setup")
         if submitted:
             st.toast('Indexing repository...')
             try:
@@ -91,6 +83,8 @@ with st.sidebar:
                     model = LLMModels.GOOGLE_GEMMA_2B_INSTRUCT
                 case LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value:
                     model = LLMModels.GOOGLE_GEMMA_7B_INSTRUCT
+                case LLMModels.GOOGLE_GEMMA_2B_INSTRUCT_GGUF.value:
+                    model = LLMModels.GOOGLE_GEMMA_2B_INSTRUCT_GGUF
                 case _:
                     model = LLMModels.LLAMA2_7B_CHAT_HF
         
@@ -171,103 +165,105 @@ with st.sidebar:
             st.toast('Repository indexing done.')
             
 
-    # st.markdown('📖 Learn how to build this app in this [blog](https://blog.streamlit.io/how-to-build-a-llama-2-chatbot/)!')
+    st.markdown('📖 Learn more about this app [here](https://github.com/souradipp76/ReadMeReady)!!')
+
+left, right = st.columns(2, vertical_alignment="top")
+
+with left:
+    st.title("Chat")
+    history = st.container(height=1000)
+    # Store LLM generated responses
+    if "messages" not in st.session_state.keys():
+        st.session_state.messages = [{"role": "assistant", "content": "Provide a heading to generate README section starting with ##?"}]
+
+    # Display or clear chat messages
+    for message in st.session_state.messages:
+        history.chat_message(message["role"]).write(message["content"])
+
+    def clear_chat_history():
+        st.session_state.messages = [{"role": "assistant", "content": "Provide a heading to generate README section starting with ##?"}]
+    st.sidebar.button('Clear Chat History', on_click=clear_chat_history)
 
 
-# Markdown editor
-st.title("Markdown Editor")
-default_readme_content = "# "+ name
-if "readme_content" not in st.session_state.keys():
-    st.session_state.readme_content = default_readme_content
+    # User-provided prompt
+    if prompt := st.chat_input(disabled=not openai_api_key):
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        history.chat_message("user").write(prompt)
 
-content = st_monaco(
-    value=st.session_state.readme_content, 
-    # height="600px", 
-    language="markdown",
-    lineNumbers=True,
-    minimap=False,
-    theme="vs-dark",
-)
+        # Generate a new response if last message is not from assistant
+        if st.session_state.messages[-1]["role"] != "assistant":
+            with st.spinner("Thinking..."):
+                if "chain" not in st.session_state.keys():
+                    full_response = 'Please setup model and repository!!'
+                else:
+                    chain = st.session_state.chain
+                    full_response = ''
+                    for chunk in chain.stream({'input': prompt}):
+                        print(chunk)
+                        if answer_chunk := chunk.get("answer"):
+                            full_response += answer_chunk
+                history.chat_message("assistant").markdown(full_response)
+                    
+            message = {"role": "assistant", "content": full_response}
+            st.session_state.messages.append(message)
 
-def validate_markdown():
-    error_str = ""
-    errors = PyMarkdownApi().scan_string(st.session_state.readme_content)
-    if len(errors.scan_failures) > 0:
-        print(errors.scan_failures)
-        error_str = "\n".join([f'Line {failure.line_number}: Col {failure.column_number}: {failure.rule_id}: {failure.rule_description} {failure.extra_error_information} ({failure.rule_name})' for failure in errors.scan_failures])
-    return error_str
+with right:
+    # Markdown editor
+    st.title("Readme Editor")
+    default_readme_content = "# "+ name
+    if "readme_content" not in st.session_state.keys():
+        st.session_state.readme_content = default_readme_content
 
-col1, col2, col3 = st.columns(3)
+    st.session_state.readme_content = st_ace(
+        placeholder=st.session_state.readme_content,
+        height = 850,
+        language="markdown",
+        theme="solarized_dark",
+        keybinding="vscode",
+        font_size=14,
+        tab_size=4,
+        show_gutter=True,
+        show_print_margin=False,
+        wrap=True,
+        auto_update=True,
+        readonly=False,
+        min_lines=45,
+        key="ace",
+    )
 
-# Add buttons to each column
-with col1:
-    if st.button(label="Save"):
-        st.session_state.readme_content = content
-        st.success("Saved")
+    def validate_markdown():
+        error_str = ""
+        errors = PyMarkdownApi().scan_string(st.session_state.readme_content)
+        if len(errors.scan_failures) > 0:
+            print(errors.scan_failures)
+            error_str = "\n".join([f'Line {failure.line_number}: Col {failure.column_number}: {failure.rule_id}: {failure.rule_description} {failure.extra_error_information} ({failure.rule_name})' for failure in errors.scan_failures])
+        return error_str
 
-with col2:
-    if st.button("Validate"):
-        error_str = validate_markdown()
-        if not error_str:
-            error_str = "No error"
+    col1, col2, col3, col4 = st.columns(4, vertical_alignment="center")
+
+    with col1:
+        if st.button("Validate", use_container_width=True):
+            st.session_state.error_str = validate_markdown()
+
+    with col2:
+        if st.download_button(
+            label="Download",
+            data=st.session_state.readme_content,
+            file_name="README.md",
+            mime="text/markdown",
+            use_container_width=True
+        ):
+            col3.success("Downloaded")
+
+    
+    with st.expander("Validation", expanded=False):
         validate_container = st.empty()
-        validate_container.text_area(
-            "Validation Results",
-            value=error_str,
-            height=150,
-        )
-
-with col3:
-    if st.download_button(
-        label="Download",
-        data=st.session_state.readme_content,
-        file_name="README.md",
-        mime="text/markdown",
-    ):
-        st.success("Downloaded")
-
-
-with st.expander("Preview", expanded=False):
-    st.markdown(st.session_state.readme_content, unsafe_allow_html=True) 
-
-# Store LLM generated responses
-if "messages" not in st.session_state.keys():
-    st.session_state.messages = [{"role": "assistant", "content": "Provide a heading to generate README section starting with ##?"}]
-
-# Display or clear chat messages
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.write(message["content"])
-
-def clear_chat_history():
-    st.session_state.messages = [{"role": "assistant", "content": "Provide a heading to generate README section starting with ##?"}]
-st.sidebar.button('Clear Chat History', on_click=clear_chat_history)
-
-
-# User-provided prompt
-if prompt := st.chat_input(disabled=not openai_api_key):
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.write(prompt)
-
-# Generate a new response if last message is not from assistant
-if st.session_state.messages[-1]["role"] != "assistant":
-    with st.chat_message("assistant"):
-        with st.spinner("Thinking..."):
-            if "chain" not in st.session_state.keys():
-                placeholder = st.empty()
-                full_response = 'Please initialize model and repository!!'
-                placeholder.text(full_response)
-            else:
-                chain = st.session_state.chain
-                placeholder = st.empty()
-                full_response = ''
-                for chunk in chain.stream({'input': prompt}):
-                    print(chunk)
-                    if answer_chunk := chunk.get("answer"):
-                        full_response += answer_chunk
-                        placeholder.markdown(full_response)
-                # placeholder.markdown(full_response)
-            
-    message = {"role": "assistant", "content": full_response}
-    st.session_state.messages.append(message)
+        if "error_str" in st.session_state.keys():
+            validate_container.text_area(
+                "Results",
+                value=st.session_state.error_str,
+                height=150,
+            )
+    
+    with st.expander("Preview", expanded=False):
+        st.markdown(st.session_state.readme_content, unsafe_allow_html=True)
