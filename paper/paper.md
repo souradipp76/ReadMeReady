@@ -1,192 +1,246 @@
----
-title: 'MM-PoE: Multiple Choice Reasoning via. Process of Elimination using Multi-Modal Models'
-tags:
-  - machine learning
-  - large language models
-  - multi-modal
-  - python
-  - multiple choice reasoning
-  - visual question answering
-authors:
-  - name: Sayak Chakrabarty
-    orcid: 0009-0004-6179-389X
-    affiliation: 1
-  - name: Souradip Pal
-    orcid: 0000-0002-5781-3032
-    affiliation: 2
-affiliations:
- - name: Northwestern University
-   index: 1
- - name: Purdue University
-   index: 2
-date: 22 October 2024
-bibliography: paper.bib
----
+# Free and Customizable Code Documentation with LLMs: A Fine-Tuning Approach
 
-# Summary
+**First Author**  
+Affiliation / Address line 1  
+Affiliation / Address line 2  
+Affiliation / Address line 3  
+`email@domain`
 
-This paper introduces Multiple Choice Reasoning via. Process of Elimination using Multi-Modal models, also know as Multi-Modal Process of Elimination (MM-PoE), a method to enhance vision language models' performance on multiple-choice visual reasoning tasks by employing a two-step scoring system that first eliminates incorrect options and then predicts from the remaining ones. Our experiments across three question answering datasets show the method's effectiveness, particularly in visual reasoning tasks. This method addresses one of the key limitations of the paper [@ma2023poe] by extending to tasks involving multi-modalities and also includes experimentation techniques for few-shot settings.
+**Second Author**  
+Affiliation / Address line 1  
+Affiliation / Address line 2  
+Affiliation / Address line 3  
+`email@domain`
 
-# Statement of Need
+## Abstract
 
-Large Language models (LLMs) excel at in-context learning for multiple choice reasoning tasks but often treat all options equally, unlike humans who typically eliminate incorrect choices before selecting the correct answer. Same is true for vision language models (VLMs) in case of visual question answering tasks with multiple choices. This discrepancy can limit the effectiveness of vision language models in accurately solving such tasks. To address this, we introduce Multi-Modal Process of Elimination (MM-PoE), a two-step scoring method designed to enhance VLM performance by mimicking human reasoning strategies in multi-modal settings.
+Automated documentation of programming source code is a challenging task with significant practical and scientific implications for the developer community. We present a large language model (LLM)-based application that developers can use as a support tool to generate basic documentation for any publicly available repository. Over the last decade, several papers have been written on generating documentation for source code using neural network architectures. With the recent advancements in LLM technology, some open-source applications have been developed to address this problem. However, these applications typically rely on the OpenAI APIs, which incur substantial financial costs, particularly for large repositories. Moreover, none of these open-source applications offer a fine-tuned model or features to enable users to fine-tune. Additionally, finding suitable data for fine-tuning is often challenging. Our application addresses these issues.
 
-In the first step, the method evaluates and scores each option, systematically eliminating those that appear incorrect. The second step involves masking these eliminated options, allowing the VLM to focus solely on the remaining viable choices to make a final prediction. Our zero-shot experiments across three datasets demonstrate MM-PoE's effectiveness, particularly excelling in logical reasoning scenarios. Additionally, MM-PoE proves adaptable to few-shot settings and is compatible with the current state-of-the-art vision language models (VLMs).
+## Introduction
 
-Using this tool, researchers and practitioners can experiment and significantly improve the accuracy and reliability of VLMs in multiple choice reasoning tasks, making it a valuable tool for advancing machine learning models for visual reasoning.
+The integration of natural and programming languages is a research area that addresses tasks such as automatic documentation of source code, code generation from natural language descriptions, and searching for code using natural language queries. These tasks are highly practical, as they can significantly enhance programmer efficiency, and they are scientifically intriguing due to their complexity and the proposed relationships between natural language, computation, and reasoning [1,2,3].
 
-# State of the Field
+![Input to Output Workflow showing the Retrieval and Generator modules. The retrieval module uses HNSW algorithm to create a context for the prompt to the Language model for text generation.](rag_workflow.jpg)
 
-A common strategy for answering multiple-choice questions, especially under examination conditions, involves a process of elimination where incorrect answers are systematically discarded to narrow down the choices to the most likely correct one. This approach, grounded in everyday test-taking strategies, contrasts with how current language models (LMs) and vision language models (VLMs) handle multiple-choice reasoning tasks. Typically, VLMs evaluate each option independently or collectively without actively discarding less likely answers, potentially reducing their effectiveness in distinguishing the best choice from plausible distractors.
+*Figure 1: Input to Output Workflow showing the Retrieval and Generator modules. The retrieval module uses HNSW algorithm to create a context for the prompt to the Language model for text generation.*
 
-This paper argues that vision language models can benefit from an explicit two-step reasoning process akin to human problem-solving techniques. The proposed method, known as Multi-Modal Process of Elimination (MM-PoE), enhances the decision-making process by first scoring and then eliminating options that are seemingly incorrect before focusing on selecting the correct answer from the remaining choices. This method is designed to align with natural human reasoning by replicating how individuals often approach multiple-choice questions, particularly under the constraint of time and accuracy, as frequently experienced in academic testing environments.
+### Background and Related Work
 
-Our hypothesis posits that vision language models, when equipped with a mechanism to discard implausible answers systematically, can achieve better performance on multiple-choice visual reasoning tasks. This is particularly relevant in the context of logical reasoning, where the elimination of clearly incorrect options can simplify the decision process and potentially lead to more accurate outcomes. This idea is supported by previous work demonstrating the effectiveness of LMs in various reasoning tasks when adapted to more human-like reasoning methods[@holtzman2021surface].
+Significant progress in machine translation and other challenging natural language processing tasks has been achieved using neural networks, such as sequence-to-sequence transducers [4]. Neural networks require training on extensive and diverse datasets for effective generalization. These methods have been applied to code documentation [5,6] and code generation [7,8], often using small or domain-specific datasets, sometimes confined to single software projects. Datasets like DJANGO and Project Euler [9] were developed by human annotators, ensuring accuracy but at a high cost and resulting in limited data sizes. Others, such as those referenced in [10,5] and IFTTT [11], are larger but contain more noise.
 
-In the development of MM-PoE, we draw inspiration from the established capabilities of LMs to handle complex reasoning tasks [@brown2020language] and the known strategies that humans employ in test-taking scenarios as depicted in [@ma2023poe]. The approach builds on the foundational work in language modeling likelihood [@brown2020language], which demonstrates the LMs' ability to perform in-context learning. By incorporating a structured process to eliminate unlikely choices in a multi-modal setting, MM-PoE aims to refine this capability, making it more targeted and efficient in dealing with the nuanced challenges presented by multiple-choice questions.
+Recently, large language models (LLMs) have become increasingly significant, demonstrating human-like abilities across various fields [12,13,14]. LLMs typically employ transformer architecture variants and are trained on massive data volumes to detect patterns [15].
 
-The effectiveness of this approach is underscored through zero-shot and few-shot experiments across a diverse set of reasoning datasets, illustrating that the integration of human-like elimination strategies can significantly enhance the performance of vision language models. This paper aims to show that by mimicking human reasoning processes, we can make VLMs not only perform better on standardized visual reasoning tasks but also behave in ways that are more interpretable and aligned with human cognitive processes.
+In this paper, we focus on the automated documentation of programming source code, which is a challenging task with significant practical and scientific implications for the developer community. There are hundreds of publicly available repositories that lack basic documentation on aspects such as "What does the repository do?", "How to install the package?", "How to run the code?", and "How to contribute and modify any part of the repository?". None of the related research discussed handles these tasks using LLMs; instead, they design neural networks to address them.
 
+We present an LLM-based application that developers can use as a support tool to generate basic documentation for any code repository. Some open-source applications have been developed to address this issue, to name a few:
 
-# Methodology
+- **AutoDoc-ChatGPT** [16]
+- **AutoDoc** [17]
+- **Auto-GitHub-Docs-Generator** [18]
 
-The Multi-Modal Process of Elimination (MM-PoE) introduced in this paper operates on a two-step mechanism designed to enhance the decision-making capabilities of vision language models (VLMs) in multiple-choice visual reasoning tasks. This method employs a novel approach to option elimination followed by a focused prediction phase. The strategy is rooted in the belief that separating the elimination of clearly incorrect options from the choice of the best remaining option will improve overall task performance.
+However, these applications suffer from two major issues. Firstly, all of them are built on top of the OpenAI APIs, requiring users to have an OpenAI API key and incurring a cost with each API request. Generating documentation for a large repository could result in costs reaching hundreds of dollars. Our application allows users to choose among OpenAI's GPT, Meta's Llama2, and Google's Gemma models. Notably, apart from the first, the other models are open-source and incur no charges, allowing documentation to be generated for free.
 
-## Problem Setting
+Secondly, none of the existing open-source applications provide a fine-tuned model or an option for users to fine-tune. Our application offers a fine-tuning option using QLoRA, which can be trained on the user's own dataset. It is important to note that using this feature requires access to powerful GPU clusters. Some existing applications provide a command-line tool for interacting with the entire repository, allowing users to ask specific questions about the repository but not generating a README file. We summarize our contributions below:
 
-Given a multiple-choice visual reasoning task, we define the problem setting as follows:
+### Our Contributions
 
-- Let $x$ be the question or context provided.
-- Let $h$ be the image provided.
-- Let $Y = \{y_1, y_2, \ldots, y_n\}$ be the set of multiple-choice options available.
-- Let $y$ be the correct answer from $Y$.
+- We propose a software package that generates documentation for an open-source repository and serves as a documentation assistant for developers. This application creates a README file in Markdown format and allows generating a GitHub page from the documentation.
+- Instead of relying on the OpenAI APIs for handling calls, our model allows users to choose from various open-source models before generating the README, thereby avoiding the costs associated with existing applications.
+- As an example for our application, we fine-tune one of the models using LoRA. We allow users to fine-tune any of the models on a dataset[^1] we have created. Users' fine-tuning results may surpass ours due to our limited GPU resources.
 
-The goal is to develop an in-context learning method that accurately selects $y$ from $Y$ given $x$ and $h$.
+[^1]: The fine-tuning dataset and the application will be publicly available to the open-source community soon.
 
-## Two-Step Scoring Method
+## Methodology
 
-### Step 1: Elimination
+The application prompts the user to enter the project's name, GitHub URL, and select the desired model from the following options:
 
-In the first step of the MM-PoE method, each option $y_i$ is scored based on a specified metric. The score function, $\text{score}(x, h, y_i)$, evaluates each option's plausibility given the question $x$ and image $h$. The scores are used to eliminate options that are deemed less likely to be correct. Specifically, options whose scores are below the average score are eliminated. This is calculated as follows:
+- `gpt-3.5-turbo` [19]
+- `gpt-4` [20]
+- `gpt-4-32k` [21]
+- `TheBloke/Llama-2-7B-Chat-GPTQ` (quantized) [22]
+- `TheBloke/CodeLlama-7B-Instruct-GPTQ` (quantized) [23]
+- `meta-llama/Llama-2-7b-chat-hf` [24]
+- `meta-llama/CodeLlama-7b-Instruct-hf` [25]
+- `google/gemma-2b-it` [26]
+- `google/codegemma-2b-it` [27]
 
-$$
-s_i = \text{score}(x, h, y_i)
-$$
+Note that the first three options will incur a cost for each call, and users need to provide an OpenAI API key. For large projects, the cost can reach several hundred dollars. Detailed OpenAI pricing can be found at [OpenAI Pricing](https://openai.com/api/pricing/).
 
-$$
-Y_{\text{wrong}} = \{y_i | s_i < \text{avg}(s_1, \ldots, s_n)\}
-$$
+**Document Retrieval:** Our application indexes the codebase through a depth-first traversal of all repository contents and utilizes an LLM to generate documentation. All files are converted into text, tokenized, and then chunked, with each chunk containing 1000 tokens. The application employs the `sentence-transformers/all-mpnet-base-v2` [28] sentence encoder to convert each chunk into a 768-dimensional embedding vector, which is stored in an in-memory vector store. When a query is provided, it is converted into a similar vector using the same sentence encoder. The neighbor nearest to the query embedding vector is searched using KNN (k=4) from the vector store, utilizing cosine similarity as the distance metric. For the KNN search, we use the HNSWLib library, which implements an approximate nearest-neighbor search based on hierarchical navigable small-world graphs [29]. This methodology provides the relevant sections of the source code, aiding in answering the prompted question. The entire methodology for Retrieval Augmented Generation (RAG) and fine-tuning is illustrated in Figure 1.
 
-This elimination strategy intuitively aligns with how humans often discard options that seem clearly incorrect before carefully considering the remaining choices.
+![Input to Output Workflow showing the Retrieval and Generator modules. The retrieval module uses HNSW algorithm to create a context for the prompt to the Language model for text generation.](rag_workflow.jpg)
 
-### Step 2: Prediction
+*Figure 1: Input to Output Workflow showing the Retrieval and Generator modules. The retrieval module uses HNSW algorithm to create a context for the prompt to the Language model for text generation.*
 
-The second step involves making the final choice from the non-eliminated options. This step utilizes a binary mask to exclude the eliminated options during the prediction phase. The mask for each option $y_i$ is defined as follows:
+**Prompt Configuration:** Prompt engineering is accomplished using the Langchain API. For our purpose, a prompt template has been used as provided below. This template includes placeholders for questions, which users can edit and modify as needed. This flexibility allows the README to be generated according to the user's specific requirements. Our default README structure includes sections on description, requirements, installation, usage, contributing methods, and licensing, which align with standard documentation practices. The temperature for text generation is kept at the default value of 0.2. The current prompts are developer-focused and assume that the repository is code-centric.
 
-$$
-m_i = \begin{cases} 
-0 & \text{if } y_i \in Y_{\text{wrong}} \\
-1 & \text{otherwise}
-\end{cases}
-$$
+**Prompt Template:**
 
-The masked context $x_{\text{mask}}$ is then constructed by modifying the original context $x$ to include only the options for which $m_i = 1$. Each option is scored again, but this time within the context that explicitly excludes the eliminated options, possibly by using a template $T$ that masks out $Y_{\text{wrong}}$ in the presentation of the options:
+**Instruction:**
 
-$$
-x_{\text{mask}} = T(x, Y, \text{mask})
-$$
+```
+You are an AI assistant for a software project called {project_name}. You are trained on all the {content_type} that makes up this project. The {content_type} for the project is located at {repository_url}. You are given a repository which might contain several modules and each module will contain a set of files. Look at the source code in the repository and you have to generate content for the section of a README.md file following the heading given below. If you use any hyperlinks, they should link back to the github repository shared with you. You should only use hyperlinks that are explicitly listed in the context. Do NOT make up a hyperlink that is not listed. Assume the reader is a {target_audience} but is not deeply familiar with {project_name}. Assume the reader does not know anything about how the project is structured or which folders/files do what and what functions are written in which files and what these functions do. If you don't know how to fill up the README.md file in one of its sections, leave that part blank. Don't try to make up any content. Do not include information that is not directly relevant to repository, even though the names of the functions might be common or is frequently used in several other places. Provide the answer in correct markdown format.
 
-The final predicted answer $\hat{y}$ is then the option with the highest score among the remaining options:
+{additional_instructions}
+```
 
-$$
-\hat{y} = \arg\max_{i | m_i = 1} \text{score}(x_{\text{mask}}, h, y_i)
-$$
+**Question:**
 
-# Experimental Setup
+```
+Provide the README content for the section with heading "{{input}}" starting with ##{{heading}}.
+```
 
-To evaluate the effectiveness of the Multi-Modal Process of Elimination (MM-PoE), we designed an experimental framework that tests the method across a diverse set of visual reasoning datasets. This setup aims to compare MM-PoE with existing scoring methods to highlight its potential improvements in accuracy and reasoning capability. Our experiments primarily focused on a zero-shot setting to evaluate the generalization capabilities of MM-PoE without any task-specific tuning. Accuracy was used as the main metric for performance evaluation, with results averaged over multiple seeds to ensure robustness.
+**Context:**
 
-To further explore the versatility of MM-PoE, we also examined its performance in few-shot settings by incorporating examples into the model's input, aiming to observe any changes in effectiveness when provided with context-specific demonstrations.
+```
+{{context}}
+```
 
-## Data
+**Answer in Markdown:**
 
-Our experiments were conducted on three different multiple-choice visual reasoning datasets - Visual Question Answering(VQA) [@VQA], ScienceQA [@lu2022learn] and Diagram Understanding(AI2D) [@Kembhavi2016ADI], selected to cover a broad spectrum of reasoning types and complexities. These tasks include both traditional visual reasoning tasks and more specialized ones designed to test specific reasoning skills. To ensure a comprehensive evaluation, we used train sets from established benchmarks when available; otherwise, we utilized development sets. In case of varying number of options in the multiple-choice answers for SceinceQA and AI2D datasets, we filtered questions containing image context and exactly four options.
+```
+{{answer}}
+```
 
-| Dataset | #Options | Train  | Dev  | Test |
-|----|------|------|------|-----------|
-| VQA | 18 | 248,349 | 121,512 | 244,302 |
-| ScienceQA | 4 | 12726 | 4241 | 4241 |
-| AI2D | 4 | 3921 | 982 | - |
+### Fine Tuning
 
-## Model
+Parameter-efficient fine-tuning (PEFT) [30] is a technique in natural language processing that enhances pre-trained language models for specific tasks by fine-tuning only a subset of their parameters. This method involves freezing most of the model's layers and adjusting only the last few, thus conserving computational resources and time. Several parameter-efficient fine-tuning (PEFT) methods exist, such as Adapters, LoRA [31], etc. We chose to fine-tune with QLoRA [32] due to its significant reduction in the number of trainable parameters while maintaining performance. Given our limited resources, QLoRA is highly efficient as it adapts models for specific tasks with minimal computational overhead.
 
-For the core experiments, we utilized the GIT and BLIP models, chosen for its balance between computational efficiency and performance in instruction-tuned vision language tasks. These models have demonstrated strong capabilities in handling various multi-modal tasks and serves as a robust platform for evaluating our MM-PoE method.
+In our work, we fine-tune only one model, `TheBloke/Llama-2-7B-Chat-GPTQ` [22], which is a 4-bit quantized model with 1.13 billion parameters. It supports a maximum sequence length of 4096 tokens and requires 3.9 GB of memory. We utilized GPU clusters provided by Northwestern University for fine-tuning our model. The configuration used is 1 × NVIDIA Tesla V100 with 16GB of GPU memory. With this resource, training on a large dataset (12,803 data points) takes more than 15 hours, while training on a small dataset (339 data points) takes approximately 30 minutes for 3 epochs.
 
-## Baselines
+These resources are substantially limited compared to typical LLM fine-tuning requirements. Due to these constraints, we could only train the model for 3 epochs on a small dataset. As a result, we have made fine-tuning an optional feature, giving users the choice to fine-tune the model using their own GPU resources.
 
-We compared MM-PoE against five baseline scoring methods to assess its relative performance:
+### Data Collection
 
-1. **Language Modeling (LM):** This baseline uses the raw vision language modeling likelihood as the scoring function.
-2. **Average Language Modeling (AVG):** This method averages the log probabilities across all tokens in the option.
-3. **Calibration:** This involves adjusting the VLM scores based on calibration techniques that aim to correct for the model's confidence.
-4. **Channel:** Channel methods score each option based on how likely the question is given the option, which reverses the typical conditional probability used in LMs.
-5. **Multiple Choice Prompting (MCP):** This approach formats the input by presenting the question followed by all options, prompting the model to select the most likely option.
+Approximately 200 repositories were scraped using the GitHub APIs, selected based on popularity and star count. We limit our scope to Python-based repositories; however, this approach is easily adaptable to multiple programming languages. In scenarios involving various programming languages, distinct datasets can be created for fine-tuning purposes. A CSV file was created with three features: questions, context, and answers. Questions were derived from README file headings and subheadings, identified by markdown signatures `#` or `##`. Answers correspond to the text under these headings. In our case, data consent is not required as the data is collected by scraping publicly available GitHub repositories.
 
-Each method provides a different approach to scoring options, allowing for a comprehensive comparison of how each interacts with the structure and strategy of MM-PoE.
+The entire source code from the repositories is concatenated into a single string and separated into document chunks of 1000 tokens employing LangChain's text-splitter. Using the `sentence-transformers/all-mpnet-base-v2` [28] sentence encoder, these chunks were converted into 768-dimensional vectors. Each question is then converted into a 768-dimensional vector and subjected to a KNN (k=4) search using HNSW [29] to find the closest match from the entire set of document embeddings, stored as the context.
 
-## Implementation
+**Data Preprocessing:** Following the creation of the CSV file, we pre-process the data using regex patterns to clean the text. Since the context only captures source code, this eliminates the possibility of using offensive content. Regex is used to remove hashtags, email addresses, usernames, image URLs, and other personally identifiable information. Note that only repositories written entirely in English are used, with other languages filtered out. Prompt engineering in our source code ensures that the prompts are designed to avoid generating any personally identifiable data or offensive content.
 
-The effectiveness of MM-PoE hinges on the robustness of the scoring function and the accuracy of the elimination step. The scoring function can be any VLM-based likelihood estimator, such as vision language modeling likelihood or any of its alternatives like average log probability or calibrated log probability. Our implementation tests multiple such scoring functions to identify the most effective ones in both eliminating implausible options and accurately selecting the final answer. 
+## Experiments and Results
 
-The MM-PoE method is designed to be model-agnostic, meaning it can be implemented using any existing VLM capable of scoring text options, and it is flexible enough to be adapted to different types of multiple-choice visual answering questions across various domains. The scoring functions were carefully chosen based on their theoretical alignment with the two-step elimination and prediction philosophy of MM-PoE. We conducted extensive parameter tuning and optimization to maximize the performance of both the elimination step and the final prediction accuracy.
+Our contribution is an application, not a new language generation model, making it challenging to establish an experimental methodology. We conducted the fine-tuning experiment on a small dataset consisting of randomly selected 190 README files, which may not address our default documentation questions. For each README, we examine its sections and subsections, frame relevant questions, and use the answers generated by our tool for training. A few samples of the fine-tuning dataset can be found in Appendix A. For evaluation, we selected the rest of the 10 repositories and compared the original answers with the autogenerated documentation (sample documentation shown in section [Sample Autogenerated Readme](#sample-autogenerated-readme)) using BLEU and BERT scores to assess our model's performance.
 
-This experiment setup was designed to rigorously test the effectiveness of MM-PoE across a range of visual reasoning tasks and compare its performance against standard baseline methods. The results of these experiments are intended to demonstrate the potential benefits of integrating a process of elimination approach into vision language model reasoning strategies for multiple-choice questions.
+### Sample Autogenerated Readme
 
+```markdown
+# python-fire
 
-## Results
+**Description**
 
-MM-PoE consistently outperformed or matched the best-performing baselines across all datasets, showing particular strength in logical reasoning. The method's effectiveness in separating elimination and prediction tasks was crucial to its success.
+The `python-fire` library is a powerful tool for building web applications. It provides a wide range of features and functionalities that can help you build complex web applications quickly and efficiently. In this section, we will provide an overview of the main features and functionalities of `python-fire`.
 
-| Model | Dataset | LM | AVG | Calibration | Channel | MCP  | PoE  |
-|----|------|------|------|-----------|---|---|---|
-|microsoft/git-base-vqav2| ScienceQA | 27.4 | 17.8 | 23.2| 24.6 | 25.8 | 27.2 |
-|microsoft/git-base-vqav2| AI2D | 25.4| 26.2 | 26.4| 25.4 | 25.3 | 26.5 |
-|microsoft/git-base-textvqa| ScienceQA | 21.8 | 20.4 | 25.8 | 23.4 | 23.6 | 28.2 |
-|microsoft/git-base-textvqa| AI2D | 26.5 | 27.6 | 20.8| 26.2 | 24.2| 26.8 |
+**Installation**
 
-**Table 1**: Comparison of Multiple-Choice Prompting (MCP) and Process of Elimination (PoE) accuracy scores on 2 visual question answering datasets for the `microsoft/git-base-vqav2` and `microsoft/git-base-textvqa` models in the zero-shot settings. Each dataset has different number of answer choices. PoE mostly outperforms MCP on all the visual reasoning tasks for the two multi-modal models mentioned.
+To install the latest version of `python-fire`, follow these steps:
 
-## Examples
+Clone the repository from GitHub:
 
-### ScienceQA Example
-<img src="figures/image.png" alt="Example" width="500">
+```bash
+git clone https://github.com/google/python-fire.git
+```
 
-**Question**: Which of these states is farthest north?<br>
-**Options**: West Virginia, Louisiana, Arizona, Oklahoma<br>
-**Ground Truth Option**: West Virginia
+Change into the cloned repository:
 
-**Predicted Masks**: West Virginia, Louisiana, [MASK], [MASK]<br>
-**Predicted Option**: West Virginia
+```bash
+cd python-fire
+```
 
-### AI2D Example
+Run the following command to install the dependencies:
 
-<img src="figures/17.png" alt="Example" width="500">
+```bash
+pip install -r requirements.txt
+```
 
-**Question**: Are phytoplankton predators or prey in this food chain?<br>
-**Options**: producer, predator, prey, NA<br>
-**Ground Truth Option**: prey
+This will install all the necessary dependencies for `python-fire`. Once the installation is complete, you can run `python-fire` by running the following command:
 
-**Predicted Masks**: [MASK], predator, prey, NA<br>
-**Predicted Option**: prey
+```bash
+python fire
+```
 
-# Conclusion
+This will launch `python-fire` in your default Python interpreter.
 
-MM-PoE demonstrates a significant improvement in handling multiple choice visual reasoning tasks by mimicking a human-like process of elimination approach. Future work will focus on enhancing its generalizability and efficiency, possibly extending to handle better masking strategies.
+**How to contribute**
 
-# Ethics Statement
+We'd love to accept your patches and contributions to this project. There are just a few small guidelines you need to follow. Before you begin making changes, state your intent to do so in an Issue. Then, fork the project. Make changes in your copy of the repository. Then open a pull request once your changes are ready. If this is your first contribution, sign the Contributor License Agreement. A discussion about your change will follow, and if accepted your contribution will be incorporated into the Python Fire codebase.
+```
 
-While this method uses publicly available data and models, users should be aware of potential biases in the data and model outputs.
+### Before Fine-tuning
 
-# Acknowledgements
+We conducted a series of experiments utilizing the `TheBloke/Llama-2-7B-Chat-GPTQ` model [22] to demonstrate the functionality and efficacy of our proposed pipeline. The accompanying codebase is designed to be flexible, allowing the user to easily switch between different large language models (LLMs) by simply modifying the configuration file. Given the characteristics of LLMs, models with a greater number of parameters are generally expected to deliver enhanced performance. However, we lack the GPU resources to run a non-quantized version. The BLEU and BERT scores for the `TheBloke/Llama-2-7B-Chat-GPTQ` model are reported in Table 1 and Table 2, under the "W/O FT" or "W/O Finetuning" columns.
 
-We would like to extend our sincere gratitude to Northwestern University for providing access to their servers and GPU resources, which were instrumental in conducting this research. The computational power and infrastructure made available by the university enabled the efficient processing and analysis of large datasets, significantly contributing to the success of the project. Without this support, the research would not have been possible at the scale or speed required. We deeply appreciate the university’s commitment to fostering a collaborative research environment and supporting technological innovation.
+### After Fine-tuning
+
+We utilized the PEFT library from Hugging Face, which supports several Parameter Efficient Fine-Tuning (PEFT) methods. This approach is cost-effective for fine-tuning large language models (LLMs), particularly on lightweight hardware. The training configuration and hyperparameters are detailed in Table 3 and Table 4 respectively. The results are reported in Table 1 and Table 2, under the "With FT" or "With Finetuning" columns. It is observed that BLEU scores range from 15 to 30, averaging 20, indicating that the generated text is understandable but requires substantial editing to be acceptable. Conversely, BERT scores reveal a high semantic similarity to the original README content, with an average F1 score of ~85%. The slightly lower scores for fine-tuned models compared to their original counterparts can be attributed to heavy quantization and the use of very low-rank configuration in QLoRA to manage memory constraints, leading to a noticeable reduction in quality. The effectiveness of the tool in generating accurate documentation relies significantly not only on the fine-tuned model for text generation but also on the comprehensiveness of the code context included in the prompt. Consequently, when relevant context is captured by the HNSW algorithm using text embeddings, the generated outputs remain satisfactory even when employing quantized fine-tuned models. However, the performance of these models tends to plateau if sufficient contextual information is not adequately captured.
+
+#### Table 1: BLEU Scores
+
+| Repository | W/O FT | With FT |
+|------------|--------|---------|
+| allennlp   | 32.09  | 16.38   |
+| autojump   | 25.29  | 18.73   |
+| numpy-ml   | 16.61  | 19.02   |
+| Spleeter   | 18.33  | 19.47   |
+| TouchPose  | 17.04  | 8.05    |
+
+#### Table 2: BERT Scores
+
+| Repository | P (W/O FT) | R (W/O FT) | F1 (W/O FT) | P (With FT) | R (With FT) | F1 (With FT) |
+|------------|------------|------------|-------------|-------------|-------------|--------------|
+| allennlp   | 0.904      | 0.8861     | 0.895       | 0.862       | 0.869       | 0.865        |
+| autojump   | 0.907      | 0.86       | 0.883       | 0.846       | 0.87        | 0.858        |
+| numpy-ml   | 0.89       | 0.881      | 0.885       | 0.854       | 0.846       | 0.85         |
+| Spleeter   | 0.86       | 0.845      | 0.852       | 0.865       | 0.866       | 0.865        |
+| TouchPose  | 0.87       | 0.841      | 0.856       | 0.831       | 0.809       | 0.82         |
+
+*BLEU and BERT Scores of `TheBloke/Llama-2-7B-Chat-GPTQ` model for the generated README file across 5 code repositories before and after fine-tuning. The BERT scores show the Precision (P), Recall (R), and F1 values when the contents are compared with each repository's original README file.*
+
+#### Table 3: QLoRA Configuration
+
+| Parameter     | Value |
+|---------------|-------|
+| `r`           | 2     |
+| `lora_alpha`  | 32    |
+| `lora_dropout`| 0.05  |
+| `bias`        | None  |
+| `task_type`   | CAUSAL_LM |
+
+#### Table 4: Training Hyper-parameters
+
+| Parameter                         | Value    |
+|-----------------------------------|----------|
+| `per_device_train_batch_size`     | 1        |
+| `gradient_accumulation_steps`     | 1        |
+| `num_train_epochs`                | 3        |
+| `learning_rate`                   | 1e-4     |
+| `fp16`                            | True     |
+| `optim`                           | paged_adamw_8bit |
+| `lr_scheduler_type`               | cosine   |
+| `warmup_ratio`                    | 0.01     |
+
+## Conclusion
+
+Our application addresses the critical need for generating documentation for code repositories by utilizing multiple LLM models and allowing users to fine-tune these models using LoRA on their own GPUs. While our approach is not designed to surpass state-of-the-art benchmarks, its significance lies in the application of NLP techniques to solve a pressing issue faced by the developer community. The tool provides initial documentation suggestions based on the source code, assisting developers in initiating the documentation process and enabling them to modify the generated README files to meet their specific requirements, thereby reducing manual effort. Additionally, the generated README files can be seamlessly converted into PyPI-compliant standard documentation websites using tools such as MkDocs or Sphinx. This application can also be adapted as a plugin for integration with code editors like Visual Studio Code, thus enhancing the development workflow by minimizing the need for manual documentation creation.
+
+
+
+## Appendix
+
+### Ethical Limitations
+
+Like any study, ours has its limitations. It is important to note that we propose our application as a developer support tool. While it assists developers in documenting unseen repositories or undocumented code bases and quickly understanding how to use them, developers should not blindly follow the instructions provided by the application. This caution is necessary because the application relies on pre-trained models like Meta's Llama2 and OpenAI's GPT, which are known to hallucinate and provide incorrect instructions with confidence. We have provided a fine-tuning feature and plan to launch the fine-tuned model, which is expected to hallucinate less than the raw model. Another limitation is that the application will not address more complex questions that developers might have; it will only provide answers to basic questions. However, developers can modify our source code to add more prompts to obtain specific answers. In such cases, fine-tuning must be performed again with a different dataset. Lastly, no AI assistants were used for this research or the writing of this paper.
+
+The primary potential risk of this application is that it might misguide developers if they uncritically accept every instruction generated in the README file. Our experiments indicate that the generated README files produce close to correct content (as measured by various evaluation methods; see Table 1 and Table 2), but it is still crucial not to take every piece of text generated by the LLM backend at face value. The application should be regarded as a support tool for developers, rather than a definitive source of truth.
+
+### Data Samples
+
+Table 5 shows samples of data that were used in fine-tuning the pre-trained language models based on the prompt template. For our experiment, some of the inputs to the prompt were kept fixed but may be varied based on the use-case. Here, we fixed the `content_type` as "docs", `target_audience` as "smart developer" and did not pass any `additional_instructions`. In Table 5, shortened versions of the context have been provided to give an idea of the contextual information obtained using the HNSW algorithm on the document chunks.
+
+#### Table 5: Samples of Input and Output for Prompts Used in Fine-tuning
+
+| project_name | repository_url           | heading          | context                                                                                                                                                          | answer                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+|--------------|--------------------------|------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| magenta      | magenta/magenta          | Getting Started  | `Number of parameter servers. If 0, parameters ' 'are handled locally by the worker.') flags.DEFINE_integer ('save_summaries_secs', 15, 'Frequency at which summaries are saved, in seconds.') ...flags.DEFINE_string ('style_dataset_file', None, 'Style dataset file.') flags.DEFINE_string('train_dir', None, 'Directory for checkpoints and summaries.') flags.DEFINE_string ('inception_v3_checkpoint` | Take a look at our [colab notebooks](URL) for various models, including one on [getting started](URL). [Magenta.js](URL) is also a good resource for models and [demos](URL) that run in the browser. This and more, including [blog posts](URL) and [Ableton Live plugins](URL), can be found at [https://magenta.tensorflow.org](URL).                                                                                                                                                                                                                                       |
+| allennlp     | allenai/allennlp         | Plugins          | `def discover_plugins() -> Iterable[str]: """""" Returns an iterable of the plugins found. """""" plugins: Set[str] = set() ...  def discover_file_plugins (plugins_filename: str = LOCAL_PLUGINS_FILENAME) -> Iterable[str]: """""" Returns an iterable of the plugins found, declared within a file whose path is `plugins_filename`. """""" with open(plugins_filename) as file_: for module_name in file_.readlines(): module_name = module_name.strip() if module_name: yield module_name` | AllenNLP supports loading "plugins" dynamically. A plugin is just a Python package that provides custom registered classes or additional `allennlp` subcommands. There is ecosystem of open source plugins, some of which are maintained by the AllenNLP team here at AI2, and some of which are maintained by the broader community. ... To test that your plugins can be found and imported by AllenNLP, you can run the `allennlp test-install` command. Each discovered plugin will be logged to the terminal. For more information about plugins, see the [plugins API docs](URL). And for information on how to create a custom subcommand to distribute as a plugin, see the [subcommand API docs](URL). |
+| python-fire  | google/python-fire       | Installation     | `Programming Language :: Python', `Programming Language :: Python :: 3', `Programming Language :: Python :: 3.12', `Operating System :: OS Independent', `Operating System :: POSIX', `Operating System :: MacOS', `Operating System :: Unix', ], keywords='command line interface cli python fire interactive bash tool', packages=['fire', 'fire.console'],packages=['fire', 'fire.console'], ... ('Darwin', '<hostname goes here>', '12.4.0', # 'Darwin Kernel Version 12.4.0: Wed May 1 17:57:12 PDT 2013; # root:xnu-2050.24.15~ 1/RELEASE_X86_64', 'x86_64', 'i386') format_string = '(Macintosh; {name} Mac OS X {version})'`                | To install Python Fire with pip, run: `pip install fire` To install Python Fire with conda, run: `conda install fire -c conda-forge` To install Python Fire from source, first clone the repository and then run: `python setup.py install`                                                                                                                                                                                                                                                                                                     |
