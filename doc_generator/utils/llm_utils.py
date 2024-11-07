@@ -310,6 +310,19 @@ models = {
         failed=0,
         total=0,
     ),
+    LLMModels.GOOGLE_GEMMA_2B_INSTRUCT_GGUF: LLMModelDetails(
+        name=LLMModels.GOOGLE_GEMMA_2B_INSTRUCT_GGUF,
+        input_cost_per_1k_tokens=0,
+        output_cost_per_1k_tokens=0,
+        max_length=8192,
+        llm=None,
+        input_tokens=0,
+        output_tokens=0,
+        succeeded=0,
+        failed=0,
+        total=0,
+        gguf_file="gemma-2-2b-it-IQ3_M.gguf"
+    ),
 }
 
 
