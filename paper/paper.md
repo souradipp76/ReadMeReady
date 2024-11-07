@@ -1,5 +1,5 @@
 ---
-title: 'ReadmeReady: Free and Customizable Code Documentation with LLMs: A Fine-Tuning Approach'
+title: 'ReadmeReady: Free and Customizable Code Documentation with LLMs - A Fine-Tuning Approach'
 tags:
   - python
   - machine learning
@@ -28,7 +28,7 @@ Automated documentation of programming source code is a challenging task with si
 
 # Statement of Need
 
-The integration of natural and programming languages is a research area that addresses tasks such as automatic documentation of source code, code generation from natural language descriptions, and searching for code using natural language queries. These tasks are highly practical, as they can significantly enhance programmer efficiency, and they are scientifically intriguing due to their complexity and the proposed relationships between natural language, computation, and reasoning [1,2,3].
+The integration of natural and programming languages is a research area that addresses tasks such as automatic documentation of source code, code generation from natural language descriptions, and searching for code using natural language queries. These tasks are highly practical, as they can significantly enhance programmer efficiency, and they are scientifically intriguing due to their complexity and the proposed relationships between natural language, computation, and reasoning ([@chomsky1956three],[@miller2003cognitive],[@graves2014neural]).
 
 # State of the Field
 
