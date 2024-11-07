@@ -32,17 +32,17 @@ The integration of natural and programming languages is a research area that add
 
 # State of the Field
 
-Significant progress in machine translation and other challenging natural language processing tasks has been achieved using neural networks, such as sequence-to-sequence transducers [4]. Neural networks require training on extensive and diverse datasets for effective generalization. These methods have been applied to code documentation [5,6] and code generation [7,8], often using small or domain-specific datasets, sometimes confined to single software projects. Datasets like DJANGO and Project Euler [9] were developed by human annotators, ensuring accuracy but at a high cost and resulting in limited data sizes. Others, such as those referenced in [10,5] and IFTTT [11], are larger but contain more noise.
+Significant progress in machine translation and other challenging natural language processing tasks has been achieved using neural networks, such as sequence-to-sequence transducers [@bahdanau2014neural]. Neural networks require training on extensive and diverse datasets for effective generalization. These methods have been applied to code documentation [@iyer2016summarizing,@barone2017parallel] and code generation [@ling2016latent,@yin2017syntactic], often using small or domain-specific datasets, sometimes confined to single software projects. Datasets like DJANGO and Project Euler [@oda2015learning] were developed by human annotators, ensuring accuracy but at a high cost and resulting in limited data sizes. Others, such as those referenced in [@allamanis2013mining,@iyer2016summarizing] and IFTTT [@quirk2015language], are larger but contain more noise.
 
-Recently, large language models (LLMs) have become increasingly significant, demonstrating human-like abilities across various fields [12,13,14]. LLMs typically employ transformer architecture variants and are trained on massive data volumes to detect patterns [15].
+Recently, large language models (LLMs) have become increasingly significant, demonstrating human-like abilities across various fields [@radford2019language,@brown2020language,@ouyang2022training]. LLMs typically employ transformer architecture variants and are trained on massive data volumes to detect patterns [@vaswani2017attention].
 
 In this paper, we focus on the automated documentation of programming source code, which is a challenging task with significant practical and scientific implications for the developer community. There are hundreds of publicly available repositories that lack basic documentation on aspects such as "What does the repository do?", "How to install the package?", "How to run the code?", and "How to contribute and modify any part of the repository?". None of the related research discussed handles these tasks using LLMs; instead, they design neural networks to address them.
 
 We present an LLM-based application that developers can use as a support tool to generate basic documentation for any code repository. Some open-source applications have been developed to address this issue, to name a few:
 
-- **AutoDoc-ChatGPT** [16]
-- **AutoDoc** [17]
-- **Auto-GitHub-Docs-Generator** [18]
+- **AutoDoc-ChatGPT** [@autodoc-chatgpt]
+- **AutoDoc** [@context-labs-autodoc]
+- **Auto-GitHub-Docs-Generator** [@microsoft-auto-github-docs-generator]
 
 However, these applications suffer from two major issues. Firstly, all of them are built on top of the OpenAI APIs, requiring users to have an OpenAI API key and incurring a cost with each API request. Generating documentation for a large repository could result in costs reaching hundreds of dollars. Our application allows users to choose among OpenAI's GPT, Meta's Llama2, and Google's Gemma models. Notably, apart from the first, the other models are open-source and incur no charges, allowing documentation to be generated for free.
 
@@ -60,19 +60,19 @@ Secondly, none of the existing open-source applications provide a fine-tuned mod
 
 The application prompts the user to enter the project's name, GitHub URL, and select the desired model from the following options:
 
-- `gpt-3.5-turbo` [19]
-- `gpt-4` [20]
-- `gpt-4-32k` [21]
-- `TheBloke/Llama-2-7B-Chat-GPTQ` (quantized) [22]
-- `TheBloke/CodeLlama-7B-Instruct-GPTQ` (quantized) [23]
-- `meta-llama/Llama-2-7b-chat-hf` [24]
-- `meta-llama/CodeLlama-7b-Instruct-hf` [25]
-- `google/gemma-2b-it` [26]
-- `google/codegemma-2b-it` [27]
+- `gpt-3.5-turbo` [@gpt-3.5-turbo]
+- `gpt-4` [@gpt-4]
+- `gpt-4-32k` [@gpt-4-32k]
+- `TheBloke/Llama-2-7B-Chat-GPTQ` (quantized) [@llama-2-7b-chat-gptq]
+- `TheBloke/CodeLlama-7B-Instruct-GPTQ` (quantized) [@code-llama-7b-instruct-gptq]
+- `meta-llama/Llama-2-7b-chat-hf` [@llama-2-7b-chat-hf]
+- `meta-llama/CodeLlama-7b-Instruct-hf` [@code-llama-7b-instruct-hf]
+- `google/gemma-2b-it` [@gemma-2b-it]
+- `google/codegemma-2b-it` [@codegemma-2b-it]
 
 Note that the first three options will incur a cost for each call, and users need to provide an OpenAI API key. For large projects, the cost can reach several hundred dollars. Detailed OpenAI pricing can be found at [OpenAI Pricing](https://openai.com/api/pricing/).
 
-**Document Retrieval:** Our application indexes the codebase through a depth-first traversal of all repository contents and utilizes an LLM to generate documentation. All files are converted into text, tokenized, and then chunked, with each chunk containing 1000 tokens. The application employs the `sentence-transformers/all-mpnet-base-v2` [28] sentence encoder to convert each chunk into a 768-dimensional embedding vector, which is stored in an in-memory vector store. When a query is provided, it is converted into a similar vector using the same sentence encoder. The neighbor nearest to the query embedding vector is searched using KNN (k=4) from the vector store, utilizing cosine similarity as the distance metric. For the KNN search, we use the HNSWLib library, which implements an approximate nearest-neighbor search based on hierarchical navigable small-world graphs [29]. This methodology provides the relevant sections of the source code, aiding in answering the prompted question. The entire methodology for Retrieval Augmented Generation (RAG) and fine-tuning is illustrated in Figure 1.
+**Document Retrieval:** Our application indexes the codebase through a depth-first traversal of all repository contents and utilizes an LLM to generate documentation. All files are converted into text, tokenized, and then chunked, with each chunk containing 1000 tokens. The application employs the `sentence-transformers/all-mpnet-base-v2` [@sentence-transformers-all-mpnet-base-v2] sentence encoder to convert each chunk into a 768-dimensional embedding vector, which is stored in an in-memory vector store. When a query is provided, it is converted into a similar vector using the same sentence encoder. The neighbor nearest to the query embedding vector is searched using KNN (k=4) from the vector store, utilizing cosine similarity as the distance metric. For the KNN search, we use the HNSWLib library, which implements an approximate nearest-neighbor search based on hierarchical navigable small-world graphs [@malkov2018efficient]. This methodology provides the relevant sections of the source code, aiding in answering the prompted question. The entire methodology for Retrieval Augmented Generation (RAG) and fine-tuning is illustrated in Figure 1.
 
 ![Input to Output Workflow showing the Retrieval and Generator modules. The retrieval module uses HNSW algorithm to create a context for the prompt to the Language model for text generation.](figures/rag_workflow.jpg)
 
@@ -100,9 +100,9 @@ Answer in Markdown:
 
 ## Fine Tuning
 
-Parameter-efficient fine-tuning (PEFT) [30] is a technique in natural language processing that enhances pre-trained language models for specific tasks by fine-tuning only a subset of their parameters. This method involves freezing most of the model's layers and adjusting only the last few, thus conserving computational resources and time. Several parameter-efficient fine-tuning (PEFT) methods exist, such as Adapters, LoRA [31], etc. We chose to fine-tune with QLoRA [32] due to its significant reduction in the number of trainable parameters while maintaining performance. Given our limited resources, QLoRA is highly efficient as it adapts models for specific tasks with minimal computational overhead.
+Parameter-efficient fine-tuning (PEFT) [@lester2021power] is a technique in natural language processing that enhances pre-trained language models for specific tasks by fine-tuning only a subset of their parameters. This method involves freezing most of the model's layers and adjusting only the last few, thus conserving computational resources and time. Several parameter-efficient fine-tuning (PEFT) methods exist, such as Adapters, LoRA [@hu2022lora], etc. We chose to fine-tune with QLoRA [@dettmers2023qlora] due to its significant reduction in the number of trainable parameters while maintaining performance. Given our limited resources, QLoRA is highly efficient as it adapts models for specific tasks with minimal computational overhead.
 
-In our work, we fine-tune only one model, `TheBloke/Llama-2-7B-Chat-GPTQ` [22], which is a 4-bit quantized model with 1.13 billion parameters. It supports a maximum sequence length of 4096 tokens and requires 3.9 GB of memory. We utilized GPU clusters provided by Northwestern University for fine-tuning our model. The configuration used is 1 × NVIDIA Tesla V100 with 16GB of GPU memory. With this resource, training on a large dataset (12,803 data points) takes more than 15 hours, while training on a small dataset (339 data points) takes approximately 30 minutes for 3 epochs.
+In our work, we fine-tune only one model, `TheBloke/Llama-2-7B-Chat-GPTQ` [@llama-2-7b-chat-gptq], which is a 4-bit quantized model with 1.13 billion parameters. It supports a maximum sequence length of 4096 tokens and requires 3.9 GB of memory. We utilized GPU clusters provided by Northwestern University for fine-tuning our model. The configuration used is 1 × NVIDIA Tesla V100 with 16GB of GPU memory. With this resource, training on a large dataset (12,803 data points) takes more than 15 hours, while training on a small dataset (339 data points) takes approximately 30 minutes for 3 epochs.
 
 These resources are substantially limited compared to typical LLM fine-tuning requirements. Due to these constraints, we could only train the model for 3 epochs on a small dataset. As a result, we have made fine-tuning an optional feature, giving users the choice to fine-tune the model using their own GPU resources.
 
@@ -110,7 +110,7 @@ These resources are substantially limited compared to typical LLM fine-tuning re
 
 Approximately 200 repositories were scraped using the GitHub APIs, selected based on popularity and star count. We limit our scope to Python-based repositories; however, this approach is easily adaptable to multiple programming languages. In scenarios involving various programming languages, distinct datasets can be created for fine-tuning purposes. A CSV file was created with three features: questions, context, and answers. Questions were derived from README file headings and subheadings, identified by markdown signatures `#` or `##`. Answers correspond to the text under these headings. In our case, data consent is not required as the data is collected by scraping publicly available GitHub repositories.
 
-The entire source code from the repositories is concatenated into a single string and separated into document chunks of 1000 tokens employing LangChain's text-splitter. Using the `sentence-transformers/all-mpnet-base-v2` [28] sentence encoder, these chunks were converted into 768-dimensional vectors. Each question is then converted into a 768-dimensional vector and subjected to a KNN (k=4) search using HNSW [29] to find the closest match from the entire set of document embeddings, stored as the context.
+The entire source code from the repositories is concatenated into a single string and separated into document chunks of 1000 tokens employing LangChain's text-splitter. Using the `sentence-transformers/all-mpnet-base-v2` [@sentence-transformers-all-mpnet-base-v2] sentence encoder, these chunks were converted into 768-dimensional vectors. Each question is then converted into a 768-dimensional vector and subjected to a KNN (k=4) search using HNSW [@malkov2018efficient] to find the closest match from the entire set of document embeddings, stored as the context.
 
 **Data Preprocessing:** Following the creation of the CSV file, we pre-process the data using regex patterns to clean the text. Since the context only captures source code, this eliminates the possibility of using offensive content. Regex is used to remove hashtags, email addresses, usernames, image URLs, and other personally identifiable information. Note that only repositories written entirely in English are used, with other languages filtered out. Prompt engineering in our source code ensures that the prompts are designed to avoid generating any personally identifiable data or offensive content.
 
@@ -159,7 +159,7 @@ We'd love to accept your patches and contributions to this project. There are ju
 
 ## Before Fine-tuning
 
-We conducted a series of experiments utilizing the `TheBloke/Llama-2-7B-Chat-GPTQ` model [22] to demonstrate the functionality and efficacy of our proposed pipeline. The accompanying codebase is designed to be flexible, allowing the user to easily switch between different large language models (LLMs) by simply modifying the configuration file. Given the characteristics of LLMs, models with a greater number of parameters are generally expected to deliver enhanced performance. However, we lack the GPU resources to run a non-quantized version. The BLEU and BERT scores for the `TheBloke/Llama-2-7B-Chat-GPTQ` model are reported in Table 1 and Table 2, under the "W/O FT" or "W/O Finetuning" columns.
+We conducted a series of experiments utilizing the `TheBloke/Llama-2-7B-Chat-GPTQ` model [@llama-2-7b-chat-gptq] to demonstrate the functionality and efficacy of our proposed pipeline. The accompanying codebase is designed to be flexible, allowing the user to easily switch between different large language models (LLMs) by simply modifying the configuration file. Given the characteristics of LLMs, models with a greater number of parameters are generally expected to deliver enhanced performance. However, we lack the GPU resources to run a non-quantized version. The BLEU and BERT scores for the `TheBloke/Llama-2-7B-Chat-GPTQ` model are reported in Table 1 and Table 2, under the "W/O FT" or "W/O Finetuning" columns.
 
 ## After Fine-tuning
 
