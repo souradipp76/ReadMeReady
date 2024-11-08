@@ -201,9 +201,7 @@ with left:
                         placeholder = st.empty()
                         full_response = ''
                         for chunk in chain.stream({'input': prompt}):
-                            print(chunk)
                             if answer_chunk := chunk.get("answer"):
-                                print(answer_chunk)
                                 full_response += answer_chunk
                                 placeholder.markdown(full_response)
                     
