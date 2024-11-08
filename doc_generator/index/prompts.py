@@ -1,15 +1,18 @@
 """
 Prompts
 """
+
 from typing import List
 from doc_generator.types import FolderSummary, FileSummary
 
 
-def create_code_file_summary(file_path: str,
-                             project_name: str,
-                             file_contents: str,
-                             content_type: str,
-                             file_prompt: str) -> str:
+def create_code_file_summary(
+    file_path: str,
+    project_name: str,
+    file_contents: str,
+    content_type: str,
+    file_prompt: str,
+) -> str:
     """Create Code File Summary"""
     return f"""
     You are acting as a {content_type} documentation expert
@@ -26,11 +29,13 @@ def create_code_file_summary(file_path: str,
     """
 
 
-def create_code_questions(file_path: str,
-                          project_name: str,
-                          file_contents: str,
-                          content_type: str,
-                          target_audience: str) -> str:
+def create_code_questions(
+    file_path: str,
+    project_name: str,
+    file_contents: str,
+    content_type: str,
+    target_audience: str,
+) -> str:
     """Create Code Questions"""
     return f"""
     You are acting as a {content_type} documentation expert
@@ -48,24 +53,36 @@ def create_code_questions(file_path: str,
     """
 
 
-def folder_summary_prompt(folder_path: str,
-                          project_name: str,
-                          files: List[FileSummary],
-                          folders: List[FolderSummary],
-                          content_type: str,
-                          folder_prompt: str) -> str:
+def folder_summary_prompt(
+    folder_path: str,
+    project_name: str,
+    files: List[FileSummary],
+    folders: List[FolderSummary],
+    content_type: str,
+    folder_prompt: str,
+) -> str:
     """Folder Summary Prompt"""
-    files_summary = "\n".join([f"""
+    files_summary = "\n".join(
+        [
+            f"""
         Name: {file.file_name}
         Summary: {file.summary}
 
-      """ for file in files])
+      """
+            for file in files
+        ]
+    )
 
-    folders_summary = "\n".join([f"""
+    folders_summary = "\n".join(
+        [
+            f"""
         Name: {folder.folder_name}
         Summary: {folder.summary}
 
-      """ for folder in folders])
+      """
+            for folder in folders
+        ]
+    )
 
     return f"""
     You are acting as a {content_type} documentation expert

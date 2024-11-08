@@ -1,21 +1,15 @@
 """CLI interface for doc_generator project.
-
-Be creative! do whatever you want!
-
-- Install click or typer and create a CLI app
-- Use builtin argparse
-- Start a web application
-- Import things from your .base module
 """
+
 import questionary
 from urllib.parse import urlparse
 from doc_generator.query import query
 from doc_generator.index import index
 from doc_generator.types import (
-    AutodocRepoConfig, 
-    AutodocUserConfig, 
-    AutodocReadmeConfig, 
-    LLMModels
+    AutodocRepoConfig,
+    AutodocUserConfig,
+    AutodocReadmeConfig,
+    LLMModels,
 )
 
 
@@ -23,19 +17,7 @@ def main():  # pragma: no cover
     """
     The main function executes on commands:
     `python -m doc_generator` and `$ doc_generator `.
-
-    This is your program's entry point.
-
-    You can change this function to do whatever you want.
-    Examples:
-        * Run a test suite
-        * Run a server
-        * Do some other stuff
-        * Run a command line application (Click, Typer, ArgParse)
-        * List all available tasks
-        * Run an application (Flask, FastAPI, Django, etc.)
     """
-    # Example config objects, these need to be defined or imported properly
     print("Initializing Auto Documentation...")
 
     def url_validator(x):
@@ -46,33 +28,40 @@ def main():  # pragma: no cover
             return False
 
     name = questionary.text(
-        message="Project Name?[Example: doc_generator]").ask()
+        message="Project Name?[Example: doc_generator]"
+    ).ask()
     project_root = questionary.path(
-        message='Project Root?[Example: ./doc_generator/]',
+        message="Project Root?[Example: ./doc_generator/]",
         only_directories=True,
-        default=f"./{name}/").ask()
+        default=f"./{name}/",
+    ).ask()
     project_url = questionary.text(
         message="Project URL?[Example: \
             https://github.com/username/doc_generator]",
-        validate=url_validator).ask()
+        validate=url_validator,
+    ).ask()
     output_dir = questionary.path(
-        message='Output Directory?[Example: ./output/doc_generator/]',
+        message="Output Directory?[Example: ./output/doc_generator/]",
         only_directories=True,
-        default=f"./output/{name}/").ask()
+        default=f"./output/{name}/",
+    ).ask()
     mode = questionary.select(
         message="Documentation Mode?",
         choices=["Readme", "Query"],
-        default="Readme").ask()
-    
+        default="Readme",
+    ).ask()
+
     if mode.lower() == "readme":
         headings = questionary.text(
-            message="List of Readme Headings?(comma separated)[Example: #Introduction,##Usage]"
+            message="List of Readme Headings?(comma separated)"
+            + "[Example: #Introduction,##Usage]"
         ).ask()
 
     model_name = questionary.select(
         message="Which model?",
         choices=[
             LLMModels.TINYLLAMA_1p1B_CHAT_GGUF.value,
+            LLMModels.GOOGLE_GEMMA_2B_INSTRUCT_GGUF.value,
             LLMModels.LLAMA2_7B_CHAT_GPTQ.value,
             LLMModels.LLAMA2_13B_CHAT_GPTQ.value,
             LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ.value,
@@ -82,27 +71,28 @@ def main():  # pragma: no cover
             LLMModels.CODELLAMA_7B_INSTRUCT_HF.value,
             LLMModels.CODELLAMA_13B_INSTRUCT_HF.value,
             LLMModels.GOOGLE_GEMMA_2B_INSTRUCT.value,
-            LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value
+            LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value,
         ],
-        default=LLMModels.TINYLLAMA_1p1B_CHAT_GGUF.value).ask()
-    peft = questionary.confirm(
-        message="Is finetuned?",
-        default=False).ask()
+        default=LLMModels.TINYLLAMA_1p1B_CHAT_GGUF.value,
+    ).ask()
+    peft = questionary.confirm(message="Is finetuned?", default=False).ask()
 
     peft_model_path = None
     if peft:
         peft_model_path = questionary.path(
-            message='Finetuned Model Path?[Example: ./output/model/]',
-            only_directories=True).ask()
-    
+            message="Finetuned Model Path?[Example: ./output/model/]",
+            only_directories=True,
+        ).ask()
+
     device = questionary.select(
-        message="Device?",
-        choices=["cpu", "gpu"],
-        default="cpu").ask()
-    
+        message="Device?", choices=["cpu", "gpu"], default="cpu"
+    ).ask()
+
     match model_name:
         case LLMModels.TINYLLAMA_1p1B_CHAT_GGUF.value:
             model = LLMModels.TINYLLAMA_1p1B_CHAT_GGUF
+        case LLMModels.GOOGLE_GEMMA_2B_INSTRUCT_GGUF.value:
+            model = LLMModels.GOOGLE_GEMMA_2B_INSTRUCT_GGUF
         case LLMModels.LLAMA2_7B_CHAT_GPTQ.value:
             model = LLMModels.LLAMA2_7B_CHAT_GPTQ
         case LLMModels.LLAMA2_13B_CHAT_GPTQ.value:
@@ -143,7 +133,7 @@ def main():  # pragma: no cover
             "*.svg",
             "*.md",
             "*.mdx",
-            "*.toml"
+            "*.toml",
         ],
         "file_prompt": "Write a detailed technical explanation of \
             what this code does. \n      Focus on the high-level \
@@ -169,11 +159,9 @@ def main():  # pragma: no cover
         "priority": None,
         "max_concurrent_calls": 50,
         "add_questions": False,
-        "device": device
+        "device": device,
     }
-    user_config = {
-        "llms": [model]
-    }
+    user_config = {"llms": [model]}
 
     repo_conf = AutodocRepoConfig(
         name=repo_config["name"],
@@ -192,12 +180,12 @@ def main():  # pragma: no cover
         content_type=repo_config["content_type"],
         target_audience=repo_config["target_audience"],
         link_hosted=repo_config["link_hosted"],
-        device=repo_conf["device"],
+        device=repo_config["device"],
     )
 
-    usr_conf = AutodocUserConfig(llms=user_config['llms'])
+    usr_conf = AutodocUserConfig(llms=user_config["llms"])
 
-    readme_conf = AutodocReadmeConfig(headings = headings)
+    readme_conf = AutodocReadmeConfig(headings=headings)
 
     index.index(repo_conf)
     print("Done Indexing !!")
