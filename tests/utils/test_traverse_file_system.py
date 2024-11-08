@@ -120,9 +120,12 @@ def test_process_directory_called():
 def test_process_file_called_for_text_file():
     with patch("doc_generator.utils.traverse_file_system.Path") as MockPath:
         with patch(
-            "doc_generator.utils.traverse_file_system.open", mock_open(read_data="dummy data")
+            "doc_generator.utils.traverse_file_system.open",
+            mock_open(read_data="dummy data"),
         ) as mock_file:
-            with patch("doc_generator.utils.traverse_file_system.magic.from_buffer") as mock_magic:
+            with patch(
+                "doc_generator.utils.traverse_file_system.magic.from_buffer"
+            ) as mock_magic:
                 mock_magic.return_value = "text/plain"
 
                 mock_input_path = MockPath.return_value
@@ -158,9 +161,12 @@ def test_process_file_called_for_text_file():
 def test_process_file_not_called_for_non_text_file():
     with patch("doc_generator.utils.traverse_file_system.Path") as MockPath:
         with patch(
-            "doc_generator.utils.traverse_file_system.open", mock_open(read_data="dummy data")
+            "doc_generator.utils.traverse_file_system.open",
+            mock_open(read_data="dummy data"),
         ) as mock_file:
-            with patch("doc_generator.utils.traverse_file_system.magic.from_buffer") as mock_magic:
+            with patch(
+                "doc_generator.utils.traverse_file_system.magic.from_buffer"
+            ) as mock_magic:
                 mock_magic.return_value = "application/octet-stream"
 
                 mock_input_path = MockPath.return_value
@@ -223,9 +229,12 @@ def test_process_folder_is_none():
 def test_process_file_is_none():
     with patch("doc_generator.utils.traverse_file_system.Path") as MockPath:
         with patch(
-            "doc_generator.utils.traverse_file_system.open", mock_open(read_data="dummy data")
+            "doc_generator.utils.traverse_file_system.open",
+            mock_open(read_data="dummy data"),
         ) as mock_file:
-            with patch("doc_generator.utils.traverse_file_system.magic.from_buffer") as mock_magic:
+            with patch(
+                "doc_generator.utils.traverse_file_system.magic.from_buffer"
+            ) as mock_magic:
                 mock_magic.return_value = "text/plain"
 
                 mock_input_path = MockPath.return_value
