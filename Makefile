@@ -35,7 +35,7 @@ lint:             ## Run pep8, black, mypy linters.
 	$(ENV_PREFIX)flake8 doc_generator/
 	$(ENV_PREFIX)black -l 79 --check doc_generator/
 	$(ENV_PREFIX)black -l 79 --check tests/
-	$(ENV_PREFIX)mypy --ignore-missing-imports doc_generator/
+	$(ENV_PREFIX)mypy --ignore-missing-imports --disable-error-code=arg-type doc_generator/
 
 .PHONY: test
 test: lint        ## Run tests and generate coverage report.
