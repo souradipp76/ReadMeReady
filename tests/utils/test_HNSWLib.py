@@ -249,7 +249,7 @@ def test_save_directory_exists():
     with patch('os.path.exists') as mock_exists:
         with patch('os.makedirs') as mock_makedirs:
             mock_exists.return_value = True
-            hnswlib_instance.save('existing_directory')
+            hnswlib_instance.save('.')
             mock_makedirs.assert_not_called()
 
 
