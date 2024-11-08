@@ -193,16 +193,19 @@ with left:
         # Generate a new response if last message is not from assistant
         if st.session_state.messages[-1]["role"] != "assistant":
             with st.spinner("Thinking..."):
-                if "chain" not in st.session_state.keys():
-                    full_response = 'Please setup model and repository!!'
-                else:
-                    chain = st.session_state.chain
-                    full_response = ''
-                    for chunk in chain.stream({'input': prompt}):
-                        print(chunk)
-                        if answer_chunk := chunk.get("answer"):
-                            full_response += answer_chunk
-                history.chat_message("assistant").markdown(full_response)
+                with history.chat_message("assistant"):
+                    if "chain" not in st.session_state.keys():
+                        full_response = 'Please setup model and repository!!'
+                    else:
+                        chain = st.session_state.chain
+                        placeholder = st.empty()
+                        full_response = ''
+                        for chunk in chain.stream({'input': prompt}):
+                            print(chunk)
+                            if answer_chunk := chunk.get("answer"):
+                                print(answer_chunk)
+                                full_response += answer_chunk
+                                placeholder.markdown(full_response)
                     
             message = {"role": "assistant", "content": full_response}
             st.session_state.messages.append(message)
