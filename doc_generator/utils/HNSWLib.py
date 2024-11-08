@@ -81,6 +81,7 @@ class HNSWLib(SaveableVectorStore):
                 self.args.num_dimensions = len(vectors[0])
             self._index = HNSWLib.get_hierarchical_nsw(self.args)
         if not self._index.element_count:
+            print("herer")
             self._index.init_index(len(vectors))
 
     def add_vectors(
@@ -94,9 +95,8 @@ class HNSWLib(SaveableVectorStore):
             raise ValueError("Vectors and documents must have the same length")
         if len(vectors[0]) != self.args.num_dimensions:
             raise ValueError(
-                f"Vectors must have the same length as the \
-                             number of dimensions \
-                             ({self.args.num_dimensions})"
+                "Vectors must have the same length as the "
+                + f"number of dimensions ({self.args.num_dimensions})"
             )
         assert self._index is not None
         capacity = self._index.get_max_elements()
@@ -147,16 +147,15 @@ class HNSWLib(SaveableVectorStore):
     ) -> List:
         if len(embedding) != self.args.num_dimensions:
             raise ValueError(
-                f"Query vector must have the same length as the \
-                             number of dimensions \
-                             ({self.args.num_dimensions})"
+                "Query vector must have the same length as the "
+                + f"number of dimensions ({self.args.num_dimensions})"
             )
         assert self._index is not None
         total = self._index.element_count
         if k > total:
             print(
-                f"k ({k}) is greater than the number of elements in the \
-                  index ({total}), setting k to {total}"
+                f"k ({k}) is greater than the number of elements in the "
+                + f"index ({total}), setting k to {total}"
             )
             k = total
         labels, distances = self._index.knn_query(embedding, k)
@@ -181,7 +180,7 @@ class HNSWLib(SaveableVectorStore):
         with open(os.path.join(directory, "docstore.json"), "w") as f:
             docstore_data = []
             for key, val in self.docstore._dict.items():
-                docstore_data.append([key, val.dict()])
+                docstore_data.append([key, val.model_dump()])
             json.dump(docstore_data, f)
         with open(os.path.join(directory, "args.json"), "w") as f:
             json.dump(
