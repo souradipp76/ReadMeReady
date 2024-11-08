@@ -11,7 +11,12 @@ import questionary
 from urllib.parse import urlparse
 from doc_generator.query import query
 from doc_generator.index import index
-from doc_generator.types import AutodocRepoConfig, AutodocUserConfig, LLMModels
+from doc_generator.types import (
+    AutodocRepoConfig, 
+    AutodocUserConfig, 
+    AutodocReadmeConfig, 
+    LLMModels
+)
 
 
 def main():  # pragma: no cover
@@ -58,9 +63,16 @@ def main():  # pragma: no cover
         message="Documentation Mode?",
         choices=["Readme", "Query"],
         default="Readme").ask()
+    
+    if mode.lower() == "readme":
+        headings = questionary.text(
+            message="List of Readme Headings?(comma separated)[Example: #Introduction,##Usage]"
+        ).ask()
+
     model_name = questionary.select(
         message="Which model?",
         choices=[
+            LLMModels.TINYLLAMA_1p1B_CHAT_GGUF.value,
             LLMModels.LLAMA2_7B_CHAT_GPTQ.value,
             LLMModels.LLAMA2_13B_CHAT_GPTQ.value,
             LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ.value,
@@ -72,7 +84,7 @@ def main():  # pragma: no cover
             LLMModels.GOOGLE_GEMMA_2B_INSTRUCT.value,
             LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value
         ],
-        default=LLMModels.LLAMA2_7B_CHAT_GPTQ.value).ask()
+        default=LLMModels.TINYLLAMA_1p1B_CHAT_GGUF.value).ask()
     peft = questionary.confirm(
         message="Is finetuned?",
         default=False).ask()
@@ -82,8 +94,15 @@ def main():  # pragma: no cover
         peft_model_path = questionary.path(
             message='Finetuned Model Path?[Example: ./output/model/]',
             only_directories=True).ask()
-
+    
+    device = questionary.select(
+        message="Device?",
+        choices=["cpu", "gpu"],
+        default="cpu").ask()
+    
     match model_name:
+        case LLMModels.TINYLLAMA_1p1B_CHAT_GGUF.value:
+            model = LLMModels.TINYLLAMA_1p1B_CHAT_GGUF
         case LLMModels.LLAMA2_7B_CHAT_GPTQ.value:
             model = LLMModels.LLAMA2_7B_CHAT_GPTQ
         case LLMModels.LLAMA2_13B_CHAT_GPTQ.value:
@@ -149,7 +168,8 @@ def main():  # pragma: no cover
         "link_hosted": True,
         "priority": None,
         "max_concurrent_calls": 50,
-        "add_questions": False
+        "add_questions": False,
+        "device": device
     }
     user_config = {
         "llms": [model]
@@ -172,9 +192,12 @@ def main():  # pragma: no cover
         content_type=repo_config["content_type"],
         target_audience=repo_config["target_audience"],
         link_hosted=repo_config["link_hosted"],
+        device=repo_conf["device"],
     )
 
     usr_conf = AutodocUserConfig(llms=user_config['llms'])
+
+    readme_conf = AutodocReadmeConfig(headings = headings)
 
     index.index(repo_conf)
     print("Done Indexing !!")
@@ -182,4 +205,4 @@ def main():  # pragma: no cover
     if mode.lower() == "query":
         query.query(repo_conf, usr_conf)
     else:
-        query.generate_readme(repo_conf, usr_conf)
+        query.generate_readme(repo_conf, usr_conf, readme_conf)

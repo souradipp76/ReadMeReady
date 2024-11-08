@@ -10,7 +10,7 @@ from prompt_toolkit.shortcuts import clear
 
 from doc_generator.query.create_chat_chain import (make_qa_chain,
                                                    make_readme_chain)
-from doc_generator.types import AutodocRepoConfig, AutodocUserConfig
+from doc_generator.types import AutodocRepoConfig, AutodocUserConfig, AutodocReadmeConfig
 from doc_generator.utils.HNSWLib import HNSWLib
 from doc_generator.utils.llm_utils import get_embeddings
 
@@ -23,19 +23,45 @@ def display_welcome_message(project_name):
     print(f"Ask any questions related to the {project_name} codebase, \
           and I'll try to help. Type 'exit' to quit.\n")
 
+def init_qa_chain(repo_config: AutodocRepoConfig, user_config: AutodocUserConfig):
+    data_path = os.path.join(repo_config.output, 'docs', 'data')
+    embeddings = get_embeddings(repo_config.llms[0].value, repo_config.device)
+    vector_store = HNSWLib.load(data_path, embeddings)
+    chain = make_qa_chain(
+        repo_config.name,
+        repo_config.repository_url,
+        repo_config.content_type,
+        repo_config.chat_prompt,
+        repo_config.target_audience,
+        vector_store,
+        user_config.llms,
+        on_token_stream=user_config.streaming
+    )
+
+    return chain
+
+def init_readme_chain(repo_config: AutodocRepoConfig, user_config: AutodocUserConfig):
+    data_path = os.path.join(repo_config.output, 'docs', 'data')
+    embeddings = get_embeddings(repo_config.llms[0].value, repo_config.device)
+    vector_store = HNSWLib.load(data_path, embeddings)
+    chain = make_readme_chain(
+        repo_config.name,
+        repo_config.repository_url,
+        repo_config.content_type,
+        repo_config.chat_prompt,
+        repo_config.target_audience,
+        vector_store,
+        user_config.llms,
+        repo_config.peft_model_path,
+        on_token_stream=user_config.streaming
+    )
+
+    return chain
+
 
 def query(repo_config: AutodocRepoConfig, user_confg: AutodocUserConfig):
     """Query"""
-    data_path = os.path.join(repo_config.output, 'docs', 'data')
-    embeddings = get_embeddings(repo_config.llms[0].value)
-    vector_store = HNSWLib.load(data_path, embeddings)
-    chain = make_qa_chain(repo_config.name,
-                          repo_config.repository_url,
-                          repo_config.content_type,
-                          repo_config.chat_prompt,
-                          repo_config.target_audience,
-                          vector_store,
-                          user_confg.llms)
+    chain = init_qa_chain(repo_config, user_confg)
 
     clear()
     display_welcome_message(repo_config.name)
@@ -60,46 +86,27 @@ def query(repo_config: AutodocRepoConfig, user_confg: AutodocUserConfig):
             traceback.print_exc()
 
 
-def generate_readme(repo_config: AutodocRepoConfig,
-                    user_confg: AutodocUserConfig):
+def generate_readme(
+        repo_config: AutodocRepoConfig,
+        user_config: AutodocUserConfig,
+        readme_config: AutodocReadmeConfig
+    ):
     """Generate README"""
-    data_path = os.path.join(repo_config.output, 'docs', 'data')
-    embeddings = get_embeddings(repo_config.llms[0].value)
-    vector_store = HNSWLib.load(data_path, embeddings)
-    chain = make_readme_chain(repo_config.name,
-                              repo_config.repository_url,
-                              repo_config.content_type,
-                              repo_config.chat_prompt,
-                              repo_config.target_audience,
-                              vector_store,
-                              user_confg.llms,
-                              repo_config.peft_model_path)
+    chain = init_readme_chain(repo_config, user_config)
 
     clear()
 
     print('Generating README...')
-    readme_path = os.path.join(data_path,
-                               f"README_{repo_config.llms[0].name}.md")
+    data_path = os.path.join(repo_config.output, 'docs', 'data')
+    readme_path = os.path.join(
+        data_path,
+        f"README_{repo_config.llms[0].name}.md"
+    )
     with open(readme_path, "w", encoding='utf-8') as file:
         file.write(f"# {repo_config.name}")
 
     with open(readme_path, "a", encoding='utf-8') as file:
-        headings = [
-            "## NAME",
-            "## DESCRIPTION",
-            "## USAGE",
-            "## INSTALLATION",
-            "### REQUIREMENTS",
-            "### MANUAL",
-            "### AUTOMATIC",
-            "#### Linux",
-            "#### OS X",
-            "## Windows",
-            "## KNOWN ISSUES",
-            "## REPORTING BUGS",
-            "## AUTHORS",
-            "## COPYRIGHT"
-            ]
+        headings = readme_config.headings
         for heading in headings:
             question = f"{heading}"
             try:
