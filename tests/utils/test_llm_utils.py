@@ -24,13 +24,21 @@ def test_get_gemma_chat_model_with_peft():
         "device": "cpu",
         "peft_model_path": "path/to/peft/model",
     }
-    with patch("doc_generator.utils.llm_utils.hf_hub_download") as mock_hf_download, \
-         patch("doc_generator.utils.llm_utils.get_tokenizer") as mock_get_tokenizer, \
-         patch("doc_generator.utils.llm_utils.AutoModelForCausalLM.from_pretrained") as mock_auto_model, \
-         patch("doc_generator.utils.llm_utils.PeftModel.from_pretrained") as mock_peft_model, \
-         patch("doc_generator.utils.llm_utils.pipeline") as mock_pipeline, \
-         patch("doc_generator.utils.llm_utils.HuggingFacePipeline") as mock_hf_pipeline, \
-         patch.dict(os.environ, {"HF_TOKEN": "test_token"}):
+    with patch(
+        "doc_generator.utils.llm_utils.hf_hub_download"
+    ) as mock_hf_download, patch(
+        "doc_generator.utils.llm_utils.get_tokenizer"
+    ) as mock_get_tokenizer, patch(
+        "doc_generator.utils.llm_utils.AutoModelForCausalLM.from_pretrained"
+    ) as mock_auto_model, patch(
+        "doc_generator.utils.llm_utils.PeftModel.from_pretrained"
+    ) as mock_peft_model, patch(
+        "doc_generator.utils.llm_utils.pipeline"
+    ) as mock_pipeline, patch(
+        "doc_generator.utils.llm_utils.HuggingFacePipeline"
+    ) as mock_hf_pipeline, patch.dict(
+        os.environ, {"HF_TOKEN": "test_token"}
+    ):
 
         mock_tokenizer = MagicMock()
         mock_get_tokenizer.return_value = mock_tokenizer
@@ -49,15 +57,21 @@ def test_get_gemma_chat_model_with_peft():
 
         result = get_gemma_chat_model(model_name, model_kwargs=model_kwargs)
 
-        mock_hf_download.assert_called_once_with(model_name, model_kwargs["gguf_file"])
-        mock_get_tokenizer.assert_called_once_with(model_name, model_kwargs["gguf_file"])
+        mock_hf_download.assert_called_once_with(
+            model_name, model_kwargs["gguf_file"]
+        )
+        mock_get_tokenizer.assert_called_once_with(
+            model_name, model_kwargs["gguf_file"]
+        )
         mock_auto_model.assert_called_once_with(
             model_name,
             gguf_file=model_kwargs["gguf_file"],
             device_map=model_kwargs["device"],
             token="test_token",
         )
-        mock_peft_model.assert_called_once_with(mock_model, model_kwargs["peft_model_path"])
+        mock_peft_model.assert_called_once_with(
+            mock_model, model_kwargs["peft_model_path"]
+        )
         mock_pipeline.assert_called_once()
         mock_hf_pipeline.assert_called_once_with(
             pipeline=mock_pipeline_instance, model_kwargs=model_kwargs
@@ -71,13 +85,21 @@ def test_get_gemma_chat_model_without_peft():
         "gguf_file": "some_file.gguf",
         "device": "cpu",
     }
-    with patch("doc_generator.utils.llm_utils.hf_hub_download") as mock_hf_download, \
-         patch("doc_generator.utils.llm_utils.get_tokenizer") as mock_get_tokenizer, \
-         patch("doc_generator.utils.llm_utils.AutoModelForCausalLM.from_pretrained") as mock_auto_model, \
-         patch("doc_generator.utils.llm_utils.PeftModel.from_pretrained") as mock_peft_model, \
-         patch("doc_generator.utils.llm_utils.pipeline") as mock_pipeline, \
-         patch("doc_generator.utils.llm_utils.HuggingFacePipeline") as mock_hf_pipeline, \
-         patch.dict(os.environ, {"HF_TOKEN": "test_token"}):
+    with patch(
+        "doc_generator.utils.llm_utils.hf_hub_download"
+    ) as mock_hf_download, patch(
+        "doc_generator.utils.llm_utils.get_tokenizer"
+    ) as mock_get_tokenizer, patch(
+        "doc_generator.utils.llm_utils.AutoModelForCausalLM.from_pretrained"
+    ) as mock_auto_model, patch(
+        "doc_generator.utils.llm_utils.PeftModel.from_pretrained"
+    ) as mock_peft_model, patch(
+        "doc_generator.utils.llm_utils.pipeline"
+    ) as mock_pipeline, patch(
+        "doc_generator.utils.llm_utils.HuggingFacePipeline"
+    ) as mock_hf_pipeline, patch.dict(
+        os.environ, {"HF_TOKEN": "test_token"}
+    ):
 
         mock_tokenizer = MagicMock()
         mock_get_tokenizer.return_value = mock_tokenizer
@@ -93,8 +115,12 @@ def test_get_gemma_chat_model_without_peft():
 
         result = get_gemma_chat_model(model_name, model_kwargs=model_kwargs)
 
-        mock_hf_download.assert_called_once_with(model_name, model_kwargs["gguf_file"])
-        mock_get_tokenizer.assert_called_once_with(model_name, model_kwargs["gguf_file"])
+        mock_hf_download.assert_called_once_with(
+            model_name, model_kwargs["gguf_file"]
+        )
+        mock_get_tokenizer.assert_called_once_with(
+            model_name, model_kwargs["gguf_file"]
+        )
         mock_auto_model.assert_called_once_with(
             model_name,
             gguf_file=model_kwargs["gguf_file"],
@@ -116,13 +142,21 @@ def test_get_llama_chat_model_with_peft():
         "device": "cpu",
         "peft_model": "path/to/peft/model",
     }
-    with patch("doc_generator.utils.llm_utils.hf_hub_download") as mock_hf_download, \
-         patch("doc_generator.utils.llm_utils.get_tokenizer") as mock_get_tokenizer, \
-         patch("doc_generator.utils.llm_utils.AutoModelForCausalLM.from_pretrained") as mock_auto_model, \
-         patch("doc_generator.utils.llm_utils.PeftModel.from_pretrained") as mock_peft_model, \
-         patch("doc_generator.utils.llm_utils.pipeline") as mock_pipeline, \
-         patch("doc_generator.utils.llm_utils.HuggingFacePipeline") as mock_hf_pipeline, \
-         patch.dict(os.environ, {"HF_TOKEN": "test_token"}):
+    with patch(
+        "doc_generator.utils.llm_utils.hf_hub_download"
+    ) as mock_hf_download, patch(
+        "doc_generator.utils.llm_utils.get_tokenizer"
+    ) as mock_get_tokenizer, patch(
+        "doc_generator.utils.llm_utils.AutoModelForCausalLM.from_pretrained"
+    ) as mock_auto_model, patch(
+        "doc_generator.utils.llm_utils.PeftModel.from_pretrained"
+    ) as mock_peft_model, patch(
+        "doc_generator.utils.llm_utils.pipeline"
+    ) as mock_pipeline, patch(
+        "doc_generator.utils.llm_utils.HuggingFacePipeline"
+    ) as mock_hf_pipeline, patch.dict(
+        os.environ, {"HF_TOKEN": "test_token"}
+    ):
 
         mock_tokenizer = MagicMock()
         mock_get_tokenizer.return_value = mock_tokenizer
@@ -143,15 +177,21 @@ def test_get_llama_chat_model_with_peft():
 
         result = get_llama_chat_model(model_name, model_kwargs=model_kwargs)
 
-        mock_hf_download.assert_called_once_with(model_name, model_kwargs["gguf_file"])
-        mock_get_tokenizer.assert_called_once_with(model_name, model_kwargs["gguf_file"])
+        mock_hf_download.assert_called_once_with(
+            model_name, model_kwargs["gguf_file"]
+        )
+        mock_get_tokenizer.assert_called_once_with(
+            model_name, model_kwargs["gguf_file"]
+        )
         assert mock_tokenizer.pad_token == mock_tokenizer.eos_token
         mock_auto_model.assert_called_once_with(
             model_name,
             gguf_file=model_kwargs["gguf_file"],
             device_map=model_kwargs["device"],
         )
-        mock_peft_model.assert_called_once_with(mock_model, model_kwargs["peft_model"])
+        mock_peft_model.assert_called_once_with(
+            mock_model, model_kwargs["peft_model"]
+        )
         mock_pipeline.assert_called_once()
         mock_hf_pipeline.assert_called_once_with(
             pipeline=mock_pipeline_instance, model_kwargs=model_kwargs
@@ -165,13 +205,21 @@ def test_get_llama_chat_model_without_peft():
         "gguf_file": "some_file.gguf",
         "device": "cpu",
     }
-    with patch("doc_generator.utils.llm_utils.hf_hub_download") as mock_hf_download, \
-         patch("doc_generator.utils.llm_utils.get_tokenizer") as mock_get_tokenizer, \
-         patch("doc_generator.utils.llm_utils.AutoModelForCausalLM.from_pretrained") as mock_auto_model, \
-         patch("doc_generator.utils.llm_utils.PeftModel.from_pretrained") as mock_peft_model, \
-         patch("doc_generator.utils.llm_utils.pipeline") as mock_pipeline, \
-         patch("doc_generator.utils.llm_utils.HuggingFacePipeline") as mock_hf_pipeline, \
-         patch.dict(os.environ, {"HF_TOKEN": "test_token"}):
+    with patch(
+        "doc_generator.utils.llm_utils.hf_hub_download"
+    ) as mock_hf_download, patch(
+        "doc_generator.utils.llm_utils.get_tokenizer"
+    ) as mock_get_tokenizer, patch(
+        "doc_generator.utils.llm_utils.AutoModelForCausalLM.from_pretrained"
+    ) as mock_auto_model, patch(
+        "doc_generator.utils.llm_utils.PeftModel.from_pretrained"
+    ) as mock_peft_model, patch(
+        "doc_generator.utils.llm_utils.pipeline"
+    ) as mock_pipeline, patch(
+        "doc_generator.utils.llm_utils.HuggingFacePipeline"
+    ) as mock_hf_pipeline, patch.dict(
+        os.environ, {"HF_TOKEN": "test_token"}
+    ):
 
         mock_tokenizer = MagicMock()
         mock_get_tokenizer.return_value = mock_tokenizer
@@ -189,8 +237,12 @@ def test_get_llama_chat_model_without_peft():
 
         result = get_llama_chat_model(model_name, model_kwargs=model_kwargs)
 
-        mock_hf_download.assert_called_once_with(model_name, model_kwargs["gguf_file"])
-        mock_get_tokenizer.assert_called_once_with(model_name, model_kwargs["gguf_file"])
+        mock_hf_download.assert_called_once_with(
+            model_name, model_kwargs["gguf_file"]
+        )
+        mock_get_tokenizer.assert_called_once_with(
+            model_name, model_kwargs["gguf_file"]
+        )
         assert mock_tokenizer.pad_token == mock_tokenizer.eos_token
         mock_auto_model.assert_called_once_with(
             model_name,
@@ -235,7 +287,9 @@ def test_get_openai_api_key_not_set(monkeypatch):
 def test_get_tokenizer_with_hf_token(monkeypatch):
     model_name = "some-model"
     gguf_file = "some_file.gguf"
-    with patch("doc_generator.utils.llm_utils.AutoTokenizer.from_pretrained") as mock_from_pretrained:
+    with patch(
+        "doc_generator.utils.llm_utils.AutoTokenizer.from_pretrained"
+    ) as mock_from_pretrained:
         mock_tokenizer = MagicMock()
         mock_from_pretrained.return_value = mock_tokenizer
 
@@ -253,7 +307,9 @@ def test_get_tokenizer_with_hf_token(monkeypatch):
 def test_get_tokenizer_without_hf_token(monkeypatch):
     model_name = "some-model"
     gguf_file = "some_file.gguf"
-    with patch("doc_generator.utils.llm_utils.AutoTokenizer.from_pretrained") as mock_from_pretrained:
+    with patch(
+        "doc_generator.utils.llm_utils.AutoTokenizer.from_pretrained"
+    ) as mock_from_pretrained:
         monkeypatch.delenv("HF_TOKEN", raising=False)
         with pytest.raises(KeyError):
             get_tokenizer(model_name, gguf_file)
@@ -295,8 +351,12 @@ def test_print_model_details(capsys):
     expected_outputs = []
     for model_details in test_models.values():
         tokens = model_details.input_tokens + model_details.output_tokens
-        cost = ((model_details.input_tokens / 1000) * model_details.input_cost_per_1k_tokens) + (
-            (model_details.output_tokens / 1000) * model_details.output_cost_per_1k_tokens
+        cost = (
+            (model_details.input_tokens / 1000)
+            * model_details.input_cost_per_1k_tokens
+        ) + (
+            (model_details.output_tokens / 1000)
+            * model_details.output_cost_per_1k_tokens
         )
         result = {
             "Model": model_details.name,
@@ -329,7 +389,9 @@ def test_print_model_details_empty(capsys):
     print_model_details(test_models)
     captured = capsys.readouterr()
     output_lines = captured.out.strip().split("\n")
-    assert output_lines == ["{'Model': 'Total', 'File Count': 0, 'Succeeded': 0, 'Failed': 0, 'Tokens': 0, 'Cost': 0}"]
+    assert output_lines == [
+        "{'Model': 'Total', 'File Count': 0, 'Succeeded': 0, 'Failed': 0, 'Tokens': 0, 'Cost': 0}"
+    ]
 
 
 def test_total_index_cost_estimate():
@@ -364,8 +426,10 @@ def test_total_index_cost_estimate():
         total_cost = total_index_cost_estimate(None)
 
     expected_cost = sum(
-        (model_details.input_tokens / 1000) * model_details.input_cost_per_1k_tokens
-        + (model_details.output_tokens / 1000) * model_details.output_cost_per_1k_tokens
+        (model_details.input_tokens / 1000)
+        * model_details.input_cost_per_1k_tokens
+        + (model_details.output_tokens / 1000)
+        * model_details.output_cost_per_1k_tokens
         for model_details in test_models.values()
     )
     assert total_cost == expected_cost
@@ -375,7 +439,9 @@ def test_get_embeddings_llama_model():
     model = "llama-something"
     device = "cpu"
 
-    with patch("doc_generator.utils.llm_utils.HuggingFaceEmbeddings") as mock_hf_embeddings:
+    with patch(
+        "doc_generator.utils.llm_utils.HuggingFaceEmbeddings"
+    ) as mock_hf_embeddings:
         embeddings = get_embeddings(model, device)
         mock_hf_embeddings.assert_called_once_with(
             model_name="sentence-transformers/all-mpnet-base-v2",
@@ -389,7 +455,9 @@ def test_get_embeddings_non_llama_model():
     model = "gpt-3.5-turbo"
     device = "cpu"
 
-    with patch("doc_generator.utils.llm_utils.OpenAIEmbeddings") as mock_openai_embeddings:
+    with patch(
+        "doc_generator.utils.llm_utils.OpenAIEmbeddings"
+    ) as mock_openai_embeddings:
         embeddings = get_embeddings(model, device)
         mock_openai_embeddings.assert_called_once_with()
         assert embeddings == mock_openai_embeddings.return_value

@@ -339,9 +339,9 @@ def print_model_details(models):
             "File Count": model_details.total,
             "Succeeded": model_details.succeeded,
             "Failed": model_details.failed,
-            "Tokens": model_details.inputTokens + model_details.output_tokens,
+            "Tokens": model_details.input_tokens + model_details.output_tokens,
             "Cost": (
-                (model_details.inputTokens / 1000)
+                (model_details.input_tokens / 1000)
                 * model_details.input_cost_per_1k_tokens
                 + (model_details.output_tokens / 1000)
                 * model_details.output_cost_per_1k_tokens

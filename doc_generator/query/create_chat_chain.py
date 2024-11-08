@@ -4,8 +4,11 @@ Create Chat Chain
 
 from typing import List
 from langchain.chains.conversational_retrieval.base import ChatVectorDBChain
-from langchain.chains import LLMChain, StuffDocumentsChain
+from langchain.chains import LLMChain
 from langchain.chains import create_retrieval_chain
+from langchain.chains.combine_documents.stuff import (
+    create_stuff_documents_chain,
+)
 from langchain.prompts import PromptTemplate
 from doc_generator.types import LLMModels
 from doc_generator.utils.llm_utils import (
@@ -204,8 +207,8 @@ def make_qa_chain(
         chat_prompt,
         target_audience,
     )
-    doc_chain = StuffDocumentsChain(
-        llm_chain=doc_chat_model, document_prompt=qa_prompt
+    doc_chain = create_stuff_documents_chain(
+        llm=doc_chat_model, prompt=qa_prompt
     )
 
     return ChatVectorDBChain(
@@ -268,8 +271,8 @@ def make_readme_chain(
         chat_prompt,
         target_audience,
     )
-    doc_chain = StuffDocumentsChain(
-        llm_chain=doc_chat_model, document_prompt=readme_prompt
+    doc_chain = create_stuff_documents_chain(
+        llm=doc_chat_model, prompt=readme_prompt
     )
 
     return create_retrieval_chain(
