@@ -1,4 +1,4 @@
-def get_file_name(input_str, delimiter='.', extension='.md'):
+def get_file_name(input_str, delimiter=".", extension=".md"):
     """Get File Name"""
     last_delimiter_index = input_str.rfind(delimiter)
     if last_delimiter_index == -1:

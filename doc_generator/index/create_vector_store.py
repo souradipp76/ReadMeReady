@@ -1,6 +1,7 @@
 """
 Create Vector Store
 """
+
 import fnmatch
 import os
 from pathlib import Path
@@ -14,15 +15,16 @@ from doc_generator.utils.llm_utils import get_embeddings, LLMModels
 
 
 def should_ignore(file_name: str, ignore: List[str]):
-    return any(fnmatch.fnmatch(file_name, pattern)
-                for pattern in ignore)
+    return any(fnmatch.fnmatch(file_name, pattern) for pattern in ignore)
+
 
 def process_file(file_path: str, ignore: List[str]):
     """
     Process File
     """
+
     def read_file(path):
-        with open(path, 'r', encoding='utf8') as file:
+        with open(path, "r", encoding="utf8") as file:
             return file.read()
 
     if should_ignore(file_path, ignore):
@@ -30,7 +32,7 @@ def process_file(file_path: str, ignore: List[str]):
 
     try:
         file_contents = read_file(file_path)
-        metadata = {'source': file_path}
+        metadata = {"source": file_path}
         doc = Document(page_content=file_contents, metadata=metadata)
         return doc
     except Exception as e:
@@ -38,7 +40,9 @@ def process_file(file_path: str, ignore: List[str]):
         return None
 
 
-def process_directory(directory_path: str, ignore: List[str]) -> List[Document]:
+def process_directory(
+    directory_path: str, ignore: List[str]
+) -> List[Document]:
     """
     Process Directory
     """
@@ -47,8 +51,10 @@ def process_directory(directory_path: str, ignore: List[str]) -> List[Document]:
         files = os.listdir(directory_path)
     except Exception as e:
         print(e)
-        raise FileNotFoundError(f"Could not read directory: {directory_path}. \
-                                Did you run `sh download.sh`?") from e
+        raise FileNotFoundError(
+            f"Could not read directory: {directory_path}. \
+                                Did you run `sh download.sh`?"
+        ) from e
 
     for file in files:
         if should_ignore(file, ignore):
@@ -68,6 +74,7 @@ class RepoLoader(BaseLoader):
     """
     RepoLoader
     """
+
     def __init__(self, file_path: str, ignore: List[str]):
         super().__init__()
         self.file_path = file_path
@@ -77,7 +84,13 @@ class RepoLoader(BaseLoader):
         return process_directory(self.file_path, self.ignore)
 
 
-def create_vector_store(root: str, output: str, ignore: List[str], llms: List[LLMModels], device: str) -> None:
+def create_vector_store(
+    root: str,
+    output: str,
+    ignore: List[str],
+    llms: List[LLMModels],
+    device: str,
+) -> None:
     """
     Create Vector Store
     """
@@ -88,19 +101,16 @@ def create_vector_store(root: str, output: str, ignore: List[str], llms: List[LL
     # Split the text into chunks
     print(f"Splitting text into chunks for {len(raw_docs)} docs")
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1000,
-        chunk_overlap=100
+        chunk_size=1000, chunk_overlap=100
     )
     docs = text_splitter.split_documents(raw_docs)
     # Create the vectorstore
-    print('Creating vector store....')
+    print("Creating vector store....")
     vector_store = HNSWLib.from_documents(
-        docs,
-        get_embeddings(llm.name, device),
-        docstore=InMemoryDocstore()
+        docs, get_embeddings(llm.name, device), docstore=InMemoryDocstore()
     )
 
-    print('Saving vector store output....')
+    print("Saving vector store output....")
     vector_store.save(output)
 
-    print('Done creating vector store....')
+    print("Done creating vector store....")

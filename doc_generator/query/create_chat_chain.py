@@ -1,19 +1,18 @@
 """
 Create Chat Chain
 """
+
 from typing import List
 from langchain.chains.conversational_retrieval.base import ChatVectorDBChain
-from langchain.chains.llm import LLMChain
+from langchain.chains import LLMChain, StuffDocumentsChain
 from langchain.chains import create_retrieval_chain
-from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 from doc_generator.types import LLMModels
 from doc_generator.utils.llm_utils import (
     models,
     get_llama_chat_model,
     get_gemma_chat_model,
-    get_openai_chat_model
+    get_openai_chat_model,
 )
 
 # Define the prompt template for condensing the follow-up question
@@ -22,23 +21,27 @@ condense_qa_prompt = PromptTemplate.from_template(
         question, rephrase the follow up question to be a standalone \
             question.\n\n"
     "Chat History:\n{chat_history}\nFollow Up Input: {question}\n\
-        Standalone question:[/INST]")
+        Standalone question:[/INST]"
+)
 
 condense_readme_prompt = PromptTemplate.from_template(
     template="<s>[INST]Given the following question, rephrase the question \
         to be a standalone question.\n\n"
-    "Input: {question}\nStandalone question:[/INST]")
+    "Input: {question}\nStandalone question:[/INST]"
+)
 
 
-def make_qa_prompt(project_name,
-                   repository_url,
-                   content_type,
-                   chat_prompt,
-                   target_audience):
+def make_qa_prompt(
+    project_name, repository_url, content_type, chat_prompt, target_audience
+):
     """Make QA Prompt"""
-    additional_instructions = f"\nHere are some additional instructions for \
+    additional_instructions = (
+        f"\nHere are some additional instructions for \
         answering questions about {content_type}:\n\
-        {chat_prompt}" if chat_prompt else ""
+        {chat_prompt}"
+        if chat_prompt
+        else ""
+    )
     template = f"""<s>[INST]You are an AI assistant for a software project \
         called {project_name}. You are trained on all the {content_type} \
         that makes up this project.
@@ -75,20 +78,21 @@ def make_qa_prompt(project_name,
         [/INST]"""
 
     return PromptTemplate(
-        template=template,
-        input_variables=["question", "context"]
+        template=template, input_variables=["question", "context"]
     )
 
 
-def make_readme_prompt(project_name,
-                       repository_url,
-                       content_type,
-                       chat_prompt,
-                       target_audience):
+def make_readme_prompt(
+    project_name, repository_url, content_type, chat_prompt, target_audience
+):
     """Make Readme Prompt"""
-    additional_instructions = f"\nHere are some additional instructions for \
+    additional_instructions = (
+        f"\nHere are some additional instructions for \
         generating readme content about {content_type}:\n\
-        {chat_prompt}" if chat_prompt else ""
+        {chat_prompt}"
+        if chat_prompt
+        else ""
+    )
     template = f"""You are an AI assistant for a software project called \
     {project_name}. You are trained on all the {content_type} that makes up \
     this project.
@@ -126,58 +130,62 @@ def make_readme_prompt(project_name,
 
     # Return a template object instead of string
     # if you have a class handling it
-    return PromptTemplate(template=template,
-                          input_variables=["input", "context"])
+    return PromptTemplate(
+        template=template, input_variables=["input", "context"]
+    )
 
 
-def make_qa_chain(project_name,
-                  repository_url,
-                  content_type,
-                  chat_prompt,
-                  target_audience,
-                  vectorstore,
-                  llms: List[LLMModels],
-                  device: str ="cpu",
-                  on_token_stream=None):
+def make_qa_chain(
+    project_name,
+    repository_url,
+    content_type,
+    chat_prompt,
+    target_audience,
+    vectorstore,
+    llms: List[LLMModels],
+    device: str = "cpu",
+    on_token_stream=None,
+):
     """Make QA Chain"""
     llm = llms[1] if len(llms) > 1 else llms[0]
     llm_name = llm.value
     print(f"LLM:  {llm_name.lower()}")
     question_chat_model = None
     doc_chat_model = None
-    model_kwargs = {
-        "temperature": 0.1,
-        "device": device
-    }
+    model_kwargs = {"temperature": 0.1, "device": device}
 
     if "llama" in llm_name.lower():
         if "gguf" in llm_name.lower():
-            model_kwargs['gguf_file'] = models[llm].gguf_file
-        question_chat_model = get_llama_chat_model(llm_name, model_kwargs=model_kwargs)
+            model_kwargs["gguf_file"] = models[llm].gguf_file
+        question_chat_model = get_llama_chat_model(
+            llm_name, model_kwargs=model_kwargs
+        )
     elif "gemma" in llm_name.lower():
         if "gguf" in llm_name.lower():
-            model_kwargs['gguf_file'] = models[llm].gguf_file
-        question_chat_model = get_gemma_chat_model(llm_name, model_kwargs=model_kwargs)
+            model_kwargs["gguf_file"] = models[llm].gguf_file
+        question_chat_model = get_gemma_chat_model(
+            llm_name, model_kwargs=model_kwargs
+        )
     else:
         question_chat_model = get_openai_chat_model(llm_name, temperature=0.1)
-    
+
     question_generator = LLMChain(
-        llm=question_chat_model,
-        prompt=condense_qa_prompt
+        llm=question_chat_model, prompt=condense_qa_prompt
     )
 
-    model_kwargs = {
-        "temperature": 0.2,
-        "device": device
-    }
+    model_kwargs = {"temperature": 0.2, "device": device}
     if "llama" in llm_name.lower():
         if "gguf" in llm_name.lower():
-            model_kwargs['gguf_file'] = models[llm].gguf_file
-        doc_chat_model = get_llama_chat_model(llm_name, bool(on_token_stream), model_kwargs)
+            model_kwargs["gguf_file"] = models[llm].gguf_file
+        doc_chat_model = get_llama_chat_model(
+            llm_name, bool(on_token_stream), model_kwargs
+        )
     elif "gemma" in llm_name.lower():
         if "gguf" in llm_name.lower():
-            model_kwargs['gguf_file'] = models[llm].gguf_file
-        question_chat_model = get_gemma_chat_model(llm_name, bool(on_token_stream), model_kwargs)
+            model_kwargs["gguf_file"] = models[llm].gguf_file
+        question_chat_model = get_gemma_chat_model(
+            llm_name, bool(on_token_stream), model_kwargs
+        )
     else:
         doc_chat_model = get_openai_chat_model(
             llm,
@@ -186,38 +194,40 @@ def make_qa_chain(project_name,
             model_kwargs={
                 "frequency_penalty": 0.0,
                 "presence_penalty": 0.0,
-            }
+            },
         )
 
-    qa_prompt = make_qa_prompt(project_name,
-                               repository_url,
-                               content_type,
-                               chat_prompt,
-                               target_audience)
-    doc_chain = load_qa_chain(
-        llm=doc_chat_model,
-        prompt=qa_prompt
-    )
-
-    return ChatVectorDBChain(
-        vectorstore=vectorstore,
-        combine_docs_chain=doc_chain,
-        question_generator=question_generator
-    )
-
-
-def make_readme_chain(
+    qa_prompt = make_qa_prompt(
         project_name,
         repository_url,
         content_type,
         chat_prompt,
         target_audience,
-        vectorstore,
-        llms: List[LLMModels],
-        peft_model = None,
-        device: str = "cpu",
-        on_token_stream=None
-    ):
+    )
+    doc_chain = StuffDocumentsChain(
+        llm_chain=doc_chat_model, document_prompt=qa_prompt
+    )
+
+    return ChatVectorDBChain(
+        vectorstore=vectorstore,
+        combine_docs_chain=doc_chain,
+        question_generator=question_generator,
+        response_if_no_docs_found=None,
+    )
+
+
+def make_readme_chain(
+    project_name,
+    repository_url,
+    content_type,
+    chat_prompt,
+    target_audience,
+    vectorstore,
+    llms: List[LLMModels],
+    peft_model=None,
+    device: str = "cpu",
+    on_token_stream=None,
+):
     """Make Readme Chain"""
     llm = llms[1] if len(llms) > 1 else llms[0]
     llm_name = llm.value
@@ -226,16 +236,20 @@ def make_readme_chain(
     model_kwargs = {
         "temperature": 0.2,
         "peft_model": peft_model,
-        "device": device
+        "device": device,
     }
     if "llama" in llm_name.lower():
         if "gguf" in llm_name.lower():
-            model_kwargs['gguf_file'] = models[llm].gguf_file
-        doc_chat_model = get_llama_chat_model(llm_name, bool(on_token_stream), model_kwargs)
+            model_kwargs["gguf_file"] = models[llm].gguf_file
+        doc_chat_model = get_llama_chat_model(
+            llm_name, bool(on_token_stream), model_kwargs
+        )
     elif "gemma" in llm_name.lower():
         if "gguf" in llm_name.lower():
-            model_kwargs['gguf_file'] = models[llm].gguf_file
-        doc_chat_model = get_gemma_chat_model(llm_name, bool(on_token_stream), model_kwargs)
+            model_kwargs["gguf_file"] = models[llm].gguf_file
+        doc_chat_model = get_gemma_chat_model(
+            llm_name, bool(on_token_stream), model_kwargs
+        )
     else:
         doc_chat_model = get_openai_chat_model(
             llm_name,
@@ -244,7 +258,7 @@ def make_readme_chain(
             model_kwargs={
                 "frequency_penalty": 0.0,
                 "presence_penalty": 0.0,
-            }
+            },
         )
 
     readme_prompt = make_readme_prompt(
@@ -252,14 +266,12 @@ def make_readme_chain(
         repository_url,
         content_type,
         chat_prompt,
-        target_audience
+        target_audience,
     )
-    doc_chain = create_stuff_documents_chain(
-        llm=doc_chat_model,
-        prompt=readme_prompt
+    doc_chain = StuffDocumentsChain(
+        llm_chain=doc_chat_model, document_prompt=readme_prompt
     )
 
     return create_retrieval_chain(
-        retriever=vectorstore.as_retriever(),
-        combine_docs_chain=doc_chain
+        retriever=vectorstore.as_retriever(), combine_docs_chain=doc_chain
     )

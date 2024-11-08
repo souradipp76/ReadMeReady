@@ -1,6 +1,7 @@
 """
 Process Repository
 """
+
 import os
 import hashlib
 import json
@@ -45,7 +46,9 @@ def process_repository(config: AutodocRepoConfig, dry_run=False):
         with open(path, "w", encoding="utf-8") as file:
             file.write(content)
 
-    def call_llm(prompt: str, model: BaseChatModel):
+    def call_llm(prompt: str, model: BaseChatModel | None):
+        if model is None:
+            return None
         return model.invoke(prompt)
 
     def is_model(model):
@@ -145,14 +148,19 @@ def process_repository(config: AutodocRepoConfig, dry_run=False):
                 checksum=new_checksum,
             )
 
-            os.makedirs(markdown_file_path.as_posix()
-                        .replace(file_name, ""), exist_ok=True)
-            output_path = get_file_name(markdown_file_path.as_posix(),
-                                        ".", ".json")
+            os.makedirs(
+                markdown_file_path.as_posix().replace(file_name, ""),
+                exist_ok=True,
+            )
+            output_path = get_file_name(
+                markdown_file_path.as_posix(), ".", ".json"
+            )
             output_content = (
-                json.dumps(file_summary, indent=2,
-                           default=lambda o: o.__dict__)
-                if file_summary.summary else ""
+                json.dumps(
+                    file_summary, indent=2, default=lambda o: o.__dict__
+                )
+                if file_summary.summary
+                else ""
             )
 
             write_file(output_path, output_content)
@@ -211,9 +219,9 @@ def process_repository(config: AutodocRepoConfig, dry_run=False):
             process_folder_params.content_type,
             process_folder_params.folder_prompt,
         )
-        model = select_model([summary_prompt],
-                             config.llms, models,
-                             config.priority)
+        model = select_model(
+            [summary_prompt], config.llms, models, config.priority
+        )
         if not is_model(model):
             return
         assert model is not None
@@ -231,9 +239,10 @@ def process_repository(config: AutodocRepoConfig, dry_run=False):
         )
 
         output_path = Path(folder_path) / "summary.json"
-        write_file(str(output_path),
-                   json.dumps(folder_summary, indent=2,
-                              default=lambda o: o.__dict__))
+        write_file(
+            str(output_path),
+            json.dumps(folder_summary, indent=2, default=lambda o: o.__dict__),
+        )
 
     files_folders_count = files_and_folders(config)
     print(
@@ -259,9 +268,8 @@ def process_repository(config: AutodocRepoConfig, dry_run=False):
 def calculate_checksum(contents: list[str]):
     """Calculate Checksum"""
     checksums = [
-        hashlib.md5(content.encode()).hexdigest()
-        for content in contents
-        ]
+        hashlib.md5(content.encode()).hexdigest() for content in contents
+    ]
     concatenated_checksum = "".join(checksums)
     final_checksum = hashlib.md5(concatenated_checksum.encode())
     return final_checksum.hexdigest()

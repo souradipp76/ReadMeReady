@@ -1,16 +1,18 @@
 """
 LLM Utils
 """
+
 import os
 
-import torch
 from langchain_huggingface import HuggingFaceEmbeddings, HuggingFacePipeline
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from huggingface_hub import hf_hub_download
-from transformers import (AutoModelForCausalLM,
-                          AutoTokenizer,
-                          BitsAndBytesConfig,
-                          pipeline)
+from transformers import (
+    AutoModelForCausalLM,
+    AutoTokenizer,
+    # BitsAndBytesConfig,
+    pipeline,
+)
 
 from peft import PeftModel
 from doc_generator.types import LLMModelDetails, LLMModels
@@ -24,21 +26,23 @@ def get_gemma_chat_model(model_name: str, streaming=False, model_kwargs=None):
     #     bnb_4bit_quant_type="nf4",
     #     bnb_4bit_compute_dtype=torch.bfloat16,
     # )
-    gguf_file = model_kwargs['gguf_file']
-    model_path = hf_hub_download(model_name, gguf_file)
+    gguf_file = model_kwargs["gguf_file"]
+    _ = hf_hub_download(model_name, gguf_file)
     tokenizer = get_tokenizer(model_name, gguf_file)
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
         gguf_file=gguf_file,
         # torch_dtype=torch.float16,
         # trust_remote_code=True,
-        device_map=model_kwargs['device'],
+        device_map=model_kwargs["device"],
         # quantization_config=bnb_config,
-        token=os.environ['HF_TOKEN']
+        token=os.environ["HF_TOKEN"],
     )
 
-    if "peft_model_path" in model_kwargs and \
-            model_kwargs["peft_model_path"] is not None:
+    if (
+        "peft_model_path" in model_kwargs
+        and model_kwargs["peft_model_path"] is not None
+    ):
         PEFT_MODEL = model_kwargs["peft_model_path"]
         model = PeftModel.from_pretrained(model, PEFT_MODEL)
 
@@ -49,7 +53,7 @@ def get_gemma_chat_model(model_name: str, streaming=False, model_kwargs=None):
             tokenizer=tokenizer,
             repetition_penalty=1.1,
             return_full_text=False,
-            max_new_tokens=512
+            max_new_tokens=512,
         ),
         model_kwargs=model_kwargs,
     )
@@ -67,8 +71,8 @@ def get_llama_chat_model(model_name: str, streaming=False, model_kwargs=None):
     #     # exllama_config={"version": 2}
     # )
 
-    gguf_file = model_kwargs['gguf_file']
-    model_path = hf_hub_download(model_name, gguf_file)
+    gguf_file = model_kwargs["gguf_file"]
+    _ = hf_hub_download(model_name, gguf_file)
     tokenizer = get_tokenizer(model_name, gguf_file)
     tokenizer.pad_token = tokenizer.eos_token
     model = AutoModelForCausalLM.from_pretrained(
@@ -76,7 +80,7 @@ def get_llama_chat_model(model_name: str, streaming=False, model_kwargs=None):
         gguf_file=gguf_file,
         # torch_dtype=torch.float16,
         # trust_remote_code=True,
-        device_map=model_kwargs['device'],
+        device_map=model_kwargs["device"],
         # quantization_config=bnb_config
     )
 
@@ -91,7 +95,7 @@ def get_llama_chat_model(model_name: str, streaming=False, model_kwargs=None):
             tokenizer=tokenizer,
             repetition_penalty=1.2,
             return_full_text=False,
-            max_new_tokens=512
+            max_new_tokens=512,
         ),
         model_kwargs=model_kwargs,
     )
@@ -99,7 +103,7 @@ def get_llama_chat_model(model_name: str, streaming=False, model_kwargs=None):
 
 def get_openai_chat_model(
     model: str, temperature=None, streaming=None, model_kwargs=None
-):
+) -> ChatOpenAI:
     """Get OpenAI Chat Model"""
     return ChatOpenAI(
         temperature=temperature,
@@ -122,8 +126,8 @@ def get_tokenizer(model_name: str, gguf_file=None):
     tokenizer = AutoTokenizer.from_pretrained(
         model_name,
         gguf_file=gguf_file,
-        token=os.environ['HF_TOKEN'],
-    #   use_fast=True
+        token=os.environ["HF_TOKEN"],
+        # use_fast=True
     )
     return tokenizer
 
@@ -188,7 +192,7 @@ models = {
         succeeded=0,
         failed=0,
         total=0,
-        gguf_file='tinyllama-1.1b-chat-v1.0.Q2_K.gguf'
+        gguf_file="tinyllama-1.1b-chat-v1.0.Q2_K.gguf",
     ),
     LLMModels.LLAMA2_7B_CHAT_GPTQ: LLMModelDetails(
         name=LLMModels.LLAMA2_7B_CHAT_GPTQ,
@@ -321,7 +325,7 @@ models = {
         succeeded=0,
         failed=0,
         total=0,
-        gguf_file="gemma-2-2b-it-IQ3_M.gguf"
+        gguf_file="gemma-2-2b-it-IQ3_M.gguf",
     ),
 }
 
@@ -373,7 +377,7 @@ def get_embeddings(model: str, device: str):
     """Get Embeddings"""
     if "llama" in model.lower() or "gemma" in model.lower():
         return HuggingFaceEmbeddings(
-            model_name="sentence-transformers/all-MiniLM-L6-v2",
+            model_name="sentence-transformers/all-mpnet-base-v2",
             model_kwargs={"device": device},
             encode_kwargs={"normalize_embeddings": True},
         )
