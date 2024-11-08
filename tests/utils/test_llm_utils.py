@@ -2,7 +2,7 @@ import os
 import pytest
 from unittest.mock import patch, MagicMock
 
-from llm_utils import (
+from doc_generator.utils.llm_utils import (
     get_gemma_chat_model,
     get_llama_chat_model,
     get_openai_chat_model,
@@ -13,8 +13,8 @@ from llm_utils import (
     get_embeddings,
 )
 from doc_generator.types import LLMModelDetails, LLMModels
-from langchain_openai import ChatOpenAI
-from langchain_huggingface import HuggingFaceEmbeddings, HuggingFacePipeline, OpenAIEmbeddings
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings, HuggingFacePipeline
 
 
 def test_get_gemma_chat_model_with_peft():
@@ -24,12 +24,12 @@ def test_get_gemma_chat_model_with_peft():
         "device": "cpu",
         "peft_model_path": "path/to/peft/model",
     }
-    with patch("llm_utils.hf_hub_download") as mock_hf_download, \
-         patch("llm_utils.get_tokenizer") as mock_get_tokenizer, \
-         patch("llm_utils.AutoModelForCausalLM.from_pretrained") as mock_auto_model, \
-         patch("llm_utils.PeftModel.from_pretrained") as mock_peft_model, \
-         patch("llm_utils.pipeline") as mock_pipeline, \
-         patch("llm_utils.HuggingFacePipeline") as mock_hf_pipeline, \
+    with patch("doc_generator.utils.llm_utils.hf_hub_download") as mock_hf_download, \
+         patch("doc_generator.utils.llm_utils.get_tokenizer") as mock_get_tokenizer, \
+         patch("doc_generator.utils.llm_utils.AutoModelForCausalLM.from_pretrained") as mock_auto_model, \
+         patch("doc_generator.utils.llm_utils.PeftModel.from_pretrained") as mock_peft_model, \
+         patch("doc_generator.utils.llm_utils.pipeline") as mock_pipeline, \
+         patch("doc_generator.utils.llm_utils.HuggingFacePipeline") as mock_hf_pipeline, \
          patch.dict(os.environ, {"HF_TOKEN": "test_token"}):
 
         mock_tokenizer = MagicMock()
@@ -71,12 +71,12 @@ def test_get_gemma_chat_model_without_peft():
         "gguf_file": "some_file.gguf",
         "device": "cpu",
     }
-    with patch("llm_utils.hf_hub_download") as mock_hf_download, \
-         patch("llm_utils.get_tokenizer") as mock_get_tokenizer, \
-         patch("llm_utils.AutoModelForCausalLM.from_pretrained") as mock_auto_model, \
-         patch("llm_utils.PeftModel.from_pretrained") as mock_peft_model, \
-         patch("llm_utils.pipeline") as mock_pipeline, \
-         patch("llm_utils.HuggingFacePipeline") as mock_hf_pipeline, \
+    with patch("doc_generator.utils.llm_utils.hf_hub_download") as mock_hf_download, \
+         patch("doc_generator.utils.llm_utils.get_tokenizer") as mock_get_tokenizer, \
+         patch("doc_generator.utils.llm_utils.AutoModelForCausalLM.from_pretrained") as mock_auto_model, \
+         patch("doc_generator.utils.llm_utils.PeftModel.from_pretrained") as mock_peft_model, \
+         patch("doc_generator.utils.llm_utils.pipeline") as mock_pipeline, \
+         patch("doc_generator.utils.llm_utils.HuggingFacePipeline") as mock_hf_pipeline, \
          patch.dict(os.environ, {"HF_TOKEN": "test_token"}):
 
         mock_tokenizer = MagicMock()
@@ -116,12 +116,12 @@ def test_get_llama_chat_model_with_peft():
         "device": "cpu",
         "peft_model": "path/to/peft/model",
     }
-    with patch("llm_utils.hf_hub_download") as mock_hf_download, \
-         patch("llm_utils.get_tokenizer") as mock_get_tokenizer, \
-         patch("llm_utils.AutoModelForCausalLM.from_pretrained") as mock_auto_model, \
-         patch("llm_utils.PeftModel.from_pretrained") as mock_peft_model, \
-         patch("llm_utils.pipeline") as mock_pipeline, \
-         patch("llm_utils.HuggingFacePipeline") as mock_hf_pipeline, \
+    with patch("doc_generator.utils.llm_utils.hf_hub_download") as mock_hf_download, \
+         patch("doc_generator.utils.llm_utils.get_tokenizer") as mock_get_tokenizer, \
+         patch("doc_generator.utils.llm_utils.AutoModelForCausalLM.from_pretrained") as mock_auto_model, \
+         patch("doc_generator.utils.llm_utils.PeftModel.from_pretrained") as mock_peft_model, \
+         patch("doc_generator.utils.llm_utils.pipeline") as mock_pipeline, \
+         patch("doc_generator.utils.llm_utils.HuggingFacePipeline") as mock_hf_pipeline, \
          patch.dict(os.environ, {"HF_TOKEN": "test_token"}):
 
         mock_tokenizer = MagicMock()
@@ -165,12 +165,12 @@ def test_get_llama_chat_model_without_peft():
         "gguf_file": "some_file.gguf",
         "device": "cpu",
     }
-    with patch("llm_utils.hf_hub_download") as mock_hf_download, \
-         patch("llm_utils.get_tokenizer") as mock_get_tokenizer, \
-         patch("llm_utils.AutoModelForCausalLM.from_pretrained") as mock_auto_model, \
-         patch("llm_utils.PeftModel.from_pretrained") as mock_peft_model, \
-         patch("llm_utils.pipeline") as mock_pipeline, \
-         patch("llm_utils.HuggingFacePipeline") as mock_hf_pipeline, \
+    with patch("doc_generator.utils.llm_utils.hf_hub_download") as mock_hf_download, \
+         patch("doc_generator.utils.llm_utils.get_tokenizer") as mock_get_tokenizer, \
+         patch("doc_generator.utils.llm_utils.AutoModelForCausalLM.from_pretrained") as mock_auto_model, \
+         patch("doc_generator.utils.llm_utils.PeftModel.from_pretrained") as mock_peft_model, \
+         patch("doc_generator.utils.llm_utils.pipeline") as mock_pipeline, \
+         patch("doc_generator.utils.llm_utils.HuggingFacePipeline") as mock_hf_pipeline, \
          patch.dict(os.environ, {"HF_TOKEN": "test_token"}):
 
         mock_tokenizer = MagicMock()
@@ -216,7 +216,7 @@ def test_get_openai_chat_model():
     assert isinstance(result, ChatOpenAI)
     assert result.temperature == temperature
     assert result.streaming == streaming
-    assert result.model == model
+    assert result.model_name == model
     assert result.model_kwargs == model_kwargs
 
 
@@ -235,7 +235,7 @@ def test_get_openai_api_key_not_set(monkeypatch):
 def test_get_tokenizer_with_hf_token(monkeypatch):
     model_name = "some-model"
     gguf_file = "some_file.gguf"
-    with patch("llm_utils.AutoTokenizer.from_pretrained") as mock_from_pretrained:
+    with patch("doc_generator.utils.llm_utils.AutoTokenizer.from_pretrained") as mock_from_pretrained:
         mock_tokenizer = MagicMock()
         mock_from_pretrained.return_value = mock_tokenizer
 
@@ -253,7 +253,7 @@ def test_get_tokenizer_with_hf_token(monkeypatch):
 def test_get_tokenizer_without_hf_token(monkeypatch):
     model_name = "some-model"
     gguf_file = "some_file.gguf"
-    with patch("llm_utils.AutoTokenizer.from_pretrained") as mock_from_pretrained:
+    with patch("doc_generator.utils.llm_utils.AutoTokenizer.from_pretrained") as mock_from_pretrained:
         monkeypatch.delenv("HF_TOKEN", raising=False)
         with pytest.raises(KeyError):
             get_tokenizer(model_name, gguf_file)
@@ -329,7 +329,7 @@ def test_print_model_details_empty(capsys):
     print_model_details(test_models)
     captured = capsys.readouterr()
     output_lines = captured.out.strip().split("\n")
-    assert output_lines == [""]
+    assert output_lines == ["{'Model': 'Total', 'File Count': 0, 'Succeeded': 0, 'Failed': 0, 'Tokens': 0, 'Cost': 0}"]
 
 
 def test_total_index_cost_estimate():
@@ -360,7 +360,7 @@ def test_total_index_cost_estimate():
         ),
     }
 
-    with patch("llm_utils.models", test_models):
+    with patch("doc_generator.utils.llm_utils.models", test_models):
         total_cost = total_index_cost_estimate(None)
 
     expected_cost = sum(
@@ -375,7 +375,7 @@ def test_get_embeddings_llama_model():
     model = "llama-something"
     device = "cpu"
 
-    with patch("llm_utils.HuggingFaceEmbeddings") as mock_hf_embeddings:
+    with patch("doc_generator.utils.llm_utils.HuggingFaceEmbeddings") as mock_hf_embeddings:
         embeddings = get_embeddings(model, device)
         mock_hf_embeddings.assert_called_once_with(
             model_name="sentence-transformers/all-mpnet-base-v2",
@@ -389,7 +389,7 @@ def test_get_embeddings_non_llama_model():
     model = "gpt-3.5-turbo"
     device = "cpu"
 
-    with patch("llm_utils.OpenAIEmbeddings") as mock_openai_embeddings:
+    with patch("doc_generator.utils.llm_utils.OpenAIEmbeddings") as mock_openai_embeddings:
         embeddings = get_embeddings(model, device)
         mock_openai_embeddings.assert_called_once_with()
         assert embeddings == mock_openai_embeddings.return_value

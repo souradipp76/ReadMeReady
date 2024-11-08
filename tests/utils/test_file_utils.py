@@ -1,5 +1,5 @@
 import pytest
-from file_utils import get_file_name, github_file_url, github_folder_url
+from doc_generator.utils.file_utils import get_file_name, github_file_url, github_folder_url
 
 def test_get_file_name_with_delimiter():
     assert get_file_name("example.txt") == "example.md"
