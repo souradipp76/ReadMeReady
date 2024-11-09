@@ -170,7 +170,15 @@ def make_qa_chain(
             llm_name, model_kwargs=model_kwargs
         )
     else:
-        question_chat_model = get_openai_chat_model(llm_name, temperature=0.1)
+        question_chat_model = get_openai_chat_model(
+            llm_name,
+            temperature=0.1,
+            streaming=bool(on_token_stream),
+            model_kwargs={
+                "frequency_penalty": None,
+                "presence_penalty": None,
+            },
+        )
 
     question_generator = LLMChain(
         llm=question_chat_model, prompt=condense_qa_prompt
@@ -181,17 +189,21 @@ def make_qa_chain(
         if "gguf" in llm_name.lower():
             model_kwargs["gguf_file"] = models[llm].gguf_file
         doc_chat_model = get_llama_chat_model(
-            llm_name, bool(on_token_stream), model_kwargs
+            llm_name,
+            streaming=bool(on_token_stream),
+            model_kwargs=model_kwargs,
         )
     elif "gemma" in llm_name.lower():
         if "gguf" in llm_name.lower():
             model_kwargs["gguf_file"] = models[llm].gguf_file
         question_chat_model = get_gemma_chat_model(
-            llm_name, bool(on_token_stream), model_kwargs
+            llm_name,
+            streaming=bool(on_token_stream),
+            model_kwargs=model_kwargs,
         )
     else:
         doc_chat_model = get_openai_chat_model(
-            llm,
+            llm_name,
             temperature=0.2,
             streaming=bool(on_token_stream),
             model_kwargs={
@@ -245,13 +257,17 @@ def make_readme_chain(
         if "gguf" in llm_name.lower():
             model_kwargs["gguf_file"] = models[llm].gguf_file
         doc_chat_model = get_llama_chat_model(
-            llm_name, bool(on_token_stream), model_kwargs
+            llm_name,
+            streaming=bool(on_token_stream),
+            model_kwargs=model_kwargs,
         )
     elif "gemma" in llm_name.lower():
         if "gguf" in llm_name.lower():
             model_kwargs["gguf_file"] = models[llm].gguf_file
         doc_chat_model = get_gemma_chat_model(
-            llm_name, bool(on_token_stream), model_kwargs
+            llm_name,
+            streaming=bool(on_token_stream),
+            model_kwargs=model_kwargs,
         )
     else:
         doc_chat_model = get_openai_chat_model(

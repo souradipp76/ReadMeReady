@@ -87,10 +87,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install Pip
-        run: python.exe -m pip install --user --upgrade pip
+        run: python.exe -m pip install --upgrade pip
       - name: Install project
         run: pip install -e .[test]
-      - name: Set API Key
+      - name: Set OPENAI API Key
         run: |
           chcp 65001
           echo "OPENAI_API_KEY=dummy" >> $env:GITHUB_ENV

@@ -261,7 +261,10 @@ def test_get_openai_chat_model():
     model = "gpt-3.5-turbo"
     temperature = 0.7
     streaming = True
-    model_kwargs = {"some_kwarg": "value"}
+    model_kwargs = {
+        "frequency_penalty": "0.0",
+        "presence_penalty": "0.0",
+    }
 
     result = get_openai_chat_model(model, temperature, streaming, model_kwargs)
 
@@ -269,7 +272,6 @@ def test_get_openai_chat_model():
     assert result.temperature == temperature
     assert result.streaming == streaming
     assert result.model_name == model
-    assert result.model_kwargs == model_kwargs
 
 
 def test_get_openai_api_key_set(monkeypatch):

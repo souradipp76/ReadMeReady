@@ -109,7 +109,8 @@ def get_openai_chat_model(
         temperature=temperature,
         streaming=streaming,
         model=model,
-        model_kwargs=model_kwargs,
+        frequency_penalty=model_kwargs["frequency_penalty"],
+        presence_penalty=model_kwargs["presence_penalty"],
     )
 
 
