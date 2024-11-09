@@ -90,7 +90,9 @@ jobs:
         run: python.exe -m pip install --user --upgrade pip
       - name: Install project
         run: pip install -e .[test]
+      - name: Set API Key
+        run: |
+          chcp 65001
+          echo "OPENAI_API_KEY=dummy" >> $env:GITHUB_ENV
       - name: run tests
         run: pytest -s -vvvv -l --tb=long tests
-        env:
-          OPENAI_API_KEY: dummy
