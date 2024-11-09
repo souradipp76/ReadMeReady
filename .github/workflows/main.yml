@@ -13,9 +13,6 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-env:
-  OPENAI_API_KEY: dummy
-
 jobs:
   linter:
     strategy:
@@ -51,10 +48,11 @@ jobs:
         run: make install
       - name: Run tests
         run: make test
+        env:
+          OPENAI_API_KEY: dummy
       - name: "Upload coverage to Codecov"
         uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+        # with:
         #   fail_ci_if_error: true
 
   # tests_mac:
@@ -94,3 +92,5 @@ jobs:
         run: pip install -e .[test]
       - name: run tests
         run: pytest -s -vvvv -l --tb=long tests
+        env:
+          OPENAI_API_KEY: dummy
