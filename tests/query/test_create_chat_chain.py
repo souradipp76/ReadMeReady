@@ -511,7 +511,119 @@ def test_make_qa_chain_with_multiple_llms():
         assert chain == mock_chat_chain_instance
 
 
-def test_make_readme_chain_with_gguf_file():
+def test_make_qa_chain_with_llama_gguf_file():
+    project_name = "TestProject"
+    repository_url = "https://github.com/test/testproject"
+    content_type = "codebase"
+    chat_prompt = "Include examples."
+    target_audience = "developers"
+    vectorstore = MagicMock()
+    llm = MagicMock()
+    llm.value = "llama-gguf"
+    llms = [llm]
+    device = "cpu"
+    peft_model = None
+
+    models[llm] = MagicMock()
+    models[llm].gguf_file = "path/to/gguf_file"
+
+    with patch(
+        "doc_generator.query.create_chat_chain.get_llama_chat_model"
+    ) as mock_get_llama_chat_model, patch(
+        "doc_generator.query.create_chat_chain.create_stuff_documents_chain"
+    ) as mock_create_stuff_chain, patch(
+        "doc_generator.query.create_chat_chain.LLMChain"
+    ) as mock_llm_chain, patch(
+        "doc_generator.query.create_chat_chain.ChatVectorDBChain"
+    ) as mock_chat_vector_chain:
+        mock_question_chat_model = MagicMock()
+        mock_get_llama_chat_model.return_value = mock_question_chat_model
+
+        mock_doc_chain = MagicMock()
+        mock_create_stuff_chain.return_value = mock_doc_chain
+
+        mock_question_generator = MagicMock()
+        mock_llm_chain.return_value = mock_question_generator
+
+        mock_chat_chain_instance = MagicMock()
+        mock_chat_vector_chain.return_value = mock_chat_chain_instance
+
+        chain = make_qa_chain(
+            project_name,
+            repository_url,
+            content_type,
+            chat_prompt,
+            target_audience,
+            vectorstore,
+            llms,
+            device=device,
+            on_token_stream=False,
+        )
+
+        mock_get_llama_chat_model.assert_called()
+        model_kwargs = mock_get_llama_chat_model.call_args[1]["model_kwargs"]
+        assert "gguf_file" in model_kwargs
+        assert model_kwargs["gguf_file"] == "path/to/gguf_file"
+        assert chain == mock_chat_chain_instance
+
+
+def test_make_qa_chain_with_gemma_gguf_file():
+    project_name = "TestProject"
+    repository_url = "https://github.com/test/testproject"
+    content_type = "codebase"
+    chat_prompt = "Include examples."
+    target_audience = "developers"
+    vectorstore = MagicMock()
+    llm = MagicMock()
+    llm.value = "gemma-gguf"
+    llms = [llm]
+    device = "cpu"
+    peft_model = None
+
+    models[llm] = MagicMock()
+    models[llm].gguf_file = "path/to/gguf_file"
+
+    with patch(
+        "doc_generator.query.create_chat_chain.get_gemma_chat_model"
+    ) as mock_get_gemma_chat_model, patch(
+        "doc_generator.query.create_chat_chain.create_stuff_documents_chain"
+    ) as mock_create_stuff_chain, patch(
+        "doc_generator.query.create_chat_chain.LLMChain"
+    ) as mock_llm_chain, patch(
+        "doc_generator.query.create_chat_chain.ChatVectorDBChain"
+    ) as mock_chat_vector_chain:
+        mock_question_chat_model = MagicMock()
+        mock_get_gemma_chat_model.return_value = mock_question_chat_model
+
+        mock_doc_chain = MagicMock()
+        mock_create_stuff_chain.return_value = mock_doc_chain
+
+        mock_question_generator = MagicMock()
+        mock_llm_chain.return_value = mock_question_generator
+
+        mock_chat_chain_instance = MagicMock()
+        mock_chat_vector_chain.return_value = mock_chat_chain_instance
+
+        chain = make_qa_chain(
+            project_name,
+            repository_url,
+            content_type,
+            chat_prompt,
+            target_audience,
+            vectorstore,
+            llms,
+            device=device,
+            on_token_stream=False,
+        )
+
+        mock_get_gemma_chat_model.assert_called()
+        model_kwargs = mock_get_gemma_chat_model.call_args[1]["model_kwargs"]
+        assert "gguf_file" in model_kwargs
+        assert model_kwargs["gguf_file"] == "path/to/gguf_file"
+        assert chain == mock_chat_chain_instance
+
+
+def test_make_readme_chain_with_llama_gguf_file():
     project_name = "TestProject"
     repository_url = "https://github.com/test/testproject"
     content_type = "codebase"
@@ -560,6 +672,60 @@ def test_make_readme_chain_with_gguf_file():
 
         mock_get_llama_chat_model.assert_called()
         model_kwargs = mock_get_llama_chat_model.call_args[1]["model_kwargs"]
+        assert "gguf_file" in model_kwargs
+        assert model_kwargs["gguf_file"] == "path/to/gguf_file"
+        assert chain == mock_retrieval_chain_instance
+
+
+def test_make_readme_chain_with_gemma_gguf_file():
+    project_name = "TestProject"
+    repository_url = "https://github.com/test/testproject"
+    content_type = "codebase"
+    chat_prompt = "Include examples."
+    target_audience = "developers"
+    vectorstore = MagicMock()
+    llm = MagicMock()
+    llm.value = "gemma-gguf"
+    llms = [llm]
+    device = "cpu"
+    peft_model = None
+
+    models[llm] = MagicMock()
+    models[llm].gguf_file = "path/to/gguf_file"
+
+    with patch(
+        "doc_generator.query.create_chat_chain.get_gemma_chat_model"
+    ) as mock_get_gemma_chat_model, patch(
+        "doc_generator.query.create_chat_chain.create_stuff_documents_chain"
+    ) as mock_create_stuff_chain, patch(
+        "doc_generator.query.create_chat_chain.create_retrieval_chain"
+    ) as mock_create_retrieval_chain:
+        mock_doc_chat_model = MagicMock()
+        mock_get_gemma_chat_model.return_value = mock_doc_chat_model
+
+        mock_doc_chain = MagicMock()
+        mock_create_stuff_chain.return_value = mock_doc_chain
+
+        mock_retrieval_chain_instance = MagicMock()
+        mock_create_retrieval_chain.return_value = (
+            mock_retrieval_chain_instance
+        )
+
+        chain = make_readme_chain(
+            project_name,
+            repository_url,
+            content_type,
+            chat_prompt,
+            target_audience,
+            vectorstore,
+            llms,
+            peft_model=peft_model,
+            device=device,
+            on_token_stream=False,
+        )
+
+        mock_get_gemma_chat_model.assert_called()
+        model_kwargs = mock_get_gemma_chat_model.call_args[1]["model_kwargs"]
         assert "gguf_file" in model_kwargs
         assert model_kwargs["gguf_file"] == "path/to/gguf_file"
         assert chain == mock_retrieval_chain_instance

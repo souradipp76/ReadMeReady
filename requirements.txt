@@ -11,5 +11,8 @@ bitsandbytes
 optimum
 auto-gptq; sys_platform == 'linux'
 python-magic
+sentencepiece
 sentence_transformers
 pymarkdownlnt
+peft
+gguf
