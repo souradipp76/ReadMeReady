@@ -157,7 +157,7 @@ def test_query_normal():
         assert mock_prompt.call_count == 2
         mock_chain.invoke.assert_called_once_with(
             {
-                "question": "What is the purpose?",
+                "input": "What is the purpose?",
                 "chat_history": query.chat_history,
             }
         )
@@ -199,7 +199,7 @@ def test_query_exception():
         assert mock_prompt.call_count == 2
         mock_chain.invoke.assert_called_once_with(
             {
-                "question": "What causes error?",
+                "input": "What causes error?",
                 "chat_history": query.chat_history,
             }
         )

@@ -4,11 +4,13 @@ Create Chat Chain
 
 from typing import List
 
-from langchain.chains import LLMChain, create_retrieval_chain
+from langchain.chains import (
+    create_history_aware_retriever,
+    create_retrieval_chain,
+)
 from langchain.chains.combine_documents.stuff import (
     create_stuff_documents_chain,
 )
-from langchain.chains.conversational_retrieval.base import ChatVectorDBChain
 from langchain.prompts import PromptTemplate
 
 from doc_generator.types import LLMModels
@@ -24,14 +26,14 @@ condense_qa_prompt = PromptTemplate.from_template(
     template="Given the following conversation and a follow up "
     + "question, rephrase the follow up question to be a standalone "
     + "question.\n\n"
-    + "Chat History:\n{chat_history}\nFollow Up Input: {question}\n\
+    + "Chat History:\n{chat_history}\nFollow Up Input: {input}\n\
         Standalone question:"
 )
 
 condense_readme_prompt = PromptTemplate.from_template(
     template="Given the following question, rephrase the question "
     + "to be a standalone question.\n\n"
-    + "Input: {question}\nStandalone question:"
+    + "Input: {input}\nStandalone question:"
 )
 
 
@@ -75,14 +77,14 @@ def make_qa_prompt(
         Links should ONLY come from the context.
 
         {additional_instructions}
-        Question: {{question}}
+        Question: {{input}}
         Context:
         {{context}}
         Answer in Markdown:
         """
 
     return PromptTemplate(
-        template=template, input_variables=["question", "context"]
+        template=template, input_variables=["input", "context"]
     )
 
 
@@ -181,8 +183,8 @@ def make_qa_chain(
             },
         )
 
-    question_generator = LLMChain(
-        llm=question_chat_model, prompt=condense_qa_prompt
+    question_generator = create_history_aware_retriever(
+        question_chat_model, vectorstore.as_retriever(), condense_qa_prompt
     )
 
     model_kwargs = {"temperature": 0.2, "device": device}
@@ -224,11 +226,9 @@ def make_qa_chain(
         llm=doc_chat_model, prompt=qa_prompt
     )
 
-    return ChatVectorDBChain(
-        vectorstore=vectorstore,
-        combine_docs_chain=doc_chain,
-        question_generator=question_generator,
-        response_if_no_docs_found=None,
+    return create_retrieval_chain(
+        retriever=question_generator,
+        combine_docs_chain=doc_chain
     )
 
 

@@ -187,12 +187,11 @@ def main():  # pragma: no cover
 
     usr_conf = AutodocUserConfig(llms=user_config["llms"])
 
-    readme_conf = AutodocReadmeConfig(headings=headings)
-
     index.index(repo_conf)
     print("Done Indexing!!")
 
     if mode.lower() == "query":
         query.query(repo_conf, usr_conf)
     else:
+        readme_conf = AutodocReadmeConfig(headings=headings)
         query.generate_readme(repo_conf, usr_conf, readme_conf)
