@@ -1,5 +1,4 @@
-import pytest
-from unittest.mock import MagicMock, patch, call
+from unittest.mock import MagicMock, patch
 from doc_generator.query.create_chat_chain import (
     make_qa_prompt,
     make_readme_prompt,
@@ -9,17 +8,8 @@ from doc_generator.query.create_chat_chain import (
     condense_readme_prompt,
 )
 from langchain.prompts import PromptTemplate
-from langchain.chains.conversational_retrieval.base import ChatVectorDBChain
-from langchain.chains import LLMChain
-from langchain.chains.combine_documents.stuff import (
-    create_stuff_documents_chain,
-)
-from doc_generator.types import LLMModels
 from doc_generator.utils.llm_utils import (
     models,
-    get_llama_chat_model,
-    get_gemma_chat_model,
-    get_openai_chat_model,
 )
 
 

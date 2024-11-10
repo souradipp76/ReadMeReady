@@ -1,4 +1,3 @@
-import pytest
 from unittest.mock import MagicMock, patch, call
 import os
 from doc_generator.query import query
