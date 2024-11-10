@@ -1,14 +1,16 @@
 """CLI interface for doc_generator project.
 """
 
-import questionary
 from urllib.parse import urlparse
-from doc_generator.query import query
+
+import questionary
+
 from doc_generator.index import index
+from doc_generator.query import query
 from doc_generator.types import (
+    AutodocReadmeConfig,
     AutodocRepoConfig,
     AutodocUserConfig,
-    AutodocReadmeConfig,
     LLMModels,
 )
 
@@ -54,7 +56,7 @@ def main():  # pragma: no cover
     if mode.lower() == "readme":
         headings = questionary.text(
             message="List of Readme Headings?(comma separated)"
-            + "[Example: #Introduction,##Usage]"
+            + "[Example: # Introduction,## Usage]"
         ).ask()
 
     model_name = questionary.select(
@@ -135,23 +137,23 @@ def main():  # pragma: no cover
             "*.mdx",
             "*.toml",
         ],
-        "file_prompt": "Write a detailed technical explanation of \
-            what this code does. \n      Focus on the high-level \
-            purpose of the code and how it may be used in the \
-            larger project.\n      Include code examples where \
-            appropriate. Keep you response between 100 and 300 \
-            words. \n      DO NOT RETURN MORE THAN 300 WORDS.\n \
-            Output should be in markdown format.\n \
-            Do not just list the methods and classes in this file.",
-        "folder_prompt": "Write a technical explanation of what the \
-            code in this file does\n      and how it might fit into the \
-            larger project or work with other parts of the project.\n      \
-            Give examples of how this code might be used. Include code \
-            examples where appropriate.\n      Be concise. Include any \
-            information that may be relevant to a developer who is \
-            curious about this code.\n      Keep you response under \
-            400 words. Output should be in markdown format.\n      \
-            Do not just list the files and folders in this folder.",
+        "file_prompt": """Write a detailed technical explanation of
+            what this code does. Focus on the high-level
+            purpose of the code and how it may be used in the
+            larger project.\nInclude code examples where
+            appropriate. Keep you response between 100 and 300
+            words. DO NOT RETURN MORE THAN 300 WORDS.
+            Output should be in markdown format.
+            Do not just list the methods and classes in this file.""",
+        "folder_prompt": """Write a technical explanation of what the
+            code in this file does and how it might fit into the
+            larger project or work with other parts of the project.
+            Give examples of how this code might be used. Include code
+            examples where appropriate. Be concise. Include any
+            information that may be relevant to a developer who is
+            curious about this code. Keep you response under
+            400 words. Output should be in markdown format.
+            Do not just list the files and folders in this folder.""",
         "chat_prompt": "",
         "content_type": "docs",
         "target_audience": "smart developer",
@@ -188,7 +190,7 @@ def main():  # pragma: no cover
     readme_conf = AutodocReadmeConfig(headings=headings)
 
     index.index(repo_conf)
-    print("Done Indexing !!")
+    print("Done Indexing!!")
 
     if mode.lower() == "query":
         query.query(repo_conf, usr_conf)

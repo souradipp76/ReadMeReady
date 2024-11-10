@@ -8,10 +8,11 @@ from pathlib import Path
 from typing import List
 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_core.documents import Document
 from langchain_core.document_loaders import BaseLoader
+from langchain_core.documents import Document
+
 from doc_generator.utils.HNSWLib import HNSWLib, InMemoryDocstore
-from doc_generator.utils.llm_utils import get_embeddings, LLMModels
+from doc_generator.utils.llm_utils import LLMModels, get_embeddings
 
 
 def should_ignore(file_name: str, ignore: List[str]):

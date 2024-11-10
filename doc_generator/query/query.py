@@ -14,9 +14,9 @@ from doc_generator.query.create_chat_chain import (
     make_readme_chain,
 )
 from doc_generator.types import (
+    AutodocReadmeConfig,
     AutodocRepoConfig,
     AutodocUserConfig,
-    AutodocReadmeConfig,
 )
 from doc_generator.utils.HNSWLib import HNSWLib
 from doc_generator.utils.llm_utils import get_embeddings

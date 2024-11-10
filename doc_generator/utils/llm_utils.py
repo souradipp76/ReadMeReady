@@ -3,39 +3,39 @@ LLM Utils
 """
 
 import os
+import sys
 
+import torch
+from huggingface_hub import hf_hub_download
 from langchain_huggingface import HuggingFaceEmbeddings, HuggingFacePipeline
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from huggingface_hub import hf_hub_download
-from transformers import (
-    AutoModelForCausalLM,
-    AutoTokenizer,
-    # BitsAndBytesConfig,
-    pipeline,
-)
-
 from peft import PeftModel
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+
 from doc_generator.types import LLMModelDetails, LLMModels
 
 
 def get_gemma_chat_model(model_name: str, streaming=False, model_kwargs=None):
     """Get GEMMA Chat Model"""
-    # bnb_config = BitsAndBytesConfig(
-    #     load_in_4bit=True,
-    #     bnb_4bit_use_double_quant=True,
-    #     bnb_4bit_quant_type="nf4",
-    #     bnb_4bit_compute_dtype=torch.bfloat16,
-    # )
+    bnb_config = None
+    if sys.platform == "linux" or sys.platform == "linux2":
+        from transformers import BitsAndBytesConfig
+
+        bnb_config = BitsAndBytesConfig(
+            load_in_4bit=True,
+            bnb_4bit_use_double_quant=True,
+            bnb_4bit_quant_type="nf4",
+            bnb_4bit_compute_dtype=torch.bfloat16,
+        )
     gguf_file = model_kwargs["gguf_file"]
     _ = hf_hub_download(model_name, gguf_file)
     tokenizer = get_tokenizer(model_name, gguf_file)
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
         gguf_file=gguf_file,
-        # torch_dtype=torch.float16,
-        # trust_remote_code=True,
+        trust_remote_code=True,
         device_map=model_kwargs["device"],
-        # quantization_config=bnb_config,
+        quantization_config=bnb_config,
         token=os.environ["HF_TOKEN"],
     )
 
@@ -61,15 +61,18 @@ def get_gemma_chat_model(model_name: str, streaming=False, model_kwargs=None):
 
 def get_llama_chat_model(model_name: str, streaming=False, model_kwargs=None):
     """Get LLAMA2 Chat Model"""
+    bnb_config = None
+    if sys.platform == "linux" or sys.platform == "linux2":
+        from transformers import BitsAndBytesConfig
 
-    # bnb_config = BitsAndBytesConfig(
-    #     load_in_4bit=True,
-    #     bnb_4bit_use_double_quant=True,
-    #     bnb_4bit_quant_type="nf4",
-    #     bnb_4bit_compute_dtype=torch.bfloat16,
-    #     # use_exllama=False,
-    #     # exllama_config={"version": 2}
-    # )
+        bnb_config = BitsAndBytesConfig(
+            load_in_4bit=True,
+            bnb_4bit_use_double_quant=True,
+            bnb_4bit_quant_type="nf4",
+            bnb_4bit_compute_dtype=torch.bfloat16,
+            # use_exllama=False,
+            # exllama_config={"version": 2}
+        )
 
     gguf_file = model_kwargs["gguf_file"]
     _ = hf_hub_download(model_name, gguf_file)
@@ -78,10 +81,9 @@ def get_llama_chat_model(model_name: str, streaming=False, model_kwargs=None):
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
         gguf_file=gguf_file,
-        # torch_dtype=torch.float16,
-        # trust_remote_code=True,
+        trust_remote_code=True,
         device_map=model_kwargs["device"],
-        # quantization_config=bnb_config
+        quantization_config=bnb_config,
     )
 
     if "peft_model" in model_kwargs and model_kwargs["peft_model"] is not None:
@@ -109,7 +111,8 @@ def get_openai_chat_model(
         temperature=temperature,
         streaming=streaming,
         model=model,
-        model_kwargs=model_kwargs,
+        frequency_penalty=model_kwargs["frequency_penalty"],
+        presence_penalty=model_kwargs["presence_penalty"],
     )
 
 

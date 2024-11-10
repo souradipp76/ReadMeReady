@@ -48,10 +48,11 @@ jobs:
         run: make install
       - name: Run tests
         run: make test
+        env:
+          OPENAI_API_KEY: dummy
       - name: "Upload coverage to Codecov"
         uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+        # with:
         #   fail_ci_if_error: true
 
   # tests_mac:
@@ -86,8 +87,12 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install Pip
-        run: python.exe -m pip install --user --upgrade pip
+        run: python.exe -m pip install --upgrade pip
       - name: Install project
         run: pip install -e .[test]
+      - name: Set OPENAI API Key
+        run: |
+          chcp 65001
+          echo "OPENAI_API_KEY=dummy" >> $env:GITHUB_ENV
       - name: run tests
         run: pytest -s -vvvv -l --tb=long tests

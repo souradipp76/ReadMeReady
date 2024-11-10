@@ -3,11 +3,11 @@
 [![codecov](https://codecov.io/gh/souradipp76/ReadMeReady/branch/main/graph/badge.svg?token=doc_generator_token_here)](https://codecov.io/gh/souradipp76/ReadMeReady)
 [![CI](https://github.com/souradipp76/ReadMeReady/actions/workflows/main.yml/badge.svg)](https://github.com/souradipp76/ReadMeReady/actions/workflows/main.yml)
 
-Generate code documentation in Markdown format in seconds.
+Auto-generate code documentation in Markdown format in seconds.
 
 ## What is ReadmeReady?
 
-Automated documentation of programming source code is a challenging task with significant practical and scientific implications for the developer community. ReadmeReady is a large language model (LLM)-based application that developers can use as a support tool to generate basic documentation for any publicly available repository. Over the last decade, several research have been done on generating documentation for source code using neural network architectures. With the recent advancements in LLM technology, some open-source applications have been developed to address this problem. However, these applications typically rely on the OpenAI APIs, which incur substantial financial costs, particularly for large repositories. Moreover, none of these open-source applications offer a fine-tuned model or features to enable users to fine-tune. Additionally, finding suitable data for fine-tuning is often challenging. Our application addresses these issues.
+Automated documentation of programming source code is a challenging task with significant practical and scientific implications for the developer community. ReadmeReady is a large language model (LLM)-based application that developers can use as a support tool to generate basic documentation for any publicly available or custom repository. Over the last decade, several research have been done on generating documentation for source code using neural network architectures. With the recent advancements in LLM technology, some open-source applications have been developed to address this problem. However, these applications typically rely on the OpenAI APIs, which incur substantial financial costs, particularly for large repositories. Moreover, none of these open-source applications offer a fine-tuned model or features to enable users to fine-tune custom LLMs. Additionally, finding suitable data for fine-tuning is often challenging. Our application addresses these issues.
 
 ## Installation
 ### Install it from PyPI
@@ -99,6 +99,13 @@ user_config = {
 index.index(**repo_config)
 query.generate_readme(**repo_config, **user_config)
 ```
+
+### Finetuning
+
+For finetuning on custon datasets, follow the instructions below.
+
+- Run the notebook file `scripts/data.ipynb` and follow the instructions in the file to generate custom dataset from open-source repositories.
+- Run the notebook file `scripts/fine-tuning-with-llama2-qlora.ipynb` and follow the instructions in the file to finetune custom LLMs.
 
 ## Contributing
 

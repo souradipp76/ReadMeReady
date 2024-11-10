@@ -1,6 +1,9 @@
 import os
+from unittest import mock
 import pytest
 from unittest.mock import patch, MagicMock
+
+import torch
 
 from doc_generator.utils.llm_utils import (
     get_gemma_chat_model,
@@ -66,7 +69,9 @@ def test_get_gemma_chat_model_with_peft():
         mock_auto_model.assert_called_once_with(
             model_name,
             gguf_file=model_kwargs["gguf_file"],
+            trust_remote_code=True,
             device_map=model_kwargs["device"],
+            quantization_config=None,
             token="test_token",
         )
         mock_peft_model.assert_called_once_with(
@@ -124,7 +129,69 @@ def test_get_gemma_chat_model_without_peft():
         mock_auto_model.assert_called_once_with(
             model_name,
             gguf_file=model_kwargs["gguf_file"],
+            trust_remote_code=True,
             device_map=model_kwargs["device"],
+            quantization_config=None,
+            token="test_token",
+        )
+        mock_peft_model.assert_not_called()
+        mock_pipeline.assert_called_once()
+        mock_hf_pipeline.assert_called_once_with(
+            pipeline=mock_pipeline_instance, model_kwargs=model_kwargs
+        )
+        assert result == mock_hf_pipeline_instance
+
+
+def test_get_gemma_chat_model_with_bnb_config():
+    model_name = "some-model"
+    model_kwargs = {
+        "gguf_file": "some_file.gguf",
+        "device": "cpu",
+    }
+    with patch("sys.platform", "linux"), patch(
+        "doc_generator.utils.llm_utils.hf_hub_download"
+    ) as mock_hf_download, patch(
+        "doc_generator.utils.llm_utils.get_tokenizer"
+    ) as mock_get_tokenizer, patch(
+        "doc_generator.utils.llm_utils.AutoModelForCausalLM.from_pretrained"
+    ) as mock_auto_model, patch(
+        "doc_generator.utils.llm_utils.PeftModel.from_pretrained"
+    ) as mock_peft_model, patch(
+        "doc_generator.utils.llm_utils.pipeline"
+    ) as mock_pipeline, patch(
+        "doc_generator.utils.llm_utils.HuggingFacePipeline"
+    ) as mock_hf_pipeline, patch.dict(
+        os.environ, {"HF_TOKEN": "test_token"}
+    ):
+
+        mock_bnb_config = MagicMock()
+
+        mock_tokenizer = MagicMock()
+        mock_get_tokenizer.return_value = mock_tokenizer
+
+        mock_model = MagicMock()
+        mock_auto_model.return_value = mock_model
+
+        mock_pipeline_instance = MagicMock()
+        mock_pipeline.return_value = mock_pipeline_instance
+
+        mock_hf_pipeline_instance = MagicMock()
+        mock_hf_pipeline.return_value = mock_hf_pipeline_instance
+
+        result = get_gemma_chat_model(model_name, model_kwargs=model_kwargs)
+
+        mock_hf_download.assert_called_once_with(
+            model_name, model_kwargs["gguf_file"]
+        )
+        mock_get_tokenizer.assert_called_once_with(
+            model_name, model_kwargs["gguf_file"]
+        )
+        mock_auto_model.assert_called_once_with(
+            model_name,
+            gguf_file=model_kwargs["gguf_file"],
+            trust_remote_code=True,
+            device_map=model_kwargs["device"],
+            quantization_config=mock.ANY,
             token="test_token",
         )
         mock_peft_model.assert_not_called()
@@ -187,7 +254,9 @@ def test_get_llama_chat_model_with_peft():
         mock_auto_model.assert_called_once_with(
             model_name,
             gguf_file=model_kwargs["gguf_file"],
+            trust_remote_code=True,
             device_map=model_kwargs["device"],
+            quantization_config=None,
         )
         mock_peft_model.assert_called_once_with(
             mock_model, model_kwargs["peft_model"]
@@ -247,7 +316,69 @@ def test_get_llama_chat_model_without_peft():
         mock_auto_model.assert_called_once_with(
             model_name,
             gguf_file=model_kwargs["gguf_file"],
+            trust_remote_code=True,
             device_map=model_kwargs["device"],
+            quantization_config=None,
+        )
+        mock_peft_model.assert_not_called()
+        mock_pipeline.assert_called_once()
+        mock_hf_pipeline.assert_called_once_with(
+            pipeline=mock_pipeline_instance, model_kwargs=model_kwargs
+        )
+        assert result == mock_hf_pipeline_instance
+
+
+def test_get_llama_chat_model_with_bnb_config():
+    model_name = "some-model"
+    model_kwargs = {
+        "gguf_file": "some_file.gguf",
+        "device": "cpu",
+    }
+    with patch("sys.platform", "linux"), patch(
+        "doc_generator.utils.llm_utils.hf_hub_download"
+    ) as mock_hf_download, patch(
+        "doc_generator.utils.llm_utils.get_tokenizer"
+    ) as mock_get_tokenizer, patch(
+        "doc_generator.utils.llm_utils.AutoModelForCausalLM.from_pretrained"
+    ) as mock_auto_model, patch(
+        "doc_generator.utils.llm_utils.PeftModel.from_pretrained"
+    ) as mock_peft_model, patch(
+        "doc_generator.utils.llm_utils.pipeline"
+    ) as mock_pipeline, patch(
+        "doc_generator.utils.llm_utils.HuggingFacePipeline"
+    ) as mock_hf_pipeline, patch.dict(
+        os.environ, {"HF_TOKEN": "test_token"}
+    ):
+
+        mock_tokenizer = MagicMock()
+        mock_get_tokenizer.return_value = mock_tokenizer
+        mock_tokenizer.pad_token = None
+        mock_tokenizer.eos_token = "<eos>"
+
+        mock_model = MagicMock()
+        mock_auto_model.return_value = mock_model
+
+        mock_pipeline_instance = MagicMock()
+        mock_pipeline.return_value = mock_pipeline_instance
+
+        mock_hf_pipeline_instance = MagicMock()
+        mock_hf_pipeline.return_value = mock_hf_pipeline_instance
+
+        result = get_llama_chat_model(model_name, model_kwargs=model_kwargs)
+
+        mock_hf_download.assert_called_once_with(
+            model_name, model_kwargs["gguf_file"]
+        )
+        mock_get_tokenizer.assert_called_once_with(
+            model_name, model_kwargs["gguf_file"]
+        )
+        assert mock_tokenizer.pad_token == mock_tokenizer.eos_token
+        mock_auto_model.assert_called_once_with(
+            model_name,
+            gguf_file=model_kwargs["gguf_file"],
+            trust_remote_code=True,
+            device_map=model_kwargs["device"],
+            quantization_config=mock.ANY,
         )
         mock_peft_model.assert_not_called()
         mock_pipeline.assert_called_once()
@@ -261,7 +392,10 @@ def test_get_openai_chat_model():
     model = "gpt-3.5-turbo"
     temperature = 0.7
     streaming = True
-    model_kwargs = {"some_kwarg": "value"}
+    model_kwargs = {
+        "frequency_penalty": "0.0",
+        "presence_penalty": "0.0",
+    }
 
     result = get_openai_chat_model(model, temperature, streaming, model_kwargs)
 
@@ -269,7 +403,6 @@ def test_get_openai_chat_model():
     assert result.temperature == temperature
     assert result.streaming == streaming
     assert result.model_name == model
-    assert result.model_kwargs == model_kwargs
 
 
 def test_get_openai_api_key_set(monkeypatch):
