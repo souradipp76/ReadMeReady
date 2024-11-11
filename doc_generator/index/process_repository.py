@@ -2,12 +2,13 @@
 Process Repository
 """
 
-import os
 import hashlib
 import json
+import os
 from pathlib import Path
-from langchain.chat_models.base import BaseChatModel
+
 import tiktoken
+from langchain.chat_models.base import BaseChatModel
 
 from doc_generator.types import (
     AutodocRepoConfig,
@@ -22,7 +23,7 @@ from doc_generator.utils.file_utils import (
     github_file_url,
     github_folder_url,
 )
-from doc_generator.utils.llm_utils import models, get_tokenizer
+from doc_generator.utils.llm_utils import get_tokenizer, models
 from doc_generator.utils.traverse_file_system import traverse_file_system
 
 from .prompts import (
@@ -246,8 +247,8 @@ def process_repository(config: AutodocRepoConfig, dry_run=False):
 
     files_folders_count = files_and_folders(config)
     print(
-        f"Processing {files_folders_count['files']} files \
-            and {files_folders_count['folders']} folders..."
+        f"Processing {files_folders_count['files']} files "
+        + f"and {files_folders_count['folders']} folders..."
     )
     params = TraverseFileSystemParams(
         config.root,

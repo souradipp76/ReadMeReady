@@ -73,6 +73,17 @@ def test_add_vectors_mismatched_lengths():
     )
 
 
+def test_add_vectors_empty():
+    embeddings = MagicMock()
+    args = HNSWLibArgs(space="cosine", num_dimensions=2)
+    hnswlib_instance = HNSWLib(embeddings, args)
+    vectors = None
+    documents = [Document("Doc 1")]
+
+    hnswlib_instance.add_vectors(vectors, documents)
+    assert hnswlib_instance._index is None
+
+
 def test_add_vectors_wrong_dimension():
     embeddings = MagicMock()
     args = HNSWLibArgs(space="cosine", num_dimensions=3)

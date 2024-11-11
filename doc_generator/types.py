@@ -3,7 +3,8 @@ Types
 """
 
 from enum import Enum
-from typing import List, Callable, Optional
+from typing import Callable, List, Optional
+
 from langchain_core.language_models.chat_models import BaseChatModel
 
 
@@ -40,7 +41,7 @@ class AutodocReadmeConfig:
     """AutodocReadmeConfig"""
 
     def __init__(self, headings: str):
-        self.headings = headings.split(",")
+        self.headings = [heading.strip() for heading in headings.split(",")]
 
 
 class AutodocUserConfig:

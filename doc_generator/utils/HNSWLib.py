@@ -2,17 +2,17 @@
 HNSWLib Wrapper
 """
 
-from abc import abstractmethod
-import os
 import json
-import hnswlib
-import numpy as np
+import os
+from abc import abstractmethod
 from typing import Any, Dict, Iterable, List, Optional
 
+import hnswlib
+import numpy as np
 from langchain_community.docstore.in_memory import InMemoryDocstore
+from langchain_core.documents import Document
 from langchain_core.embeddings.embeddings import Embeddings
 from langchain_core.vectorstores import VectorStore
-from langchain_core.documents import Document
 
 
 class SaveableVectorStore(VectorStore):
@@ -81,7 +81,6 @@ class HNSWLib(SaveableVectorStore):
                 self.args.num_dimensions = len(vectors[0])
             self._index = HNSWLib.get_hierarchical_nsw(self.args)
         if not self._index.element_count:
-            print("herer")
             self._index.init_index(len(vectors))
 
     def add_vectors(
