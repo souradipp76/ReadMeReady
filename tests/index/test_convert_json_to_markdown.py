@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import patch, MagicMock
 import json
 from pathlib import Path
-from doc_generator.index import convert_json_to_markdown
+from doc_generator.index.convert_json_to_markdown import convert_json_to_markdown
 
 from doc_generator.types import (
     AutodocRepoConfig,
@@ -16,13 +16,22 @@ def test_convert_json_to_markdown(tmp_path):
     # Set up test configuration
     config = AutodocRepoConfig(
         name="TestProject",
+        repository_url="",
         root=str(tmp_path / "input"),
         output=str(tmp_path / "output"),
+        llms=[],
+        priority=None,
+        max_concurrent_calls=10,
+        add_questions=False,
+        ignore=[],
         file_prompt=None,
         folder_prompt=None,
         content_type=None,
         target_audience=None,
         link_hosted=None,
+        chat_prompt="",
+        peft_model_path=None,
+        device="cpu",
     )
 
     # Create input directory and files

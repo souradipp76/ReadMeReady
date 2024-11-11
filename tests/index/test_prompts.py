@@ -98,7 +98,9 @@ def test_folder_summary_prompt():
             url="http://example.com/helpers",
             summary="Helper modules for specific tasks.",
             files=[],
-            folders=[]
+            folders=[],
+            questions=[],
+            checksum="abcd1234",
         ),
         FolderSummary(
             folder_name="tests",
@@ -106,7 +108,9 @@ def test_folder_summary_prompt():
             url="http://example.com/tests",
             summary="Unit tests for the project.",
             files=[],
-            folders=[]
+            folders=[],
+            questions=[],
+            checksum="defg5678",
         )
     ]
     

@@ -1,4 +1,3 @@
-import pytest
 from unittest import mock
 from unittest.mock import MagicMock
 from typing import Dict, List
@@ -24,8 +23,30 @@ def test_select_model_cost_priority():
     prompts = ["short prompt"]
     llms = [LLMModels.GPT3, LLMModels.GPT4]
     models = {
-        LLMModels.GPT3: LLMModelDetails(name='gpt-3', max_length=50),
-        LLMModels.GPT4: LLMModelDetails(name='gpt-4', max_length=100),
+        LLMModels.GPT3: LLMModelDetails(
+            name=LLMModels.GPT3,
+            input_cost_per_1k_tokens=1,
+            output_cost_per_1k_tokens=1,
+            max_length=50,
+            llm=None,
+            input_tokens=0,
+            output_tokens=0,
+            succeeded=0,
+            failed=0,
+            total=0,
+        ),
+        LLMModels.GPT4: LLMModelDetails(
+            name=LLMModels.GPT4,
+            input_cost_per_1k_tokens=1,
+            output_cost_per_1k_tokens=1,
+            max_length=100,
+            llm=None,
+            input_tokens=0,
+            output_tokens=0,
+            succeeded=0,
+            failed=0,
+            total=0,
+        ),
     }
     priority = Priority.COST
 
@@ -42,8 +63,30 @@ def test_select_model_performance_priority():
     prompts = ["short prompt"]
     llms = [LLMModels.GPT4, LLMModels.GPT3]
     models = {
-        LLMModels.GPT3: LLMModelDetails(name='gpt-3', max_length=50),
-        LLMModels.GPT4: LLMModelDetails(name='gpt-4', max_length=100),
+        LLMModels.GPT3: LLMModelDetails(
+            name=LLMModels.GPT3,
+            input_cost_per_1k_tokens=1,
+            output_cost_per_1k_tokens=1,
+            max_length=50,
+            llm=None,
+            input_tokens=0,
+            output_tokens=0,
+            succeeded=0,
+            failed=0,
+            total=0,
+        ),
+        LLMModels.GPT4: LLMModelDetails(
+            name=LLMModels.GPT4,
+            input_cost_per_1k_tokens=1,
+            output_cost_per_1k_tokens=1,
+            max_length=100,
+            llm=None,
+            input_tokens=0,
+            output_tokens=0,
+            succeeded=0,
+            failed=0,
+            total=0,
+        ),
     }
     priority = Priority.PERFORMANCE
 
@@ -60,7 +103,18 @@ def test_select_model_no_model_found():
     prompts = ["this is a very long prompt that exceeds model max length"]
     llms = [LLMModels.GPT3]
     models = {
-        LLMModels.GPT3: LLMModelDetails(name='gpt-3', max_length=10),
+        LLMModels.GPT3: LLMModelDetails(
+            name=LLMModels.GPT3,
+            input_cost_per_1k_tokens=1,
+            output_cost_per_1k_tokens=1,
+            max_length=10,
+            llm=None,
+            input_tokens=0,
+            output_tokens=0,
+            succeeded=0,
+            failed=0,
+            total=0,
+        ),
     }
     priority = Priority.COST
 
@@ -77,7 +131,18 @@ def test_select_model_unknown_priority():
     prompts = ["prompt"]
     llms = [LLMModels.GPT3]
     models = {
-        LLMModels.GPT3: LLMModelDetails(name='gpt-3', max_length=50),
+        LLMModels.GPT3: LLMModelDetails(
+            name=LLMModels.GPT3,
+            input_cost_per_1k_tokens=1,
+            output_cost_per_1k_tokens=1,
+            max_length=10,
+            llm=None,
+            input_tokens=0,
+            output_tokens=0,
+            succeeded=0,
+            failed=0,
+            total=0,
+        ),
     }
     priority = None  # Unknown priority
 

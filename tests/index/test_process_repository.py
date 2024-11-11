@@ -40,7 +40,7 @@ def test_should_reindex_file_not_found(tmp_path):
 def test_should_reindex_same_checksum(tmp_path):
     content_path = tmp_path
     name = "summary.json"
-    data = {"checksum": "checksum123"}
+    data = "{\"checksum\": \"checksum123\"}"
     (tmp_path / name).write_text(json.dumps(data), encoding="utf-8")
     result = should_reindex(content_path, name, "checksum123")
     assert result is False
@@ -49,7 +49,7 @@ def test_should_reindex_same_checksum(tmp_path):
 def test_should_reindex_different_checksum(tmp_path):
     content_path = tmp_path
     name = "summary.json"
-    data = {"checksum": "oldchecksum"}
+    data = "{\"checksum\": \"oldchecksum\"}"
     (tmp_path / name).write_text(json.dumps(data), encoding="utf-8")
     result = should_reindex(content_path, name, "newchecksum")
     assert result is True
@@ -282,11 +282,13 @@ def test_process_folder_no_reindex(tmp_path):
     folder_path = tmp_path / "test_folder"
     folder_path.mkdir()
     process_folder_params = ProcessFolderParams(
+        input_path="",
         folder_name="test_folder",
         folder_path=str(folder_path),
         project_name="TestProject",
         content_type=None,
         folder_prompt=None,
+        target_audience="",
         link_hosted=None,
         should_ignore=lambda x: False,
     )
@@ -360,8 +362,8 @@ def test_process_file_no_content(tmp_path):
     )
 
     # Mock functions
-    with patch("doc_generator.index.process_repository.read_file", return_value=""):
-        with patch("doc_generator.index.process_repository.write_file") as mock_write_file:
+    with patch("doc_generator.index.process_repository.process_repository.read_file", return_value=""):
+        with patch("doc_generator.index.process_repository.process_repository.write_file") as mock_write_file:
             from doc_generator.index.process_repository import process_file
 
             process_file(process_file_params)
@@ -373,17 +375,20 @@ def test_process_folder_dry_run(tmp_path):
     folder_path = tmp_path / "test_folder"
     folder_path.mkdir()
     process_folder_params = ProcessFolderParams(
+        input_path="",
         folder_name="test_folder",
         folder_path=str(folder_path),
         project_name="TestProject",
         content_type=None,
         folder_prompt=None,
+        target_audience="",
         link_hosted=None,
         should_ignore=lambda x: False,
+
     )
 
     # Mock functions
-    with patch("doc_generator.index.process_repository.write_file") as mock_write_file:
+    with patch("doc_generator.index.process_repository.process_repository.write_file") as mock_write_file:
         from doc_generator.index.process_repository import process_folder
 
         process_folder(process_folder_params)

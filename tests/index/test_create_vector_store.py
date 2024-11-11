@@ -1,6 +1,7 @@
 import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import mock_open, patch, MagicMock
 from pathlib import Path
+from langchain_core.documents import Document
 import os
 
 from doc_generator.index.create_vector_store import (
