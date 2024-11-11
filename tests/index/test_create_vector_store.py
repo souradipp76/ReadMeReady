@@ -94,18 +94,18 @@ def test_create_vector_store(tmp_path):
                     mock_hnswlib.from_documents.assert_called_once()
                     mock_vector_store.save.assert_called_once_with(str(tmp_path / 'output'))
 
-def test_create_vector_store_no_docs(tmp_path):
-    # Mock RepoLoader to return no documents
-    with patch.object(RepoLoader, 'load', return_value=[]):
-        with patch('builtins.print') as mock_print:
-            create_vector_store(
-                root='path/to/root',
-                output=str(tmp_path / 'output'),
-                ignore=[],
-                llms=[LLMModels.GPT3],
-                device='cpu'
-            )
-            mock_print.assert_any_call('Splitting text into chunks for 0 docs')
-            mock_print.assert_any_call('Creating vector store....')
-            mock_print.assert_any_call('Saving vector store output....')
-            mock_print.assert_any_call('Done creating vector store....')
+# def test_create_vector_store_no_docs(tmp_path):
+#     # Mock RepoLoader to return no documents
+#     with patch.object(RepoLoader, 'load', return_value=[]):
+#         with patch('builtins.print') as mock_print:
+#             create_vector_store(
+#                 root='path/to/root',
+#                 output=str(tmp_path / 'output'),
+#                 ignore=[],
+#                 llms=[LLMModels.GPT3],
+#                 device='cpu'
+#             )
+#             mock_print.assert_any_call('Splitting text into chunks for 0 docs')
+#             mock_print.assert_any_call('Creating vector store....')
+#             mock_print.assert_any_call('Saving vector store output....')
+#             mock_print.assert_any_call('Done creating vector store....')

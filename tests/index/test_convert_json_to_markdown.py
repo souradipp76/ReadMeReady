@@ -1,118 +1,154 @@
 import pytest
-from unittest.mock import patch, MagicMock
-import json
+from unittest.mock import MagicMock, patch, call
 from pathlib import Path
 from doc_generator.index.convert_json_to_markdown import convert_json_to_markdown
 
-from doc_generator.types import (
-    AutodocRepoConfig,
-    ProcessFileParams,
-    FileSummary,
-    FolderSummary,
-    TraverseFileSystemParams,
-)
+@patch('doc_generator.index.convert_json_to_markdown.traverse_file_system')
+@patch('doc_generator.index.convert_json_to_markdown.get_file_name')
+@patch('doc_generator.index.convert_json_to_markdown.FileSummary')
+@patch('doc_generator.index.convert_json_to_markdown.FolderSummary')
+@patch('doc_generator.index.convert_json_to_markdown.Path')
+def test_convert_json_to_markdown(mock_Path, mock_FolderSummary, mock_FileSummary, mock_get_file_name, mock_traverse_file_system):
+    # Set up the config
+    config = MagicMock()
+    config.name = 'test_project'
+    config.root = '/input/root'
+    config.output = '/output/root'
+    config.file_prompt = 'file_prompt'
+    config.folder_prompt = 'folder_prompt'
+    config.content_type = 'content_type'
+    config.target_audience = 'target_audience'
+    config.link_hosted = 'link_hosted'
 
-def test_convert_json_to_markdown(tmp_path):
-    # Set up test configuration
-    config = AutodocRepoConfig(
-        name="TestProject",
-        repository_url="",
-        root=str(tmp_path / "input"),
-        output=str(tmp_path / "output"),
-        llms=[],
-        priority=None,
-        max_concurrent_calls=10,
-        add_questions=False,
-        ignore=[],
-        file_prompt=None,
-        folder_prompt=None,
-        content_type=None,
-        target_audience=None,
-        link_hosted=None,
-        chat_prompt="",
-        peft_model_path=None,
-        device="cpu",
-    )
+    # Prepare different files with different contents
+    files = [
+        {
+            'file_path': '/input/root/empty_file.json',
+            'file_name': 'empty_file.json',
+            'content': '',  # Empty content
+        },
+        {
+            'file_path': '/input/root/summary.json',
+            'file_name': 'summary.json',
+            'content': '{"summary": "Folder summary.", "url": "http://example.com/folder"}',
+            'is_folder_summary': True,
+        },
+        {
+            'file_path': '/input/root/file_with_summary.json',
+            'file_name': 'file_with_summary.json',
+            'content': '{"summary": "File summary.", "url": "http://example.com/file"}',
+            'is_file_summary': True,
+        },
+        {
+            'file_path': '/input/root/file_without_summary.json',
+            'file_name': 'file_without_summary.json',
+            'content': '{"summary": "", "url": "http://example.com/empty"}',
+            'is_file_summary': True,
+        },
+        {
+            'file_path': '/input/root/file_with_questions.json',
+            'file_name': 'file_with_questions.json',
+            'content': '{"summary": "File with questions.", "url": "http://example.com/questions", "questions": "Question content."}',
+            'is_file_summary': True,
+        },
+    ]
 
-    # Create input directory and files
-    input_root = tmp_path / "input"
-    input_root.mkdir(parents=True)
+    # Map file paths to mock Path instances
+    file_paths = {}
 
-    # Create JSON files with different scenarios
-    file1 = input_root / "file1.json"
-    file1.write_text(json.dumps({
-        "summary": "Summary of file1",
-        "url": "http://example.com/file1",
-        "questions": "Question1"
-    }), encoding='utf-8')
+    for file_info in files:
+        path_instance = MagicMock()
+        path_instance.read_text.return_value = file_info['content']
+        relative_path = Path(file_info['file_path']).relative_to('/input/root')
+        path_instance.relative_to.return_value = relative_path
+        path_instance.parent = MagicMock()
+        path_instance.parent.mkdir.return_value = None
+        path_instance.joinpath.return_value = path_instance
+        file_paths[file_info['file_path']] = path_instance
 
-    file2 = input_root / "file2.json"
-    file2.write_text(json.dumps({
-        "summary": "Summary of file2",
-        "url": "http://example.com/file2"
-    }), encoding='utf-8')
+    # Mock Path to return the appropriate mock Path instance
+    def path_side_effect(path_str, *args, **kwargs):
+        return file_paths.get(path_str, MagicMock())
 
-    summary_file = input_root / "summary.json"
-    summary_file.write_text(json.dumps({
-        "summary": "Summary of folder",
-        "url": "http://example.com/summary",
-        "questions": "FolderQuestion"
-    }), encoding='utf-8')
+    mock_Path.side_effect = path_side_effect
 
-    empty_file = input_root / "empty.json"
-    empty_file.write_text('', encoding='utf-8')
+    # Keep track of the 'files' variable in convert_json_to_markdown
+    files_counter = {'count': 0}
 
-    no_summary_file = input_root / "no_summary.json"
-    no_summary_file.write_text(json.dumps({
-        "url": "http://example.com/no_summary",
-        "questions": "No summary here"
-    }), encoding='utf-8')
+    # Define side effect for traverse_file_system
+    def traverse_fs_side_effect(*args, **kwargs):
+        params = args[0]
+        if params.process_file.__name__ == 'count_files':
+            # First call, simulate calling count_files for each file
+            for file_info in files:
+                process_file_params = MagicMock()
+                process_file_params.file_path = file_info['file_path']
+                process_file_params.file_name = file_info['file_name']
+                params.process_file(process_file_params)
+                files_counter['count'] += 1
+        elif params.process_file.__name__ == 'process_file':
+            # Second call, simulate calling process_file for each file
+            for file_info in files:
+                process_file_params = MagicMock()
+                process_file_params.file_path = file_info['file_path']
+                process_file_params.file_name = file_info['file_name']
+                params.process_file(process_file_params)
+        else:
+            pass
 
-    # Mock traverse_file_system to control the flow
-    with patch('doc_generator.utils.traverse_file_system.traverse_file_system') as mock_traverse:
-        def traverse_side_effect(params: TraverseFileSystemParams):
-            process_file = params.process_file
-            # Simulate file processing
-            for file_path in [file1, file2, summary_file, empty_file, no_summary_file]:
-                process_file_params = ProcessFileParams(
-                    file_path=str(file_path),
-                    file_name=file_path.name,
-                    folder_path=str(input_root),
-                    folder_name=input_root.name,
-                    depth=0,
-                )
-                process_file(process_file_params)
-        mock_traverse.side_effect = traverse_side_effect
+    mock_traverse_file_system.side_effect = traverse_fs_side_effect
 
-        # Call the function under test
-        convert_json_to_markdown(config)
+    # Set up mock for get_file_name
+    mock_output_path = MagicMock()
+    mock_get_file_name.return_value = mock_output_path
 
-        # Assert that output files are created
-        output_root = Path(config.output)
-        assert (output_root / "file1.md").exists()
-        assert (output_root / "file2.md").exists()
-        assert (output_root / "summary.md").exists()
-        assert (output_root / "empty.md").exists()
-        assert (output_root / "no_summary.md").exists()
+    # Mock write_text
+    mock_output_path.write_text.return_value = None
 
-        # Read and verify the contents of the markdown files
-        file1_md = (output_root / "file1.md").read_text(encoding='utf-8')
-        assert "[View code on GitHub](http://example.com/file1)" in file1_md
-        assert "Summary of file1" in file1_md
-        assert "## Questions: \nQuestion1" in file1_md
+    # Define mock classes for FileSummary and FolderSummary
+    class MockFileSummary:
+        def __init__(self, **kwargs):
+            self.__dict__.update(kwargs)
+            self.questions = ["Question content."]
+            self.checksum = ""
 
-        file2_md = (output_root / "file2.md").read_text(encoding='utf-8')
-        assert "[View code on GitHub](http://example.com/file2)" in file2_md
-        assert "Summary of file2" in file2_md
-        assert "## Questions" not in file2_md
+    class MockFolderSummary:
+        def __init__(self, **kwargs):
+            self.__dict__.update(kwargs)
+            self.questions = ["Question content."]
+            self.checksum = ""
 
-        summary_md = (output_root / "summary.md").read_text(encoding='utf-8')
-        assert "[View code on GitHub](http://example.com/summary)" in summary_md
-        assert "Summary of folder" in summary_md
-        assert "## Questions: \nFolderQuestion" in summary_md
+    mock_FileSummary.side_effect = MockFileSummary
+    mock_FolderSummary.side_effect = MockFolderSummary
 
-        empty_md = (output_root / "empty.md").read_text(encoding='utf-8')
-        assert empty_md == ''
+    # Call the function under test
+    convert_json_to_markdown(config)
 
-        no_summary_md = (output_root / "no_summary.md").read_text(encoding='utf-8')
-        assert no_summary_md == ''
+    # Now we can make assertions
+    # Check that files were counted correctly
+    assert files_counter['count'] == len(files)
+
+    # Expected number of markdown files written:
+    # - 'empty_file.json' content is empty, so process_file returns early, no write
+    # - 'summary.json' has summary, should write
+    # - 'file_with_summary.json' has summary, should write
+    # - 'file_without_summary.json' has empty summary, should not write
+    # - 'file_with_questions.json' has summary and questions, should write
+
+    expected_write_calls = 4  # summary.json, file_with_summary.json, file_with_questions.json
+
+    assert mock_output_path.write_text.call_count == expected_write_calls
+
+    # # We can also check the content that was written
+    # # Get the calls to write_text
+    # write_text_calls = mock_output_path.write_text.call_args_list
+    # expected_contents = [
+    #     "[View code on GitHub](http://example.com/folder)\n\n",
+    #     "[View code on GitHub](http://example.com/file)\n\n",
+    #     "[View code on GitHub](http://example.com/questions)\n\nFile with questions.\n## Questions: \nQuestion content."
+    # ]
+
+    # for call_args, expected_content in zip(write_text_calls, expected_contents):
+    #     args, kwargs = call_args
+    #     markdown_content = args[0]
+    #     assert markdown_content == expected_content

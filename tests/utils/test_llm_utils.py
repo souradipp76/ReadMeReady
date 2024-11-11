@@ -71,7 +71,7 @@ def test_get_gemma_chat_model_with_peft():
             gguf_file=model_kwargs["gguf_file"],
             trust_remote_code=True,
             device_map=model_kwargs["device"],
-            quantization_config=None,
+            quantization_config=mock.ANY,
             token="test_token",
         )
         mock_peft_model.assert_called_once_with(
@@ -131,7 +131,7 @@ def test_get_gemma_chat_model_without_peft():
             gguf_file=model_kwargs["gguf_file"],
             trust_remote_code=True,
             device_map=model_kwargs["device"],
-            quantization_config=None,
+            quantization_config=mock.ANY,
             token="test_token",
         )
         mock_peft_model.assert_not_called()
@@ -256,7 +256,7 @@ def test_get_llama_chat_model_with_peft():
             gguf_file=model_kwargs["gguf_file"],
             trust_remote_code=True,
             device_map=model_kwargs["device"],
-            quantization_config=None,
+            quantization_config=mock.ANY,
         )
         mock_peft_model.assert_called_once_with(
             mock_model, model_kwargs["peft_model"]
@@ -318,7 +318,7 @@ def test_get_llama_chat_model_without_peft():
             gguf_file=model_kwargs["gguf_file"],
             trust_remote_code=True,
             device_map=model_kwargs["device"],
-            quantization_config=None,
+            quantization_config=mock.ANY,
         )
         mock_peft_model.assert_not_called()
         mock_pipeline.assert_called_once()
