@@ -102,7 +102,7 @@ query.generate_readme(**repo_config, **user_config)
 
 ### Finetuning
 
-For finetuning on custon datasets, follow the instructions below.
+For finetuning on custom datasets, follow the instructions below.
 
 - Run the notebook file `scripts/data.ipynb` and follow the instructions in the file to generate custom dataset from open-source repositories.
 - Run the notebook file `scripts/fine-tuning-with-llama2-qlora.ipynb` and follow the instructions in the file to finetune custom LLMs.
