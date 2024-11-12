@@ -3,7 +3,6 @@ from unittest import mock
 import pytest
 from unittest.mock import patch, MagicMock
 
-import torch
 
 from doc_generator.utils.llm_utils import (
     get_gemma_chat_model,
@@ -15,9 +14,8 @@ from doc_generator.utils.llm_utils import (
     total_index_cost_estimate,
     get_embeddings,
 )
-from doc_generator.types import LLMModelDetails, LLMModels
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from langchain_huggingface import HuggingFaceEmbeddings, HuggingFacePipeline
+from doc_generator.types import LLMModelDetails
+from langchain_openai import ChatOpenAI
 
 
 def test_get_gemma_chat_model_with_peft():
@@ -71,7 +69,7 @@ def test_get_gemma_chat_model_with_peft():
             gguf_file=model_kwargs["gguf_file"],
             trust_remote_code=True,
             device_map=model_kwargs["device"],
-            quantization_config=None,
+            quantization_config=mock.ANY,
             token="test_token",
         )
         mock_peft_model.assert_called_once_with(
@@ -131,7 +129,7 @@ def test_get_gemma_chat_model_without_peft():
             gguf_file=model_kwargs["gguf_file"],
             trust_remote_code=True,
             device_map=model_kwargs["device"],
-            quantization_config=None,
+            quantization_config=mock.ANY,
             token="test_token",
         )
         mock_peft_model.assert_not_called()
@@ -256,7 +254,7 @@ def test_get_llama_chat_model_with_peft():
             gguf_file=model_kwargs["gguf_file"],
             trust_remote_code=True,
             device_map=model_kwargs["device"],
-            quantization_config=None,
+            quantization_config=mock.ANY,
         )
         mock_peft_model.assert_called_once_with(
             mock_model, model_kwargs["peft_model"]
@@ -318,7 +316,7 @@ def test_get_llama_chat_model_without_peft():
             gguf_file=model_kwargs["gguf_file"],
             trust_remote_code=True,
             device_map=model_kwargs["device"],
-            quantization_config=None,
+            quantization_config=mock.ANY,
         )
         mock_peft_model.assert_not_called()
         mock_pipeline.assert_called_once()

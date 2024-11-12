@@ -1,4 +1,3 @@
-import pytest
 from doc_generator.utils.file_utils import (
     get_file_name,
     github_file_url,

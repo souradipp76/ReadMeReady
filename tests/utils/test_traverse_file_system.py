@@ -1,4 +1,3 @@
-import pytest
 from unittest.mock import MagicMock, mock_open, patch
 
 from doc_generator.utils.traverse_file_system import traverse_file_system

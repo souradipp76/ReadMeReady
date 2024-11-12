@@ -29,10 +29,10 @@ def test_make_qa_prompt_with_chat_prompt():
     )
 
     assert isinstance(prompt, PromptTemplate)
-    assert "{question}" in prompt.template
+    assert "{input}" in prompt.template
     assert "{context}" in prompt.template
     assert "Please provide detailed explanations." in prompt.template
-    assert prompt.input_variables == ["context", "question"]
+    assert prompt.input_variables == ["context", "input"]
 
 
 def test_make_qa_prompt_without_chat_prompt():
@@ -51,10 +51,10 @@ def test_make_qa_prompt_without_chat_prompt():
     )
 
     assert isinstance(prompt, PromptTemplate)
-    assert "{question}" in prompt.template
+    assert "{input}" in prompt.template
     assert "{context}" in prompt.template
     assert "Here are some additional instructions" not in prompt.template
-    assert prompt.input_variables == ["context", "question"]
+    assert prompt.input_variables == ["context", "input"]
 
 
 def test_make_readme_prompt_with_chat_prompt():
@@ -119,9 +119,9 @@ def test_make_qa_chain_llama():
     ) as mock_get_llama_chat_model, patch(
         "doc_generator.query.create_chat_chain.create_stuff_documents_chain"
     ) as mock_create_stuff_chain, patch(
-        "doc_generator.query.create_chat_chain.LLMChain"
+        "doc_generator.query.create_chat_chain.create_history_aware_retriever"
     ) as mock_llm_chain, patch(
-        "doc_generator.query.create_chat_chain.ChatVectorDBChain"
+        "doc_generator.query.create_chat_chain.create_retrieval_chain"
     ) as mock_chat_vector_chain:
         mock_question_chat_model = MagicMock()
         mock_get_llama_chat_model.return_value = mock_question_chat_model
@@ -151,10 +151,8 @@ def test_make_qa_chain_llama():
         mock_create_stuff_chain.assert_called()
         mock_llm_chain.assert_called()
         mock_chat_vector_chain.assert_called_with(
-            vectorstore=vectorstore,
+            retriever=mock_question_generator,
             combine_docs_chain=mock_doc_chain,
-            question_generator=mock_question_generator,
-            response_if_no_docs_found=None,
         )
         assert chain == mock_chat_chain_instance
 
@@ -177,9 +175,9 @@ def test_make_qa_chain_gemma():
     ) as mock_get_gemma_chat_model, patch(
         "doc_generator.query.create_chat_chain.create_stuff_documents_chain"
     ) as mock_create_stuff_chain, patch(
-        "doc_generator.query.create_chat_chain.LLMChain"
+        "doc_generator.query.create_chat_chain.create_history_aware_retriever"
     ) as mock_llm_chain, patch(
-        "doc_generator.query.create_chat_chain.ChatVectorDBChain"
+        "doc_generator.query.create_chat_chain.create_retrieval_chain"
     ) as mock_chat_vector_chain:
         mock_question_chat_model = MagicMock()
         mock_get_gemma_chat_model.return_value = mock_question_chat_model
@@ -209,10 +207,8 @@ def test_make_qa_chain_gemma():
         mock_create_stuff_chain.assert_called()
         mock_llm_chain.assert_called()
         mock_chat_vector_chain.assert_called_with(
-            vectorstore=vectorstore,
+            retriever=mock_question_generator,
             combine_docs_chain=mock_doc_chain,
-            question_generator=mock_question_generator,
-            response_if_no_docs_found=None,
         )
         assert chain == mock_chat_chain_instance
 
@@ -235,9 +231,9 @@ def test_make_qa_chain_openai():
     ) as mock_get_openai_chat_model, patch(
         "doc_generator.query.create_chat_chain.create_stuff_documents_chain"
     ) as mock_create_stuff_chain, patch(
-        "doc_generator.query.create_chat_chain.LLMChain"
+        "doc_generator.query.create_chat_chain.create_history_aware_retriever"
     ) as mock_llm_chain, patch(
-        "doc_generator.query.create_chat_chain.ChatVectorDBChain"
+        "doc_generator.query.create_chat_chain.create_retrieval_chain"
     ) as mock_chat_vector_chain:
         mock_question_chat_model = MagicMock()
         mock_get_openai_chat_model.return_value = mock_question_chat_model
@@ -267,10 +263,8 @@ def test_make_qa_chain_openai():
         mock_create_stuff_chain.assert_called()
         mock_llm_chain.assert_called()
         mock_chat_vector_chain.assert_called_with(
-            vectorstore=vectorstore,
+            retriever=mock_question_generator,
             combine_docs_chain=mock_doc_chain,
-            question_generator=mock_question_generator,
-            response_if_no_docs_found=None,
         )
         assert chain == mock_chat_chain_instance
 
@@ -440,12 +434,12 @@ def test_make_readme_chain_openai():
 def test_condense_qa_prompt():
     assert isinstance(condense_qa_prompt, PromptTemplate)
     assert "chat_history" in condense_qa_prompt.input_variables
-    assert "question" in condense_qa_prompt.input_variables
+    assert "input" in condense_qa_prompt.input_variables
 
 
 def test_condense_readme_prompt():
     assert isinstance(condense_readme_prompt, PromptTemplate)
-    assert "question" in condense_readme_prompt.input_variables
+    assert "input" in condense_readme_prompt.input_variables
 
 
 def test_make_qa_chain_with_multiple_llms():
@@ -469,9 +463,9 @@ def test_make_qa_chain_with_multiple_llms():
     ) as mock_get_openai_chat_model, patch(
         "doc_generator.query.create_chat_chain.create_stuff_documents_chain"
     ) as mock_create_stuff_chain, patch(
-        "doc_generator.query.create_chat_chain.LLMChain"
+        "doc_generator.query.create_chat_chain.create_history_aware_retriever"
     ) as mock_llm_chain, patch(
-        "doc_generator.query.create_chat_chain.ChatVectorDBChain"
+        "doc_generator.query.create_chat_chain.create_retrieval_chain"
     ) as mock_chat_vector_chain:
         mock_question_chat_model = MagicMock()
         mock_get_openai_chat_model.return_value = mock_question_chat_model
@@ -522,9 +516,9 @@ def test_make_qa_chain_with_llama_gguf_file():
     ) as mock_get_llama_chat_model, patch(
         "doc_generator.query.create_chat_chain.create_stuff_documents_chain"
     ) as mock_create_stuff_chain, patch(
-        "doc_generator.query.create_chat_chain.LLMChain"
+        "doc_generator.query.create_chat_chain.create_history_aware_retriever"
     ) as mock_llm_chain, patch(
-        "doc_generator.query.create_chat_chain.ChatVectorDBChain"
+        "doc_generator.query.create_chat_chain.create_retrieval_chain"
     ) as mock_chat_vector_chain:
         mock_question_chat_model = MagicMock()
         mock_get_llama_chat_model.return_value = mock_question_chat_model
@@ -578,9 +572,9 @@ def test_make_qa_chain_with_gemma_gguf_file():
     ) as mock_get_gemma_chat_model, patch(
         "doc_generator.query.create_chat_chain.create_stuff_documents_chain"
     ) as mock_create_stuff_chain, patch(
-        "doc_generator.query.create_chat_chain.LLMChain"
+        "doc_generator.query.create_chat_chain.create_history_aware_retriever"
     ) as mock_llm_chain, patch(
-        "doc_generator.query.create_chat_chain.ChatVectorDBChain"
+        "doc_generator.query.create_chat_chain.create_retrieval_chain"
     ) as mock_chat_vector_chain:
         mock_question_chat_model = MagicMock()
         mock_get_gemma_chat_model.return_value = mock_question_chat_model
@@ -738,9 +732,9 @@ def test_make_qa_chain_with_on_token_stream_true():
     ) as mock_get_openai_chat_model, patch(
         "doc_generator.query.create_chat_chain.create_stuff_documents_chain"
     ) as mock_create_stuff_chain, patch(
-        "doc_generator.query.create_chat_chain.LLMChain"
+        "doc_generator.query.create_chat_chain.create_history_aware_retriever"
     ) as mock_llm_chain, patch(
-        "doc_generator.query.create_chat_chain.ChatVectorDBChain"
+        "doc_generator.query.create_chat_chain.create_retrieval_chain"
     ) as mock_chat_vector_chain:
         mock_question_chat_model = MagicMock()
         mock_get_openai_chat_model.return_value = mock_question_chat_model
