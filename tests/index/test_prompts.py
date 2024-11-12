@@ -1,4 +1,3 @@
-import pytest
 import textwrap
 from doc_generator.index.prompts import (
     create_code_file_summary,
@@ -7,17 +6,18 @@ from doc_generator.index.prompts import (
 )
 from doc_generator.types import FolderSummary, FileSummary
 
+
 def test_create_code_file_summary():
     file_path = "src/main.py"
     project_name = "TestProject"
     file_contents = "def main():\n    print('Hello, World!')"
     content_type = "Python code"
     file_prompt = "Please summarize the functionality of this code."
-    
+
     result = create_code_file_summary(
         file_path, project_name, file_contents, content_type, file_prompt
     )
-    
+
     expected_output = f"""
     You are acting as a {content_type} documentation expert
     for a project called {project_name}.
@@ -36,17 +36,18 @@ def test_create_code_file_summary():
     expected_output = textwrap.dedent(expected_output).strip()
     assert result == expected_output
 
+
 def test_create_code_questions():
     file_path = "src/utils.py"
     project_name = "TestProject"
     file_contents = "def add(a, b):\n    return a + b"
     content_type = "Python code"
     target_audience = "new developers"
-    
+
     result = create_code_questions(
         file_path, project_name, file_contents, content_type, target_audience
     )
-    
+
     expected_output = f"""
     You are acting as a {content_type} documentation expert
     for a project called {project_name}.
@@ -66,12 +67,13 @@ def test_create_code_questions():
     expected_output = textwrap.dedent(expected_output).strip()
     assert result == expected_output
 
+
 def test_folder_summary_prompt():
     folder_path = "src"
     project_name = "TestProject"
     content_type = "Python code"
     folder_prompt = "Please provide an overview of this folder."
-    
+
     files = [
         FileSummary(
             file_name="main.py",
@@ -79,7 +81,7 @@ def test_folder_summary_prompt():
             url="http://example.com/main.py",
             summary="This file contains the main execution logic.",
             questions=[],
-            checksum="abc123"
+            checksum="abc123",
         ),
         FileSummary(
             file_name="utils.py",
@@ -87,10 +89,10 @@ def test_folder_summary_prompt():
             url="http://example.com/utils.py",
             summary="Utility functions used across the project.",
             questions=[],
-            checksum="def456"
-        )
+            checksum="def456",
+        ),
     ]
-    
+
     folders = [
         FolderSummary(
             folder_name="helpers",
@@ -111,13 +113,13 @@ def test_folder_summary_prompt():
             folders=[],
             questions=[],
             checksum="defg5678",
-        )
+        ),
     ]
-    
+
     result = folder_summary_prompt(
         folder_path, project_name, files, folders, content_type, folder_prompt
     )
-    
+
     files_summary = "\n".join(
         [
             f"""
@@ -128,7 +130,7 @@ def test_folder_summary_prompt():
             for file in files
         ]
     )
-    
+
     folders_summary = "\n".join(
         [
             f"""
@@ -139,7 +141,7 @@ def test_folder_summary_prompt():
             for folder in folders
         ]
     )
-    
+
     expected_output = f"""
     You are acting as a {content_type} documentation expert
     for a project called {project_name}.
@@ -164,19 +166,20 @@ def test_folder_summary_prompt():
     expected_output = textwrap.dedent(expected_output).strip()
     assert result == expected_output
 
+
 def test_folder_summary_prompt_no_files_no_folders():
     folder_path = "src/empty_folder"
     project_name = "TestProject"
     content_type = "Python code"
     folder_prompt = "Please provide an overview of this folder."
-    
+
     files = []
     folders = []
-    
+
     result = folder_summary_prompt(
         folder_path, project_name, files, folders, content_type, folder_prompt
     )
-    
+
     files_summary = "\n".join(
         [
             f"""
@@ -187,7 +190,7 @@ def test_folder_summary_prompt_no_files_no_folders():
             for file in files
         ]
     )
-    
+
     folders_summary = "\n".join(
         [
             f"""
@@ -198,7 +201,7 @@ def test_folder_summary_prompt_no_files_no_folders():
             for folder in folders
         ]
     )
-    
+
     expected_output = f"""
     You are acting as a {content_type} documentation expert
     for a project called {project_name}.

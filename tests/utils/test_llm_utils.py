@@ -3,7 +3,6 @@ from unittest import mock
 import pytest
 from unittest.mock import patch, MagicMock
 
-import torch
 
 from doc_generator.utils.llm_utils import (
     get_gemma_chat_model,
@@ -15,9 +14,8 @@ from doc_generator.utils.llm_utils import (
     total_index_cost_estimate,
     get_embeddings,
 )
-from doc_generator.types import LLMModelDetails, LLMModels
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from langchain_huggingface import HuggingFaceEmbeddings, HuggingFacePipeline
+from doc_generator.types import LLMModelDetails
+from langchain_openai import ChatOpenAI
 
 
 def test_get_gemma_chat_model_with_peft():

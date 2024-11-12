@@ -15,41 +15,68 @@ from doc_generator.types import (
     LLMModelDetails,
 )
 
+
 def test_llm_models():
     # Test that all enum members are accessible and correct
     assert LLMModels.GPT3 == "gpt-3.5-turbo"
     assert LLMModels.GPT4 == "gpt-4"
     assert LLMModels.GPT432k == "gpt-4-32k"
-    assert LLMModels.TINYLLAMA_1p1B_CHAT_GGUF == "TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF"
+    assert (
+        LLMModels.TINYLLAMA_1p1B_CHAT_GGUF
+        == "TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF"
+    )
     assert LLMModels.LLAMA2_7B_CHAT_GPTQ == "TheBloke/Llama-2-7B-Chat-GPTQ"
     assert LLMModels.LLAMA2_13B_CHAT_GPTQ == "TheBloke/Llama-2-13B-Chat-GPTQ"
-    assert LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ == "TheBloke/CodeLlama-7B-Instruct-GPTQ"
-    assert LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ == "TheBloke/CodeLlama-13B-Instruct-GPTQ"
+    assert (
+        LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ
+        == "TheBloke/CodeLlama-7B-Instruct-GPTQ"
+    )
+    assert (
+        LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ
+        == "TheBloke/CodeLlama-13B-Instruct-GPTQ"
+    )
     assert LLMModels.LLAMA2_7B_CHAT_HF == "meta-llama/Llama-2-7b-chat-hf"
     assert LLMModels.LLAMA2_13B_CHAT_HF == "meta-llama/Llama-2-13b-chat-hf"
-    assert LLMModels.CODELLAMA_7B_INSTRUCT_HF == "meta-llama/CodeLlama-7b-Instruct-hf"
-    assert LLMModels.CODELLAMA_13B_INSTRUCT_HF == "meta-llama/CodeLlama-13b-Instruct-hf"
+    assert (
+        LLMModels.CODELLAMA_7B_INSTRUCT_HF
+        == "meta-llama/CodeLlama-7b-Instruct-hf"
+    )
+    assert (
+        LLMModels.CODELLAMA_13B_INSTRUCT_HF
+        == "meta-llama/CodeLlama-13b-Instruct-hf"
+    )
     assert LLMModels.GOOGLE_GEMMA_2B_INSTRUCT == "google/gemma-2b-it"
     assert LLMModels.GOOGLE_GEMMA_7B_INSTRUCT == "google/gemma-7b-it"
     assert LLMModels.GOOGLE_CODEGEMMA_2B_INSTRUCT == "google/codegemma-2b-it"
     assert LLMModels.GOOGLE_CODEGEMMA_7B_INSTRUCT == "google/codegemma-7b-it"
-    assert LLMModels.GOOGLE_GEMMA_2B_INSTRUCT_GGUF == "bartowski/gemma-2-2b-it-GGUF"
+    assert (
+        LLMModels.GOOGLE_GEMMA_2B_INSTRUCT_GGUF
+        == "bartowski/gemma-2-2b-it-GGUF"
+    )
+
 
 def test_priority():
     # Test that all enum members are accessible and correct
     assert Priority.COST == "cost"
     assert Priority.PERFORMANCE == "performance"
 
+
 def test_autodoc_readme_config():
     headings_input = "# Introduction, ## Usage, ### Installation"
     config = AutodocReadmeConfig(headings=headings_input)
-    assert config.headings == ["# Introduction", "## Usage", "### Installation"]
+    assert config.headings == [
+        "# Introduction",
+        "## Usage",
+        "### Installation",
+    ]
+
 
 def test_autodoc_user_config():
     llms = [LLMModels.GPT3, LLMModels.GPT4]
     config = AutodocUserConfig(llms=llms, streaming=True)
     assert config.llms == llms
     assert config.streaming is True
+
 
 def test_autodoc_repo_config():
     config = AutodocRepoConfig(
@@ -89,6 +116,7 @@ def test_autodoc_repo_config():
     assert config.peft_model_path is None
     assert config.device == "cpu"
 
+
 def test_file_summary():
     summary = FileSummary(
         file_name="test.py",
@@ -104,6 +132,7 @@ def test_file_summary():
     assert summary.summary == "This is a test file."
     assert summary.questions == "What does this file do?"
     assert summary.checksum == "abc123"
+
 
 def test_process_file_params():
     params = ProcessFileParams(
@@ -122,6 +151,7 @@ def test_process_file_params():
     assert params.file_prompt == "Explain this file."
     assert params.target_audience == "developers"
     assert params.link_hosted is False
+
 
 def test_folder_summary():
     folder = FolderSummary(
@@ -142,6 +172,7 @@ def test_folder_summary():
     assert folder.summary == "This folder contains source code."
     assert folder.questions == "What is in this folder?"
     assert folder.checksum == "def456"
+
 
 def test_process_folder_params():
     should_ignore_func = MagicMock(return_value=False)
@@ -166,6 +197,7 @@ def test_process_folder_params():
     assert params.link_hosted is True
     assert params.should_ignore("test") is False
     should_ignore_func.assert_called_with("test")
+
 
 def test_traverse_file_system_params():
     process_file_func = MagicMock()
@@ -192,6 +224,7 @@ def test_traverse_file_system_params():
     assert params.content_type == "code"
     assert params.target_audience == "developers"
     assert params.link_hosted is False
+
 
 def test_llm_model_details():
     llm_mock = MagicMock()

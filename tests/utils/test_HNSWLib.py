@@ -1,5 +1,4 @@
 import os
-import json
 import pytest
 import numpy as np
 from unittest.mock import MagicMock, patch
@@ -7,10 +6,8 @@ from unittest.mock import MagicMock, patch
 from doc_generator.utils.HNSWLib import (
     HNSWLib,
     HNSWLibArgs,
-    SaveableVectorStore,
 )
 from langchain_community.docstore.in_memory import InMemoryDocstore
-from langchain_core.embeddings.embeddings import Embeddings
 from langchain_core.documents import Document
 
 

@@ -1,9 +1,9 @@
-import pytest
 from unittest import mock
 from pathlib import Path
 
 from doc_generator.index.index import index
 from doc_generator.types import AutodocRepoConfig
+
 
 def test_index(tmp_path):
     # Create a mock configuration
@@ -28,9 +28,13 @@ def test_index(tmp_path):
     )
 
     # Mock the imported functions
-    with mock.patch('doc_generator.index.index.process_repository') as mock_process_repository, \
-         mock.patch('doc_generator.index.index.convert_json_to_markdown') as mock_convert_json_to_markdown, \
-         mock.patch('doc_generator.index.index.create_vector_store') as mock_create_vector_store:
+    with mock.patch(
+        "doc_generator.index.index.process_repository"
+    ) as mock_process_repository, mock.patch(
+        "doc_generator.index.index.convert_json_to_markdown"
+    ) as mock_convert_json_to_markdown, mock.patch(
+        "doc_generator.index.index.create_vector_store"
+    ) as mock_create_vector_store:
 
         # Run the index function
         index(config)

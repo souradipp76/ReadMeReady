@@ -227,8 +227,7 @@ def make_qa_chain(
     )
 
     return create_retrieval_chain(
-        retriever=question_generator,
-        combine_docs_chain=doc_chain
+        retriever=question_generator, combine_docs_chain=doc_chain
     )
 
 

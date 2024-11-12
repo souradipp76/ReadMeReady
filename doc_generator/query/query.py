@@ -28,8 +28,8 @@ def display_welcome_message(project_name):
     """Display Welcome Message"""
     print(f"Welcome to the {project_name} chatbot.")
     print(
-        f"Ask any questions related to the {project_name} codebase, "+
-        "and I'll try to help. Type 'exit' to quit.\n"
+        f"Ask any questions related to the {project_name} codebase, "
+        + "and I'll try to help. Type 'exit' to quit.\n"
     )
 
 
