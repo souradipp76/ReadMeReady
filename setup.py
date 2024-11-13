@@ -6,7 +6,7 @@ from setuptools import find_packages, setup
 
 def read(*paths, **kwargs):
     """Read the contents of a text file safely.
-    >>> read("doc_generator", "VERSION")
+    >>> read("readme_ready", "VERSION")
     '0.1.0'
     >>> read("README.md")
     ...
@@ -30,17 +30,17 @@ def read_requirements(path):
 
 
 setup(
-    name="doc_generator",
-    version=read("doc_generator", "VERSION"),
+    name="readme_ready",
+    version=read("readme_ready", "VERSION"),
     description="Auto-generate code documentation in Markdown format in seconds.",
-    url="https://github.com/souradipp76/doc_generator/",
+    url="https://github.com/souradipp76/ReadMeReady/",
     long_description=read("README.md"),
     long_description_content_type="text/markdown",
     author="souradipp76",
     packages=find_packages(exclude=["tests", ".github"]),
     install_requires=read_requirements("requirements.txt"),
     entry_points={
-        "console_scripts": ["doc_generator = doc_generator.__main__:main"]
+        "console_scripts": ["readme_ready = readme_ready.__main__:main"]
     },
     extras_require={"test": read_requirements("requirements-test.txt")},
 )
