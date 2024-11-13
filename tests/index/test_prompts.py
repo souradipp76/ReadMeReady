@@ -1,10 +1,10 @@
 import textwrap
-from doc_generator.index.prompts import (
+from readme_ready.index.prompts import (
     create_code_file_summary,
     create_code_questions,
     folder_summary_prompt,
 )
-from doc_generator.types import FolderSummary, FileSummary
+from readme_ready.types import FolderSummary, FileSummary
 
 
 def test_create_code_file_summary():

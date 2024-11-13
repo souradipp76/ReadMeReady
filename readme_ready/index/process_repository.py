@@ -10,7 +10,7 @@ from pathlib import Path
 import tiktoken
 from langchain.chat_models.base import BaseChatModel
 
-from doc_generator.types import (
+from readme_ready.types import (
     AutodocRepoConfig,
     FileSummary,
     FolderSummary,
@@ -18,13 +18,13 @@ from doc_generator.types import (
     ProcessFolderParams,
     TraverseFileSystemParams,
 )
-from doc_generator.utils.file_utils import (
+from readme_ready.utils.file_utils import (
     get_file_name,
     github_file_url,
     github_folder_url,
 )
-from doc_generator.utils.llm_utils import get_tokenizer, models
-from doc_generator.utils.traverse_file_system import traverse_file_system
+from readme_ready.utils.llm_utils import get_tokenizer, models
+from readme_ready.utils.traverse_file_system import traverse_file_system
 
 from .prompts import (
     create_code_file_summary,

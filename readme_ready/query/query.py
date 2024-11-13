@@ -9,17 +9,17 @@ from markdown2 import markdown
 from prompt_toolkit import prompt
 from prompt_toolkit.shortcuts import clear
 
-from doc_generator.query.create_chat_chain import (
+from readme_ready.query.create_chat_chain import (
     make_qa_chain,
     make_readme_chain,
 )
-from doc_generator.types import (
+from readme_ready.types import (
     AutodocReadmeConfig,
     AutodocRepoConfig,
     AutodocUserConfig,
 )
-from doc_generator.utils.HNSWLib import HNSWLib
-from doc_generator.utils.llm_utils import get_embeddings
+from readme_ready.utils.HNSWLib import HNSWLib
+from readme_ready.utils.llm_utils import get_embeddings
 
 chat_history: list[tuple[str, str]] = []
 

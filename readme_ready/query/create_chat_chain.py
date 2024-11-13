@@ -13,8 +13,8 @@ from langchain.chains.combine_documents.stuff import (
 )
 from langchain.prompts import PromptTemplate
 
-from doc_generator.types import LLMModels
-from doc_generator.utils.llm_utils import (
+from readme_ready.types import LLMModels
+from readme_ready.utils.llm_utils import (
     get_gemma_chat_model,
     get_llama_chat_model,
     get_openai_chat_model,

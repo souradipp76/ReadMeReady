@@ -1,4 +1,4 @@
-"""Python setup.py for doc_generator package"""
+"""Python setup.py for readme_ready package"""
 import io
 import os
 from setuptools import find_packages, setup

@@ -1,5 +1,5 @@
-from doc_generator.base import NAME
+from readme_ready.base import NAME
 
 
 def test_base():
-    assert NAME == "doc_generator"
+    assert NAME == "readme_ready"

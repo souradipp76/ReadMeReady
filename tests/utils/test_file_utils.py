@@ -1,4 +1,4 @@
-from doc_generator.utils.file_utils import (
+from readme_ready.utils.file_utils import (
     get_file_name,
     github_file_url,
     github_folder_url,

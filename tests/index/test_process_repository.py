@@ -2,12 +2,12 @@ from unittest import mock
 from unittest.mock import MagicMock, patch, mock_open
 import json
 
-from doc_generator.index.process_repository import (
+from readme_ready.index.process_repository import (
     process_repository,
     calculate_checksum,
     should_reindex,
 )
-from doc_generator.types import (
+from readme_ready.types import (
     AutodocRepoConfig,
     ProcessFileParams,
     ProcessFolderParams,
@@ -49,21 +49,21 @@ def test_should_reindex_different_checksum(tmp_path):
     assert result is True
 
 
-@patch("doc_generator.index.process_repository.traverse_file_system")
-@patch("doc_generator.index.process_repository.select_model")
+@patch("readme_ready.index.process_repository.traverse_file_system")
+@patch("readme_ready.index.process_repository.select_model")
 @patch(
-    "doc_generator.index.process_repository.calculate_checksum",
+    "readme_ready.index.process_repository.calculate_checksum",
     return_value="checksum123",
 )
 @patch(
-    "doc_generator.index.process_repository.should_reindex", return_value=True
+    "readme_ready.index.process_repository.should_reindex", return_value=True
 )
 @patch(
     "builtins.open",
     new_callable=mock_open,
     read_data='{"folder_name":"file content","summary": folder summary}',
 )
-@patch("doc_generator.index.process_repository.tiktoken.encoding_for_model")
+@patch("readme_ready.index.process_repository.tiktoken.encoding_for_model")
 def test_process_repository(
     mock_tiktoken,
     mock_open_file,
@@ -120,10 +120,8 @@ def test_process_repository(
     mock_traverse.assert_called()
 
 
-@patch("doc_generator.index.process_repository.traverse_file_system")
-@patch(
-    "doc_generator.index.process_repository.select_model", return_value=None
-)
+@patch("readme_ready.index.process_repository.traverse_file_system")
+@patch("readme_ready.index.process_repository.select_model", return_value=None)
 @patch(
     "builtins.open",
     new_callable=mock_open,
@@ -190,8 +188,8 @@ def test_process_repository_no_model(
     mock_select_model.assert_called()
 
 
-@patch("doc_generator.index.process_repository.traverse_file_system")
-@patch("doc_generator.index.process_repository.select_model")
+@patch("readme_ready.index.process_repository.traverse_file_system")
+@patch("readme_ready.index.process_repository.select_model")
 @patch(
     "builtins.open",
     new_callable=mock_open,
@@ -259,10 +257,10 @@ def test_process_repository_dry_run(
     mock_select_model.assert_called()
 
 
-@patch("doc_generator.index.process_repository.traverse_file_system")
-@patch("doc_generator.index.process_repository.select_model")
+@patch("readme_ready.index.process_repository.traverse_file_system")
+@patch("readme_ready.index.process_repository.select_model")
 @patch(
-    "doc_generator.index.process_repository.should_reindex", return_value=False
+    "readme_ready.index.process_repository.should_reindex", return_value=False
 )
 @patch("builtins.open", new_callable=mock_open, read_data="file content")
 def test_process_repository_no_reindex(

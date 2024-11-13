@@ -7,7 +7,7 @@ from pathlib import Path
 
 import magic
 
-from doc_generator.types import (
+from readme_ready.types import (
     ProcessFileParams,
     ProcessFolderParams,
     TraverseFileSystemParams,

@@ -1,7 +1,7 @@
 """
-doc_generator base module.
+readme_ready base module.
 
-This is the principal module of the doc_generator project.
+This is the principal module of the readme_ready project.
 here you put your main classes and objects.
 
 Be creative! do whatever you want!
@@ -14,4 +14,4 @@ and then choose `flask` as template.
 """
 
 # example constant variable
-NAME = "doc_generator"
+NAME = "readme_ready"

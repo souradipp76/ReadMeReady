@@ -1,6 +1,6 @@
 # How to develop on this project
 
-doc_generator welcomes contributions from the community.
+readme_ready welcomes contributions from the community.
 
 **You need PYTHON3!**
 
@@ -8,9 +8,9 @@ This instructions are for linux base systems. (Linux, MacOS, BSD, etc.)
 ## Setting up your own fork of this repo.
 
 - On github interface click on `Fork` button.
-- Clone your fork of this repo. `git clone git@github.com:YOUR_GIT_USERNAME/doc_generator.git`
-- Enter the directory `cd doc_generator`
-- Add upstream repo `git remote add upstream https://github.com/souradipp76/doc_generator`
+- Clone your fork of this repo. `git clone git@github.com:YOUR_GIT_USERNAME/ReadMeReady.git`
+- Enter the directory `cd ReadMeReady`
+- Add upstream repo `git remote add upstream https://github.com/souradipp76/ReadMeReady`
 
 ## Setting up your own virtual environment
 
