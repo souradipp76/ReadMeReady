@@ -3,7 +3,7 @@ import pytest
 import numpy as np
 from unittest.mock import MagicMock, patch
 
-from doc_generator.utils.HNSWLib import (
+from readme_ready.utils.HNSWLib import (
     HNSWLib,
     HNSWLibArgs,
 )
@@ -20,7 +20,7 @@ def test_init():
     assert isinstance(hnswlib_instance.docstore, InMemoryDocstore)
 
 
-@patch("doc_generator.utils.HNSWLib.hnswlib.Index")
+@patch("readme_ready.utils.HNSWLib.hnswlib.Index")
 def test_add_texts_success(mock_index_class):
     embeddings = MagicMock()
     embeddings.embed_documents.return_value = [[0.1, 0.2], [0.3, 0.4]]
@@ -133,7 +133,7 @@ def test_from_texts():
     embeddings = MagicMock()
     embeddings.embed_documents.return_value = [[0.1, 0.2], [0.3, 0.4]]
     with patch(
-        "doc_generator.utils.HNSWLib.HNSWLib.from_documents"
+        "readme_ready.utils.HNSWLib.HNSWLib.from_documents"
     ) as mock_from_documents:
         HNSWLib.from_texts(["Text 1", "Text 2"], embeddings)
         mock_from_documents.assert_called()
@@ -144,7 +144,7 @@ def test_from_documents_with_docstore():
     documents = [Document("Doc 1"), Document("Doc 2")]
     docstore = MagicMock()
     with patch(
-        "doc_generator.utils.HNSWLib.HNSWLib.add_documents"
+        "readme_ready.utils.HNSWLib.HNSWLib.add_documents"
     ) as mock_add_documents:
         hnsw = HNSWLib.from_documents(documents, embeddings, docstore=docstore)
         mock_add_documents.assert_called_once_with(documents)
@@ -249,7 +249,7 @@ def test_load():
                 ],  # For docstore.json
             ]
             with patch(
-                "doc_generator.utils.HNSWLib.hnswlib.Index"
+                "readme_ready.utils.HNSWLib.hnswlib.Index"
             ) as mock_index_class:
                 mock_index = MagicMock()
                 mock_index.load_index.return_value = None
@@ -271,7 +271,7 @@ def test_init_index_no_index():
     hnswlib_instance = HNSWLib(embeddings, args)
     vectors = [[0.1, 0.2, 0.3]]
     with patch(
-        "doc_generator.utils.HNSWLib.HNSWLib.get_hierarchical_nsw"
+        "readme_ready.utils.HNSWLib.HNSWLib.get_hierarchical_nsw"
     ) as mock_get_hnsw:
         mock_get_hnsw.return_value = MagicMock()
         hnswlib_instance.init_index(vectors)

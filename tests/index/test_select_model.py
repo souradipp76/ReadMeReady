@@ -1,11 +1,11 @@
 from unittest import mock
 from unittest.mock import MagicMock
 from typing import Dict, List
-from doc_generator.index.select_model import (
+from readme_ready.index.select_model import (
     get_max_prompt_length,
     select_model,
 )
-from doc_generator.types import LLMModelDetails, LLMModels, Priority
+from readme_ready.types import LLMModelDetails, LLMModels, Priority
 import tiktoken
 
 

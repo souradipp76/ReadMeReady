@@ -12,7 +12,7 @@ from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from peft import PeftModel
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 
-from doc_generator.types import LLMModelDetails, LLMModels
+from readme_ready.types import LLMModelDetails, LLMModels
 
 
 def get_gemma_chat_model(model_name: str, streaming=False, model_kwargs=None):

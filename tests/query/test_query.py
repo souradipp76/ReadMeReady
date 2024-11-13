@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock, patch, call
 import os
-from doc_generator.query import query
+from readme_ready.query import query
 
 
 def test_display_welcome_message(capsys):
@@ -31,11 +31,11 @@ def test_init_qa_chain():
     user_config.streaming = False
 
     with patch(
-        "doc_generator.query.query.get_embeddings"
+        "readme_ready.query.query.get_embeddings"
     ) as mock_get_embeddings, patch(
-        "doc_generator.query.query.HNSWLib.load"
+        "readme_ready.query.query.HNSWLib.load"
     ) as mock_hnswlib_load, patch(
-        "doc_generator.query.query.make_qa_chain"
+        "readme_ready.query.query.make_qa_chain"
     ) as mock_make_qa_chain:
 
         mock_embeddings = MagicMock()
@@ -85,11 +85,11 @@ def test_init_readme_chain():
     user_config.streaming = False
 
     with patch(
-        "doc_generator.query.query.get_embeddings"
+        "readme_ready.query.query.get_embeddings"
     ) as mock_get_embeddings, patch(
-        "doc_generator.query.query.HNSWLib.load"
+        "readme_ready.query.query.HNSWLib.load"
     ) as mock_hnswlib_load, patch(
-        "doc_generator.query.query.make_readme_chain"
+        "readme_ready.query.query.make_readme_chain"
     ) as mock_make_readme_chain:
 
         mock_embeddings = MagicMock()
@@ -129,15 +129,15 @@ def test_query_normal():
     user_config = MagicMock()
 
     with patch(
-        "doc_generator.query.query.init_qa_chain"
+        "readme_ready.query.query.init_qa_chain"
     ) as mock_init_qa_chain, patch(
-        "doc_generator.query.query.clear"
+        "readme_ready.query.query.clear"
     ) as mock_clear, patch(
-        "doc_generator.query.query.display_welcome_message"
+        "readme_ready.query.query.display_welcome_message"
     ) as mock_display_welcome_message, patch(
-        "doc_generator.query.query.prompt"
+        "readme_ready.query.query.prompt"
     ) as mock_prompt, patch(
-        "doc_generator.query.query.markdown"
+        "readme_ready.query.query.markdown"
     ) as mock_markdown:
 
         mock_chain = MagicMock()
@@ -171,17 +171,17 @@ def test_query_exception():
     user_config = MagicMock()
 
     with patch(
-        "doc_generator.query.query.init_qa_chain"
+        "readme_ready.query.query.init_qa_chain"
     ) as mock_init_qa_chain, patch(
-        "doc_generator.query.query.clear"
+        "readme_ready.query.query.clear"
     ) as mock_clear, patch(
-        "doc_generator.query.query.display_welcome_message"
+        "readme_ready.query.query.display_welcome_message"
     ) as mock_display_welcome_message, patch(
-        "doc_generator.query.query.prompt"
+        "readme_ready.query.query.prompt"
     ) as mock_prompt, patch(
-        "doc_generator.query.query.print"
+        "readme_ready.query.query.print"
     ) as mock_print, patch(
-        "doc_generator.query.query.traceback.print_exc"
+        "readme_ready.query.query.traceback.print_exc"
     ) as mock_print_exc:
 
         mock_chain = MagicMock()
@@ -221,15 +221,15 @@ def test_generate_readme_normal():
     readme_config.headings = ["Introduction", "Usage"]
 
     with patch(
-        "doc_generator.query.query.init_readme_chain"
+        "readme_ready.query.query.init_readme_chain"
     ) as mock_init_readme_chain, patch(
-        "doc_generator.query.query.clear"
+        "readme_ready.query.query.clear"
     ) as mock_clear, patch(
         "builtins.open", new_callable=MagicMock()
     ) as mock_open, patch(
-        "doc_generator.query.query.markdown"
+        "readme_ready.query.query.markdown"
     ) as mock_markdown, patch(
-        "doc_generator.query.query.print"
+        "readme_ready.query.query.print"
     ) as mock_print:
 
         mock_chain = MagicMock()
@@ -284,17 +284,17 @@ def test_generate_readme_exception():
     readme_config.headings = ["Introduction", "Usage"]
 
     with patch(
-        "doc_generator.query.query.init_readme_chain"
+        "readme_ready.query.query.init_readme_chain"
     ) as mock_init_readme_chain, patch(
-        "doc_generator.query.query.clear"
+        "readme_ready.query.query.clear"
     ) as mock_clear, patch(
         "builtins.open", new_callable=MagicMock()
     ) as mock_open, patch(
-        "doc_generator.query.query.markdown"
+        "readme_ready.query.query.markdown"
     ) as mock_markdown, patch(
-        "doc_generator.query.query.print"
+        "readme_ready.query.query.print"
     ) as mock_print, patch(
-        "doc_generator.query.query.traceback.print_exc"
+        "readme_ready.query.query.traceback.print_exc"
     ) as mock_print_exc:
 
         mock_chain = MagicMock()

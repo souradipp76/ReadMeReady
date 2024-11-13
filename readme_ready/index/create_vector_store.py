@@ -11,8 +11,8 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_core.document_loaders import BaseLoader
 from langchain_core.documents import Document
 
-from doc_generator.utils.HNSWLib import HNSWLib, InMemoryDocstore
-from doc_generator.utils.llm_utils import LLMModels, get_embeddings
+from readme_ready.utils.HNSWLib import HNSWLib, InMemoryDocstore
+from readme_ready.utils.llm_utils import LLMModels, get_embeddings
 
 
 def should_ignore(file_name: str, ignore: List[str]):

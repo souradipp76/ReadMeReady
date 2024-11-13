@@ -1,15 +1,15 @@
 from unittest.mock import MagicMock, patch
 from pathlib import Path
-from doc_generator.index.convert_json_to_markdown import (
+from readme_ready.index.convert_json_to_markdown import (
     convert_json_to_markdown,
 )
 
 
-@patch("doc_generator.index.convert_json_to_markdown.traverse_file_system")
-@patch("doc_generator.index.convert_json_to_markdown.get_file_name")
-@patch("doc_generator.index.convert_json_to_markdown.FileSummary")
-@patch("doc_generator.index.convert_json_to_markdown.FolderSummary")
-@patch("doc_generator.index.convert_json_to_markdown.Path")
+@patch("readme_ready.index.convert_json_to_markdown.traverse_file_system")
+@patch("readme_ready.index.convert_json_to_markdown.get_file_name")
+@patch("readme_ready.index.convert_json_to_markdown.FileSummary")
+@patch("readme_ready.index.convert_json_to_markdown.FolderSummary")
+@patch("readme_ready.index.convert_json_to_markdown.Path")
 def test_convert_json_to_markdown(
     mock_Path,
     mock_FolderSummary,

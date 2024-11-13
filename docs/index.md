@@ -2,7 +2,7 @@
 
 ## Commands
 
-* `doc_generator` - Start generating README documentation.
+* `readme_ready` - Start generating README documentation.
 
 ## Project layout
 

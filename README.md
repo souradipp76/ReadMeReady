@@ -1,6 +1,6 @@
 # ReadmeReady
 
-[![codecov](https://codecov.io/gh/souradipp76/ReadMeReady/branch/main/graph/badge.svg?token=doc_generator_token_here)](https://codecov.io/gh/souradipp76/ReadMeReady)
+[![codecov](https://codecov.io/gh/souradipp76/ReadMeReady/branch/main/graph/badge.svg?token=49620380-3fe7-4eb1-8dbb-3457febc6f78)](https://codecov.io/gh/souradipp76/ReadMeReady)
 [![CI](https://github.com/souradipp76/ReadMeReady/actions/workflows/main.yml/badge.svg)](https://github.com/souradipp76/ReadMeReady/actions/workflows/main.yml)
 
 Auto-generate code documentation in Markdown format in seconds.
@@ -15,13 +15,13 @@ Automated documentation of programming source code is a challenging task with si
 The simplest way to install ReadmeReady and its dependencies is from PyPI with pip, Python's preferred package installer.
 
 ```bash
-pip install doc_generator
+pip install readme_ready
 ```
 
 In order to upgrade ReadmeReady to the latest version, use pip as follows.
 
 ```bash
-$ pip install -U doc_generator
+$ pip install -U readme_ready
 ```
 
 ### Install it from source
@@ -51,16 +51,16 @@ $ export HF_TOKEN=<YOUR_HUGGINGFACE_TOKEN>
 ### Command-Line
 
 ```bash
-$ python -m doc_generator
+$ python -m readme_ready
 #or
-$ doc_generator
+$ readme_ready
 ```
 
 ### In Code
 
 ```py
-from doc_generator import query
-from doc_generator import index
+from readme_ready import query
+from readme_ready import index
 
 repo_config = {
     "name": <NAME>, # Replace <NAME>

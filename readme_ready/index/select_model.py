@@ -6,7 +6,7 @@ from typing import Dict, List, Optional
 
 import tiktoken
 
-from doc_generator.types import LLMModelDetails, LLMModels, Priority
+from readme_ready.types import LLMModelDetails, LLMModels, Priority
 
 
 def get_max_prompt_length(prompts: List[str], model: LLMModels) -> int:

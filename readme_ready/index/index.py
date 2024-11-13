@@ -4,7 +4,7 @@ Index
 
 from pathlib import Path
 
-from doc_generator.types import AutodocRepoConfig
+from readme_ready.types import AutodocRepoConfig
 
 from .convert_json_to_markdown import convert_json_to_markdown
 from .create_vector_store import create_vector_store

@@ -5,15 +5,15 @@ Convert Json to Markdown
 import json
 from pathlib import Path
 
-from doc_generator.types import (
+from readme_ready.types import (
     AutodocRepoConfig,
     FileSummary,
     FolderSummary,
     ProcessFileParams,
     TraverseFileSystemParams,
 )
-from doc_generator.utils.file_utils import get_file_name
-from doc_generator.utils.traverse_file_system import traverse_file_system
+from readme_ready.utils.file_utils import get_file_name
+from readme_ready.utils.traverse_file_system import traverse_file_system
 
 
 def convert_json_to_markdown(config: AutodocRepoConfig):

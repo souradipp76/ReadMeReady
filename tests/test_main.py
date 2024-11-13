@@ -1,8 +1,8 @@
 import pytest
 from unittest.mock import patch
 
-from doc_generator.main import *
-from doc_generator.types import LLMModels
+from readme_ready.main import *
+from readme_ready.types import LLMModels
 
 
 @pytest.fixture
@@ -20,14 +20,14 @@ def test_main_readme_mode(mock_questionary):
 
     # Mock the questionary inputs
     mock_text.return_value.ask.side_effect = [
-        "doc_generator",  # name
-        "https://github.com/username/doc_generator",  # project_url
+        "readme_ready",  # name
+        "https://github.com/username/readme_ready",  # project_url
         "# Introduction,## Usage",  # headings
     ]
 
     mock_path.return_value.ask.side_effect = [
-        "./doc_generator/",  # project_root
-        "./output/doc_generator/",  # output_dir
+        "./readme_ready/",  # project_root
+        "./output/readme_ready/",  # output_dir
         None,  # peft_model_path
     ]
 
@@ -39,8 +39,8 @@ def test_main_readme_mode(mock_questionary):
 
     mock_confirm.return_value.ask.return_value = False  # peft = False
 
-    with patch("doc_generator.index.index.index") as mock_index, patch(
-        "doc_generator.query.query.generate_readme"
+    with patch("readme_ready.index.index.index") as mock_index, patch(
+        "readme_ready.query.query.generate_readme"
     ) as mock_generate_readme:
 
         main()
@@ -55,13 +55,13 @@ def test_main_query_mode(mock_questionary):
 
     # Mock the questionary inputs
     mock_text.return_value.ask.side_effect = [
-        "doc_generator",  # name
-        "https://github.com/username/doc_generator",  # project_url
+        "readme_ready",  # name
+        "https://github.com/username/readme_ready",  # project_url
     ]
 
     mock_path.return_value.ask.side_effect = [
-        "./doc_generator/",  # project_root
-        "./output/doc_generator/",  # output_dir
+        "./readme_ready/",  # project_root
+        "./output/readme_ready/",  # output_dir
         None,  # peft_model_path
     ]
 
@@ -73,8 +73,8 @@ def test_main_query_mode(mock_questionary):
 
     mock_confirm.return_value.ask.return_value = False  # peft = False
 
-    with patch("doc_generator.index.index.index") as mock_index, patch(
-        "doc_generator.query.query.query"
+    with patch("readme_ready.index.index.index") as mock_index, patch(
+        "readme_ready.query.query.query"
     ) as mock_query:
 
         main()

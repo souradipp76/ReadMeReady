@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock
 
-from doc_generator.types import (
+from readme_ready.types import (
     LLMModels,
     Priority,
     AutodocReadmeConfig,

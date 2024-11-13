@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock, mock_open, patch
 
-from doc_generator.utils.traverse_file_system import traverse_file_system
-from doc_generator.types import (
+from readme_ready.utils.traverse_file_system import traverse_file_system
+from readme_ready.types import (
     ProcessFileParams,
     ProcessFolderParams,
     TraverseFileSystemParams,
@@ -9,7 +9,7 @@ from doc_generator.types import (
 
 
 def test_input_path_does_not_exist(capsys):
-    with patch("doc_generator.utils.traverse_file_system.Path") as MockPath:
+    with patch("readme_ready.utils.traverse_file_system.Path") as MockPath:
         mock_input_path = MockPath.return_value
         mock_input_path.exists.return_value = False
 
@@ -32,7 +32,7 @@ def test_input_path_does_not_exist(capsys):
 
 
 def test_input_path_exists_with_no_contents():
-    with patch("doc_generator.utils.traverse_file_system.Path") as MockPath:
+    with patch("readme_ready.utils.traverse_file_system.Path") as MockPath:
         mock_input_path = MockPath.return_value
         mock_input_path.exists.return_value = True
         mock_input_path.iterdir.return_value = []
@@ -55,7 +55,7 @@ def test_input_path_exists_with_no_contents():
 
 
 def test_ignore_pattern_matches_file():
-    with patch("doc_generator.utils.traverse_file_system.Path") as MockPath:
+    with patch("readme_ready.utils.traverse_file_system.Path") as MockPath:
         mock_input_path = MockPath.return_value
         mock_input_path.exists.return_value = True
 
@@ -84,7 +84,7 @@ def test_ignore_pattern_matches_file():
 
 
 def test_process_directory_called():
-    with patch("doc_generator.utils.traverse_file_system.Path") as MockPath:
+    with patch("readme_ready.utils.traverse_file_system.Path") as MockPath:
         mock_input_path = MockPath.return_value
         mock_input_path.exists.return_value = True
 
@@ -117,13 +117,13 @@ def test_process_directory_called():
 
 
 def test_process_file_called_for_text_file():
-    with patch("doc_generator.utils.traverse_file_system.Path") as MockPath:
+    with patch("readme_ready.utils.traverse_file_system.Path") as MockPath:
         with patch(
-            "doc_generator.utils.traverse_file_system.open",
+            "readme_ready.utils.traverse_file_system.open",
             mock_open(read_data="dummy data"),
         ) as mock_file:
             with patch(
-                "doc_generator.utils.traverse_file_system.magic.from_buffer"
+                "readme_ready.utils.traverse_file_system.magic.from_buffer"
             ) as mock_magic:
                 mock_magic.return_value = "text/plain"
 
@@ -158,13 +158,13 @@ def test_process_file_called_for_text_file():
 
 
 def test_process_file_not_called_for_non_text_file():
-    with patch("doc_generator.utils.traverse_file_system.Path") as MockPath:
+    with patch("readme_ready.utils.traverse_file_system.Path") as MockPath:
         with patch(
-            "doc_generator.utils.traverse_file_system.open",
+            "readme_ready.utils.traverse_file_system.open",
             mock_open(read_data="dummy data"),
         ) as mock_file:
             with patch(
-                "doc_generator.utils.traverse_file_system.magic.from_buffer"
+                "readme_ready.utils.traverse_file_system.magic.from_buffer"
             ) as mock_magic:
                 mock_magic.return_value = "application/octet-stream"
 
@@ -196,7 +196,7 @@ def test_process_file_not_called_for_non_text_file():
 
 
 def test_process_folder_is_none():
-    with patch("doc_generator.utils.traverse_file_system.Path") as MockPath:
+    with patch("readme_ready.utils.traverse_file_system.Path") as MockPath:
         mock_input_path = MockPath.return_value
         mock_input_path.exists.return_value = True
 
@@ -226,13 +226,13 @@ def test_process_folder_is_none():
 
 
 def test_process_file_is_none():
-    with patch("doc_generator.utils.traverse_file_system.Path") as MockPath:
+    with patch("readme_ready.utils.traverse_file_system.Path") as MockPath:
         with patch(
-            "doc_generator.utils.traverse_file_system.open",
+            "readme_ready.utils.traverse_file_system.open",
             mock_open(read_data="dummy data"),
         ) as mock_file:
             with patch(
-                "doc_generator.utils.traverse_file_system.magic.from_buffer"
+                "readme_ready.utils.traverse_file_system.magic.from_buffer"
             ) as mock_magic:
                 mock_magic.return_value = "text/plain"
 
@@ -264,7 +264,7 @@ def test_process_file_is_none():
 
 
 def test_runtime_error_caught(capsys):
-    with patch("doc_generator.utils.traverse_file_system.Path") as MockPath:
+    with patch("readme_ready.utils.traverse_file_system.Path") as MockPath:
         mock_input_path = MockPath.return_value
         mock_input_path.exists.return_value = True
 

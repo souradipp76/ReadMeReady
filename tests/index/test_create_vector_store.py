@@ -2,14 +2,14 @@ from unittest.mock import mock_open, patch, MagicMock
 from langchain_core.documents import Document
 import os
 
-from doc_generator.index.create_vector_store import (
+from readme_ready.index.create_vector_store import (
     create_vector_store,
     RepoLoader,
     process_directory,
     process_file,
     should_ignore,
 )
-from doc_generator.types import LLMModels
+from readme_ready.types import LLMModels
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 
@@ -23,7 +23,7 @@ def test_should_ignore():
 def test_process_file():
     with patch("builtins.open", mock_open(read_data="file contents")):
         with patch(
-            "doc_generator.index.create_vector_store.should_ignore",
+            "readme_ready.index.create_vector_store.should_ignore",
             return_value=False,
         ):
             doc = process_file("test.py", [])
@@ -34,7 +34,7 @@ def test_process_file():
 
 def test_process_file_ignore():
     with patch(
-        "doc_generator.index.create_vector_store.should_ignore",
+        "readme_ready.index.create_vector_store.should_ignore",
         return_value=True,
     ):
         doc = process_file("ignore.py", [])
@@ -44,7 +44,7 @@ def test_process_file_ignore():
 def test_process_file_exception():
     with patch("builtins.open", side_effect=Exception("Read error")):
         with patch(
-            "doc_generator.index.create_vector_store.should_ignore",
+            "readme_ready.index.create_vector_store.should_ignore",
             return_value=False,
         ):
             with patch("builtins.print") as mock_print:
@@ -64,7 +64,7 @@ def test_process_directory(tmp_path):
     (tmp_path / "subdir" / "file3.py").write_text('print("Hello from subdir")')
 
     with patch(
-        "doc_generator.index.create_vector_store.should_ignore",
+        "readme_ready.index.create_vector_store.should_ignore",
         side_effect=lambda x, y: x.endswith(".txt"),
     ):
         docs = process_directory(str(tmp_path), ["*.txt"])
@@ -77,7 +77,7 @@ def test_process_directory(tmp_path):
 
 def test_repo_loader_load():
     with patch(
-        "doc_generator.index.create_vector_store.process_directory",
+        "readme_ready.index.create_vector_store.process_directory",
         return_value=["doc1", "doc2"],
     ) as mock_process_directory:
         loader = RepoLoader("path/to/repo", [])
@@ -103,11 +103,11 @@ def test_create_vector_store(tmp_path):
         ) as mock_split:
             # Mock HNSWLib and embeddings
             with patch(
-                "doc_generator.index.create_vector_store.get_embeddings"
+                "readme_ready.index.create_vector_store.get_embeddings"
             ) as mock_get_embeddings:
                 mock_get_embeddings.return_value = MagicMock()
                 with patch(
-                    "doc_generator.index.create_vector_store.HNSWLib"
+                    "readme_ready.index.create_vector_store.HNSWLib"
                 ) as mock_hnswlib:
                     mock_vector_store = MagicMock()
                     mock_hnswlib.from_documents.return_value = (

@@ -4,7 +4,7 @@ Prompts
 
 from typing import List
 
-from doc_generator.types import FileSummary, FolderSummary
+from readme_ready.types import FileSummary, FolderSummary
 
 
 def create_code_file_summary(

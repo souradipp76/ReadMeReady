@@ -1,4 +1,4 @@
-"""Entry point for doc_generator."""
+"""Entry point for readme_ready."""
 
 from .main import main  # pragma: no cover
 

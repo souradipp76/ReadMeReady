@@ -1,9 +1,9 @@
 site_name: Doc Generator Test
-site_url: https://github.com/souradipp76/doc_generator/
+site_url: https://github.com/souradipp76/ReadMeReady/
 site_description: Project documentation with Markdown.
 site_author: souradipp76
 
-repo_url: https://github.com/souradipp76/doc_generator/
+repo_url: https://github.com/souradipp76/ReadMeReady/
 edit_uri: blob/main/output/docs/
 
 theme:

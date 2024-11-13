@@ -1,5 +1,5 @@
 from unittest.mock import MagicMock, patch
-from doc_generator.query.create_chat_chain import (
+from readme_ready.query.create_chat_chain import (
     make_qa_prompt,
     make_readme_prompt,
     make_qa_chain,
@@ -8,7 +8,7 @@ from doc_generator.query.create_chat_chain import (
     condense_readme_prompt,
 )
 from langchain.prompts import PromptTemplate
-from doc_generator.utils.llm_utils import (
+from readme_ready.utils.llm_utils import (
     models,
 )
 
@@ -115,13 +115,13 @@ def test_make_qa_chain_llama():
     device = "cpu"
 
     with patch(
-        "doc_generator.query.create_chat_chain.get_llama_chat_model"
+        "readme_ready.query.create_chat_chain.get_llama_chat_model"
     ) as mock_get_llama_chat_model, patch(
-        "doc_generator.query.create_chat_chain.create_stuff_documents_chain"
+        "readme_ready.query.create_chat_chain.create_stuff_documents_chain"
     ) as mock_create_stuff_chain, patch(
-        "doc_generator.query.create_chat_chain.create_history_aware_retriever"
+        "readme_ready.query.create_chat_chain.create_history_aware_retriever"
     ) as mock_llm_chain, patch(
-        "doc_generator.query.create_chat_chain.create_retrieval_chain"
+        "readme_ready.query.create_chat_chain.create_retrieval_chain"
     ) as mock_chat_vector_chain:
         mock_question_chat_model = MagicMock()
         mock_get_llama_chat_model.return_value = mock_question_chat_model
@@ -171,13 +171,13 @@ def test_make_qa_chain_gemma():
     device = "cpu"
 
     with patch(
-        "doc_generator.query.create_chat_chain.get_gemma_chat_model"
+        "readme_ready.query.create_chat_chain.get_gemma_chat_model"
     ) as mock_get_gemma_chat_model, patch(
-        "doc_generator.query.create_chat_chain.create_stuff_documents_chain"
+        "readme_ready.query.create_chat_chain.create_stuff_documents_chain"
     ) as mock_create_stuff_chain, patch(
-        "doc_generator.query.create_chat_chain.create_history_aware_retriever"
+        "readme_ready.query.create_chat_chain.create_history_aware_retriever"
     ) as mock_llm_chain, patch(
-        "doc_generator.query.create_chat_chain.create_retrieval_chain"
+        "readme_ready.query.create_chat_chain.create_retrieval_chain"
     ) as mock_chat_vector_chain:
         mock_question_chat_model = MagicMock()
         mock_get_gemma_chat_model.return_value = mock_question_chat_model
@@ -227,13 +227,13 @@ def test_make_qa_chain_openai():
     device = "cpu"
 
     with patch(
-        "doc_generator.query.create_chat_chain.get_openai_chat_model"
+        "readme_ready.query.create_chat_chain.get_openai_chat_model"
     ) as mock_get_openai_chat_model, patch(
-        "doc_generator.query.create_chat_chain.create_stuff_documents_chain"
+        "readme_ready.query.create_chat_chain.create_stuff_documents_chain"
     ) as mock_create_stuff_chain, patch(
-        "doc_generator.query.create_chat_chain.create_history_aware_retriever"
+        "readme_ready.query.create_chat_chain.create_history_aware_retriever"
     ) as mock_llm_chain, patch(
-        "doc_generator.query.create_chat_chain.create_retrieval_chain"
+        "readme_ready.query.create_chat_chain.create_retrieval_chain"
     ) as mock_chat_vector_chain:
         mock_question_chat_model = MagicMock()
         mock_get_openai_chat_model.return_value = mock_question_chat_model
@@ -284,11 +284,11 @@ def test_make_readme_chain_llama():
     peft_model = None
 
     with patch(
-        "doc_generator.query.create_chat_chain.get_llama_chat_model"
+        "readme_ready.query.create_chat_chain.get_llama_chat_model"
     ) as mock_get_llama_chat_model, patch(
-        "doc_generator.query.create_chat_chain.create_stuff_documents_chain"
+        "readme_ready.query.create_chat_chain.create_stuff_documents_chain"
     ) as mock_create_stuff_chain, patch(
-        "doc_generator.query.create_chat_chain.create_retrieval_chain"
+        "readme_ready.query.create_chat_chain.create_retrieval_chain"
     ) as mock_create_retrieval_chain:
         mock_doc_chat_model = MagicMock()
         mock_get_llama_chat_model.return_value = mock_doc_chat_model
@@ -338,11 +338,11 @@ def test_make_readme_chain_gemma():
     peft_model = None
 
     with patch(
-        "doc_generator.query.create_chat_chain.get_gemma_chat_model"
+        "readme_ready.query.create_chat_chain.get_gemma_chat_model"
     ) as mock_get_gemma_chat_model, patch(
-        "doc_generator.query.create_chat_chain.create_stuff_documents_chain"
+        "readme_ready.query.create_chat_chain.create_stuff_documents_chain"
     ) as mock_create_stuff_chain, patch(
-        "doc_generator.query.create_chat_chain.create_retrieval_chain"
+        "readme_ready.query.create_chat_chain.create_retrieval_chain"
     ) as mock_create_retrieval_chain:
         mock_doc_chat_model = MagicMock()
         mock_get_gemma_chat_model.return_value = mock_doc_chat_model
@@ -392,11 +392,11 @@ def test_make_readme_chain_openai():
     peft_model = None
 
     with patch(
-        "doc_generator.query.create_chat_chain.get_openai_chat_model"
+        "readme_ready.query.create_chat_chain.get_openai_chat_model"
     ) as mock_get_openai_chat_model, patch(
-        "doc_generator.query.create_chat_chain.create_stuff_documents_chain"
+        "readme_ready.query.create_chat_chain.create_stuff_documents_chain"
     ) as mock_create_stuff_chain, patch(
-        "doc_generator.query.create_chat_chain.create_retrieval_chain"
+        "readme_ready.query.create_chat_chain.create_retrieval_chain"
     ) as mock_create_retrieval_chain:
         mock_doc_chat_model = MagicMock()
         mock_get_openai_chat_model.return_value = mock_doc_chat_model
@@ -459,13 +459,13 @@ def test_make_qa_chain_with_multiple_llms():
     device = "cpu"
 
     with patch(
-        "doc_generator.query.create_chat_chain.get_openai_chat_model"
+        "readme_ready.query.create_chat_chain.get_openai_chat_model"
     ) as mock_get_openai_chat_model, patch(
-        "doc_generator.query.create_chat_chain.create_stuff_documents_chain"
+        "readme_ready.query.create_chat_chain.create_stuff_documents_chain"
     ) as mock_create_stuff_chain, patch(
-        "doc_generator.query.create_chat_chain.create_history_aware_retriever"
+        "readme_ready.query.create_chat_chain.create_history_aware_retriever"
     ) as mock_llm_chain, patch(
-        "doc_generator.query.create_chat_chain.create_retrieval_chain"
+        "readme_ready.query.create_chat_chain.create_retrieval_chain"
     ) as mock_chat_vector_chain:
         mock_question_chat_model = MagicMock()
         mock_get_openai_chat_model.return_value = mock_question_chat_model
@@ -512,13 +512,13 @@ def test_make_qa_chain_with_llama_gguf_file():
     models[llm].gguf_file = "path/to/gguf_file"
 
     with patch(
-        "doc_generator.query.create_chat_chain.get_llama_chat_model"
+        "readme_ready.query.create_chat_chain.get_llama_chat_model"
     ) as mock_get_llama_chat_model, patch(
-        "doc_generator.query.create_chat_chain.create_stuff_documents_chain"
+        "readme_ready.query.create_chat_chain.create_stuff_documents_chain"
     ) as mock_create_stuff_chain, patch(
-        "doc_generator.query.create_chat_chain.create_history_aware_retriever"
+        "readme_ready.query.create_chat_chain.create_history_aware_retriever"
     ) as mock_llm_chain, patch(
-        "doc_generator.query.create_chat_chain.create_retrieval_chain"
+        "readme_ready.query.create_chat_chain.create_retrieval_chain"
     ) as mock_chat_vector_chain:
         mock_question_chat_model = MagicMock()
         mock_get_llama_chat_model.return_value = mock_question_chat_model
@@ -568,13 +568,13 @@ def test_make_qa_chain_with_gemma_gguf_file():
     models[llm].gguf_file = "path/to/gguf_file"
 
     with patch(
-        "doc_generator.query.create_chat_chain.get_gemma_chat_model"
+        "readme_ready.query.create_chat_chain.get_gemma_chat_model"
     ) as mock_get_gemma_chat_model, patch(
-        "doc_generator.query.create_chat_chain.create_stuff_documents_chain"
+        "readme_ready.query.create_chat_chain.create_stuff_documents_chain"
     ) as mock_create_stuff_chain, patch(
-        "doc_generator.query.create_chat_chain.create_history_aware_retriever"
+        "readme_ready.query.create_chat_chain.create_history_aware_retriever"
     ) as mock_llm_chain, patch(
-        "doc_generator.query.create_chat_chain.create_retrieval_chain"
+        "readme_ready.query.create_chat_chain.create_retrieval_chain"
     ) as mock_chat_vector_chain:
         mock_question_chat_model = MagicMock()
         mock_get_gemma_chat_model.return_value = mock_question_chat_model
@@ -624,11 +624,11 @@ def test_make_readme_chain_with_llama_gguf_file():
     models[llm].gguf_file = "path/to/gguf_file"
 
     with patch(
-        "doc_generator.query.create_chat_chain.get_llama_chat_model"
+        "readme_ready.query.create_chat_chain.get_llama_chat_model"
     ) as mock_get_llama_chat_model, patch(
-        "doc_generator.query.create_chat_chain.create_stuff_documents_chain"
+        "readme_ready.query.create_chat_chain.create_stuff_documents_chain"
     ) as mock_create_stuff_chain, patch(
-        "doc_generator.query.create_chat_chain.create_retrieval_chain"
+        "readme_ready.query.create_chat_chain.create_retrieval_chain"
     ) as mock_create_retrieval_chain:
         mock_doc_chat_model = MagicMock()
         mock_get_llama_chat_model.return_value = mock_doc_chat_model
@@ -678,11 +678,11 @@ def test_make_readme_chain_with_gemma_gguf_file():
     models[llm].gguf_file = "path/to/gguf_file"
 
     with patch(
-        "doc_generator.query.create_chat_chain.get_gemma_chat_model"
+        "readme_ready.query.create_chat_chain.get_gemma_chat_model"
     ) as mock_get_gemma_chat_model, patch(
-        "doc_generator.query.create_chat_chain.create_stuff_documents_chain"
+        "readme_ready.query.create_chat_chain.create_stuff_documents_chain"
     ) as mock_create_stuff_chain, patch(
-        "doc_generator.query.create_chat_chain.create_retrieval_chain"
+        "readme_ready.query.create_chat_chain.create_retrieval_chain"
     ) as mock_create_retrieval_chain:
         mock_doc_chat_model = MagicMock()
         mock_get_gemma_chat_model.return_value = mock_doc_chat_model
@@ -728,13 +728,13 @@ def test_make_qa_chain_with_on_token_stream_true():
     device = "cpu"
 
     with patch(
-        "doc_generator.query.create_chat_chain.get_openai_chat_model"
+        "readme_ready.query.create_chat_chain.get_openai_chat_model"
     ) as mock_get_openai_chat_model, patch(
-        "doc_generator.query.create_chat_chain.create_stuff_documents_chain"
+        "readme_ready.query.create_chat_chain.create_stuff_documents_chain"
     ) as mock_create_stuff_chain, patch(
-        "doc_generator.query.create_chat_chain.create_history_aware_retriever"
+        "readme_ready.query.create_chat_chain.create_history_aware_retriever"
     ) as mock_llm_chain, patch(
-        "doc_generator.query.create_chat_chain.create_retrieval_chain"
+        "readme_ready.query.create_chat_chain.create_retrieval_chain"
     ) as mock_chat_vector_chain:
         mock_question_chat_model = MagicMock()
         mock_get_openai_chat_model.return_value = mock_question_chat_model

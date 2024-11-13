@@ -1,13 +1,13 @@
-"""CLI interface for doc_generator project.
+"""CLI interface for readme_ready project.
 """
 
 from urllib.parse import urlparse
 
 import questionary
 
-from doc_generator.index import index
-from doc_generator.query import query
-from doc_generator.types import (
+from readme_ready.index import index
+from readme_ready.query import query
+from readme_ready.types import (
     AutodocReadmeConfig,
     AutodocRepoConfig,
     AutodocUserConfig,
@@ -18,7 +18,7 @@ from doc_generator.types import (
 def main():  # pragma: no cover
     """
     The main function executes on commands:
-    `python -m doc_generator` and `$ doc_generator `.
+    `python -m readme_ready` and `$ readme_ready `.
     """
     print("Initializing Auto Documentation...")
 
@@ -30,20 +30,20 @@ def main():  # pragma: no cover
             return False
 
     name = questionary.text(
-        message="Project Name?[Example: doc_generator]"
+        message="Project Name?[Example: readme_ready]"
     ).ask()
     project_root = questionary.path(
-        message="Project Root?[Example: ./doc_generator/]",
+        message="Project Root?[Example: ./readme_ready/]",
         only_directories=True,
         default=f"./{name}/",
     ).ask()
     project_url = questionary.text(
         message="Project URL?[Example: "
-        + "https://github.com/username/doc_generator]",
+        + "https://github.com/username/readme_ready]",
         validate=url_validator,
     ).ask()
     output_dir = questionary.path(
-        message="Output Directory?[Example: ./output/doc_generator/]",
+        message="Output Directory?[Example: ./output/readme_ready/]",
         only_directories=True,
         default=f"./output/{name}/",
     ).ask()
