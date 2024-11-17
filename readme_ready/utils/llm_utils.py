@@ -17,7 +17,11 @@ from readme_ready.types import LLMModelDetails, LLMModels
 
 def get_gemma_chat_model(model_name: str, streaming=False, model_kwargs=None):
     """Get GEMMA Chat Model"""
-    bnb_config = None
+    gguf_file = None
+    if "gguf_file" in model_kwargs and model_kwargs["gguf_file"] is not None:
+        gguf_file = model_kwargs["gguf_file"]
+        _ = hf_hub_download(model_name, gguf_file)
+    tokenizer = get_tokenizer(model_name, gguf_file)
     if sys.platform == "linux" or sys.platform == "linux2":
         from transformers import BitsAndBytesConfig
 
@@ -27,17 +31,22 @@ def get_gemma_chat_model(model_name: str, streaming=False, model_kwargs=None):
             bnb_4bit_quant_type="nf4",
             bnb_4bit_compute_dtype=torch.bfloat16,
         )
-    gguf_file = model_kwargs["gguf_file"]
-    _ = hf_hub_download(model_name, gguf_file)
-    tokenizer = get_tokenizer(model_name, gguf_file)
-    model = AutoModelForCausalLM.from_pretrained(
-        model_name,
-        gguf_file=gguf_file,
-        trust_remote_code=True,
-        device_map=model_kwargs["device"],
-        quantization_config=bnb_config,
-        token=os.environ["HF_TOKEN"],
-    )
+        model = AutoModelForCausalLM.from_pretrained(
+            model_name,
+            gguf_file=gguf_file,
+            trust_remote_code=True,
+            device_map=model_kwargs["device"],
+            quantization_config=bnb_config,
+            token=os.environ["HF_TOKEN"],
+        )
+    else:
+        model = AutoModelForCausalLM.from_pretrained(
+            model_name,
+            gguf_file=gguf_file,
+            trust_remote_code=True,
+            device_map=model_kwargs["device"],
+            token=os.environ["HF_TOKEN"],
+        )
 
     if (
         "peft_model_path" in model_kwargs
@@ -61,7 +70,12 @@ def get_gemma_chat_model(model_name: str, streaming=False, model_kwargs=None):
 
 def get_llama_chat_model(model_name: str, streaming=False, model_kwargs=None):
     """Get LLAMA2 Chat Model"""
-    bnb_config = None
+    gguf_file = None
+    if "gguf_file" in model_kwargs and model_kwargs["gguf_file"] is not None:
+        gguf_file = model_kwargs["gguf_file"]
+        _ = hf_hub_download(model_name, gguf_file)
+    tokenizer = get_tokenizer(model_name, gguf_file)
+    tokenizer.pad_token = tokenizer.eos_token
     if sys.platform == "linux" or sys.platform == "linux2":
         from transformers import BitsAndBytesConfig
 
@@ -73,18 +87,22 @@ def get_llama_chat_model(model_name: str, streaming=False, model_kwargs=None):
             # use_exllama=False,
             # exllama_config={"version": 2}
         )
-
-    gguf_file = model_kwargs["gguf_file"]
-    _ = hf_hub_download(model_name, gguf_file)
-    tokenizer = get_tokenizer(model_name, gguf_file)
-    tokenizer.pad_token = tokenizer.eos_token
-    model = AutoModelForCausalLM.from_pretrained(
-        model_name,
-        gguf_file=gguf_file,
-        trust_remote_code=True,
-        device_map=model_kwargs["device"],
-        quantization_config=bnb_config,
-    )
+        model = AutoModelForCausalLM.from_pretrained(
+            model_name,
+            gguf_file=gguf_file,
+            trust_remote_code=True,
+            device_map=model_kwargs["device"],
+            quantization_config=bnb_config,
+            token=os.environ["HF_TOKEN"],
+        )
+    else:
+        model = AutoModelForCausalLM.from_pretrained(
+            model_name,
+            gguf_file=gguf_file,
+            trust_remote_code=True,
+            device_map=model_kwargs["device"],
+            token=os.environ["HF_TOKEN"],
+        )
 
     if "peft_model" in model_kwargs and model_kwargs["peft_model"] is not None:
         PEFT_MODEL = model_kwargs["peft_model"]
