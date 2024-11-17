@@ -87,7 +87,7 @@ def main():  # pragma: no cover
         ).ask()
 
     device = questionary.select(
-        message="Device?", choices=["cpu", "gpu"], default="cpu"
+        message="Device?", choices=["cpu", "cuda"], default="cpu"
     ).ask()
 
     match model_name:

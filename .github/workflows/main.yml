@@ -54,7 +54,7 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-        #   fail_ci_if_error: true
+          # fail_ci_if_error: true
 
   # tests_mac:
   #   needs: linter
@@ -91,9 +91,5 @@ jobs:
   #       run: python.exe -m pip install --upgrade pip
   #     - name: Install project
   #       run: pip install -e .[test]
-  #     - name: Set OPENAI API Key
-  #       run: |
-  #         chcp 65001
-  #         echo "OPENAI_API_KEY=dummy" >> $env:GITHUB_ENV
   #     - name: run tests
-  #       run: pytest -s -vvvv -l --tb=long tests
+  #       run: set OPENAI_API_KEY=dummy & pytest -s -vvvv -l --tb=long tests
