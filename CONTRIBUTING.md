@@ -1,6 +1,14 @@
-# How to develop on this project
+# Contributing to ReadmeReady
 
-readme_ready welcomes contributions from the community.
+ReadmeReady welcomes contributions from the community.
+
+# Questions and Reporting Issues
+
+Have a question? Have you identified a reproducible problem in ReadmeReady? Have a feature request? We want to hear about it!
+
+Submit a bug report or feature request on [GitHub Issues](https://github.com/souradipp76/ReadMeReady/issues).
+
+# How to develop on this project
 
 **You need PYTHON3!**
 
@@ -91,23 +99,6 @@ switch-to-poetry: ## Switch to poetry package manager.
 init:             ## Initialize the project based on an application template.
 ```
 
-## Making a new release
+# Thank You!
 
-This project uses [semantic versioning](https://semver.org/) and tags releases with `X.Y.Z`
-Every time a new tag is created and pushed to the remote repo, github actions will
-automatically create a new release on github and trigger a release on PyPI.
-
-For this to work you need to setup a secret called `PYPI_API_TOKEN` on the project settings>secrets, 
-this token can be generated on [pypi.org](https://pypi.org/account/).
-
-To trigger a new release all you need to do is.
-
-1. If you have changes to add to the repo
-    * Make your changes following the steps described above.
-    * Commit your changes following the [conventional git commit messages](https://www.conventionalcommits.org/en/v1.0.0/).
-2. Run the tests to ensure everything is working.
-4. Run `make release` to create a new tag and push it to the remote repo.
-
-the `make release` will ask you the version number to create the tag, ex: type `0.1.1` when you are asked.
-
-> **CAUTION**:  The make release will change local changelog files and commit all the unstaged changes you have.
+Your contributions to open source, large or small, make great projects like this possible. Thank you for taking the time to contribute.

@@ -25,7 +25,7 @@ def test_get_gemma_chat_model_with_peft():
         "device": "cpu",
         "peft_model_path": "path/to/peft/model",
     }
-    with patch(
+    with patch("sys.platform", "linux"), patch(
         "readme_ready.utils.llm_utils.hf_hub_download"
     ) as mock_hf_download, patch(
         "readme_ready.utils.llm_utils.get_tokenizer"
@@ -69,6 +69,7 @@ def test_get_gemma_chat_model_with_peft():
             gguf_file=model_kwargs["gguf_file"],
             trust_remote_code=True,
             device_map=model_kwargs["device"],
+            quantization_config=mock.ANY,
             token="test_token",
         )
         mock_peft_model.assert_called_once_with(
@@ -87,7 +88,7 @@ def test_get_gemma_chat_model_without_peft():
         "gguf_file": "some_file.gguf",
         "device": "cpu",
     }
-    with patch(
+    with patch("sys.platform", "linux"), patch(
         "readme_ready.utils.llm_utils.hf_hub_download"
     ) as mock_hf_download, patch(
         "readme_ready.utils.llm_utils.get_tokenizer"
@@ -128,6 +129,7 @@ def test_get_gemma_chat_model_without_peft():
             gguf_file=model_kwargs["gguf_file"],
             trust_remote_code=True,
             device_map=model_kwargs["device"],
+            quantization_config=mock.ANY,
             token="test_token",
         )
         mock_peft_model.assert_not_called()
@@ -205,7 +207,7 @@ def test_get_llama_chat_model_with_peft():
         "device": "cpu",
         "peft_model": "path/to/peft/model",
     }
-    with patch(
+    with patch("sys.platform", "linux"), patch(
         "readme_ready.utils.llm_utils.hf_hub_download"
     ) as mock_hf_download, patch(
         "readme_ready.utils.llm_utils.get_tokenizer"
@@ -252,6 +254,7 @@ def test_get_llama_chat_model_with_peft():
             gguf_file=model_kwargs["gguf_file"],
             trust_remote_code=True,
             device_map=model_kwargs["device"],
+            quantization_config=mock.ANY,
             token="test_token",
         )
         mock_peft_model.assert_called_once_with(
@@ -270,7 +273,7 @@ def test_get_llama_chat_model_without_peft():
         "gguf_file": "some_file.gguf",
         "device": "cpu",
     }
-    with patch(
+    with patch("sys.platform", "linux"), patch(
         "readme_ready.utils.llm_utils.hf_hub_download"
     ) as mock_hf_download, patch(
         "readme_ready.utils.llm_utils.get_tokenizer"
@@ -314,6 +317,7 @@ def test_get_llama_chat_model_without_peft():
             gguf_file=model_kwargs["gguf_file"],
             trust_remote_code=True,
             device_map=model_kwargs["device"],
+            quantization_config=mock.ANY,
             token="test_token",
         )
         mock_peft_model.assert_not_called()
