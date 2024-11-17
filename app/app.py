@@ -20,9 +20,9 @@ with st.sidebar:
     hf_token = st.text_input('Enter HuggingFace token:', type='password')
     os.environ['HF_TOKEN'] = hf_token
 
-    from doc_generator.query import query
-    from doc_generator.index import index
-    from doc_generator.types import AutodocRepoConfig, AutodocUserConfig, LLMModels
+    from readme_ready.query import query
+    from readme_ready.index import index
+    from readme_ready.types import AutodocRepoConfig, AutodocUserConfig, LLMModels
 
     with st.form("my_form"):
         st.subheader('Model')
@@ -41,7 +41,7 @@ with st.sidebar:
             LLMModels.GOOGLE_GEMMA_2B_INSTRUCT_GGUF.value
         ]
         llm = st.selectbox('Choose a model', options, key='llm')
-        device = st.selectbox('Choose a device', ["cpu", "gpu"], key='device')
+        device = st.selectbox('Choose a device', ["cpu", "cuda"], key='device')
         st.subheader('Parameters')
         temperature = st.slider('temperature', min_value=0.01, max_value=1.0, value=0.1, step=0.01)
         top_p = st.slider('top_p', min_value=0.01, max_value=1.0, value=0.9, step=0.01)
