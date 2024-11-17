@@ -27,7 +27,9 @@ def get_gemma_chat_model(model_name: str, streaming=False, model_kwargs=None):
             bnb_4bit_quant_type="nf4",
             bnb_4bit_compute_dtype=torch.bfloat16,
         )
-    gguf_file = model_kwargs["gguf_file"]
+    gguf_file = None
+    if "gguf_file" in model_kwargs:
+        gguf_file = model_kwargs["gguf_file"]
     _ = hf_hub_download(model_name, gguf_file)
     tokenizer = get_tokenizer(model_name, gguf_file)
     model = AutoModelForCausalLM.from_pretrained(
@@ -73,8 +75,9 @@ def get_llama_chat_model(model_name: str, streaming=False, model_kwargs=None):
             # use_exllama=False,
             # exllama_config={"version": 2}
         )
-
-    gguf_file = model_kwargs["gguf_file"]
+    gguf_file = None
+    if "gguf_file" in model_kwargs:
+        gguf_file = model_kwargs["gguf_file"]
     _ = hf_hub_download(model_name, gguf_file)
     tokenizer = get_tokenizer(model_name, gguf_file)
     tokenizer.pad_token = tokenizer.eos_token
