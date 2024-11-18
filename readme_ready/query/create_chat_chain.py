@@ -103,12 +103,12 @@ def make_readme_prompt(
     {project_name}. You are trained on all the {content_type} that makes up
     this project.
     The {content_type} for the project is located at {repository_url}.
-    You are given the following extracted parts of a repository which might
-    contain several modules and each module will contain a set of files.
+    You are given a repository which might contain several modules and each
+    module will contain a set of files.
     Look at the source code in the repository and you have to generate
     content for the section of a README.md file following the heading given
-    below starting with ## based on the context. If you use any hyperlinks,
-    they should link back to the github repository shared with you.
+    below. If you use any hyperlinks, they should link back to the github
+    repository shared with you.
     You should only use hyperlinks that are explicitly listed in the context.
     Do NOT make up a hyperlink that is not listed.
 
@@ -125,12 +125,9 @@ def make_readme_prompt(
     Provide the answer in correct markdown format.
 
     {additional_instructions}
-
+    Question: {{input}}
     Context:
     {{context}}
-
-    Question: Provide the README content for the section with
-    heading \"{{input}}\" starting with {{input}}.
     Answer in Markdown:
     """
 

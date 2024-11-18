@@ -120,7 +120,10 @@ def generate_readme(
     with open(readme_path, "a", encoding="utf-8") as file:
         headings = readme_config.headings
         for heading in headings:
-            question = f"{heading}"
+            question = (
+                "Provide the README content for the section with "
+                + f"heading \"{heading}\" starting with ## {heading}."
+            )
             try:
                 response = chain.invoke({"input": question})
                 print("\n\nMarkdown:\n")
