@@ -109,7 +109,7 @@ user_config = AutodocUserConfig(
 )
 
 readme_config = AutodocReadmeConfig(
-    headings = "# Description, # Requirements, # Installation, # Usage, # Contributing, # License"
+    headings = "Description,Requirements,Installation,Usage,Contributing,License"
 )
 
 index.index(repo_config)
