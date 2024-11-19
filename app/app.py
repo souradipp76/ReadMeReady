@@ -41,7 +41,7 @@ with st.sidebar:
             LLMModels.GOOGLE_GEMMA_2B_INSTRUCT_GGUF.value
         ]
         llm = st.selectbox('Choose a model', options, key='llm')
-        device = st.selectbox('Choose a device', ["cpu", "cuda"], key='device')
+        device = st.selectbox('Choose a device', ["cpu", "auto"], key='device')
         st.subheader('Parameters')
         temperature = st.slider('temperature', min_value=0.01, max_value=1.0, value=0.1, step=0.01)
         top_p = st.slider('top_p', min_value=0.01, max_value=1.0, value=0.9, step=0.01)
