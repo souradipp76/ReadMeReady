@@ -56,7 +56,7 @@ def main():  # pragma: no cover
     if mode.lower() == "readme":
         headings = questionary.text(
             message="List of Readme Headings?(comma separated)"
-            + "[Example: # Introduction,## Usage]"
+            + "[Example: Introduction,Usage]"
         ).ask()
 
     model_name = questionary.select(

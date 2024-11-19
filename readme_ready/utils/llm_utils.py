@@ -22,7 +22,9 @@ def get_gemma_chat_model(model_name: str, streaming=False, model_kwargs=None):
         gguf_file = model_kwargs["gguf_file"]
         _ = hf_hub_download(model_name, gguf_file)
     tokenizer = get_tokenizer(model_name, gguf_file)
-    if sys.platform == "linux" or sys.platform == "linux2":
+    if (
+        sys.platform == "linux" or sys.platform == "linux2"
+    ) and "gptq" not in model_name.lower():
         from transformers import BitsAndBytesConfig
 
         bnb_config = BitsAndBytesConfig(
@@ -76,7 +78,9 @@ def get_llama_chat_model(model_name: str, streaming=False, model_kwargs=None):
         _ = hf_hub_download(model_name, gguf_file)
     tokenizer = get_tokenizer(model_name, gguf_file)
     tokenizer.pad_token = tokenizer.eos_token
-    if sys.platform == "linux" or sys.platform == "linux2":
+    if (
+        sys.platform == "linux" or sys.platform == "linux2"
+    ) and "gptq" not in model_name.lower():
         from transformers import BitsAndBytesConfig
 
         bnb_config = BitsAndBytesConfig(

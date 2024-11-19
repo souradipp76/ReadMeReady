@@ -122,7 +122,7 @@ def generate_readme(
         for heading in headings:
             question = (
                 "Provide the README content for the section with "
-                + f"heading \"{heading}\" starting with ## {heading}."
+                + f'heading "{heading}" starting with ## {heading}.'
             )
             try:
                 response = chain.invoke({"input": question})
