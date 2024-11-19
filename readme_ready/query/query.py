@@ -47,6 +47,7 @@ def init_qa_chain(
         repo_config.target_audience,
         vector_store,
         user_config.llms,
+        device=repo_config.device,
         on_token_stream=user_config.streaming,
     )
 
@@ -68,6 +69,7 @@ def init_readme_chain(
         vector_store,
         user_config.llms,
         repo_config.peft_model_path,
+        device=repo_config.device,
         on_token_stream=user_config.streaming,
     )
 

@@ -62,6 +62,7 @@ def test_init_qa_chain():
             repo_config.target_audience,
             mock_vector_store,
             user_config.llms,
+            device=repo_config.device,
             on_token_stream=user_config.streaming,
         )
         assert chain == mock_chain
@@ -117,6 +118,7 @@ def test_init_readme_chain():
             mock_vector_store,
             user_config.llms,
             repo_config.peft_model_path,
+            device=repo_config.device,
             on_token_stream=user_config.streaming,
         )
         assert chain == mock_chain
