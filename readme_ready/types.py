@@ -73,7 +73,7 @@ class AutodocRepoConfig:
         target_audience: str,
         link_hosted: bool,
         peft_model_path: str | None,
-        device: str,
+        device: str | None,
     ):
         self.name = name
         self.repository_url = repository_url
@@ -91,7 +91,7 @@ class AutodocRepoConfig:
         self.content_type = content_type
         self.target_audience = target_audience
         self.link_hosted = link_hosted
-        self.device = device
+        self.device = device if device == "auto" else "cpu"
 
 
 class FileSummary:
