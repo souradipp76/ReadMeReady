@@ -82,9 +82,9 @@ release:          ## Create a new tag for release.
 	@echo "$${TAG}" > readme_ready/VERSION
 	@$(ENV_PREFIX)gitchangelog > HISTORY.md
 	@git add readme_ready/VERSION HISTORY.md
-	@git commit -m "release: version $${TAG} 🚀"
-	@echo "creating git tag : $${TAG}"
-	@git tag $${TAG}
+	@git commit -m "release: version v$${TAG} 🚀"
+	@echo "creating git tag : v$${TAG}"
+	@git tag "v$${TAG}"
 	@git push -u origin HEAD --tags
 	@echo "Github Actions will detect the new tag and release the new version."
 
