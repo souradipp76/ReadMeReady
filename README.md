@@ -70,7 +70,7 @@ from readme_ready.types import (
     LLMModels,
 )
 
-model = LLMModels.LLAMA2_7B_CHAT_HF # Choose model from supported models
+model = LLMModels.LLAMA2_7B_CHAT_GPTQ # Choose model from supported models
 
 repo_config = AutodocRepoConfig (
     name = "<NAME>", # Replace <NAME>
@@ -101,7 +101,7 @@ repo_config = AutodocRepoConfig (
     priority = None,
     max_concurrent_calls = 50,
     add_questions = False,
-    device = "cuda", # Select device "cuda" or  "cpu"
+    device = "auto", # Select device "cpu" or "auto"
 )
 
 user_config = AutodocUserConfig(

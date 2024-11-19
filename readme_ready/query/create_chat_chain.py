@@ -122,7 +122,7 @@ def make_readme_prompt(
     Do not include information that is not directly relevant to repository,
     even though the names of the functions might be common or is frequently
     used in several other places.
-    Provide the answer in correct markdown format.
+    Provide the answer in readable markdown format.
 
     {additional_instructions}
     Question: {{input}}

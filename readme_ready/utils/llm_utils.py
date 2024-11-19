@@ -388,7 +388,7 @@ def print_model_details(models):
         print(item)
 
 
-def total_index_cost_estimate(model):
+def total_index_cost_estimate(models: dict[LLMModels, LLMModelDetails]):
     """Total Index Cost Estimate"""
     total_cost = sum(
         (model.input_tokens / 1000) * model.input_cost_per_1k_tokens
@@ -398,8 +398,10 @@ def total_index_cost_estimate(model):
     return total_cost
 
 
-def get_embeddings(model: str, device: str):
+def get_embeddings(model: str, device: str | None):
     """Get Embeddings"""
+    if device == "auto":
+        device = None
     if "llama" in model.lower() or "gemma" in model.lower():
         return HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-mpnet-base-v2",

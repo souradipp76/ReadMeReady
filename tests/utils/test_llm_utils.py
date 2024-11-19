@@ -556,8 +556,7 @@ def test_total_index_cost_estimate():
         ),
     }
 
-    with patch("readme_ready.utils.llm_utils.models", test_models):
-        total_cost = total_index_cost_estimate(None)
+    total_cost = total_index_cost_estimate(test_models)
 
     expected_cost = sum(
         (model_details.input_tokens / 1000)
