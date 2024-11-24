@@ -11,7 +11,7 @@ from .create_vector_store import create_vector_store
 from .process_repository import process_repository
 
 
-def index(config: AutodocRepoConfig):
+def index(config: AutodocRepoConfig) -> None:
     """
     Indexes a repository to generate documentation and vector store files.
 
@@ -26,9 +26,6 @@ def index(config: AutodocRepoConfig):
     Returns:
         None.
 
-    Raises:
-        OSError: If an error occurs while creating directories.
-        Exception: If an error occurs during repository processing, Markdown conversion, or vector store creation.
     """
     json_path = Path(config.output) / "docs" / "json"
     markdown_path = Path(config.output) / "docs" / "markdown"

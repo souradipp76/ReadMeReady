@@ -80,21 +80,21 @@ def query(repo_config: AutodocRepoConfig, user_confg: AutodocUserConfig):
     """
     Queries the repository for information based on user input.
     
-        Initializes a question-answering chain, displays a welcome message, and enters a loop to
-        prompt the user for questions about the repository. Processes each question by invoking
-        the QA chain, updates the chat history, and displays the response in Markdown format. The
-        loop continues until the user types 'exit'.
-    
-        Args:
-            repo_config: An AutodocRepoConfig instance containing configuration settings for the repository.
-            user_confg: An AutodocUserConfig instance containing user-specific configuration settings.
-    
-        Returns:
-            None.
-    
-        Raises:
-            Exception: If an error occurs during the initialization of the QA chain, displaying the welcome message,
-                or during the invocation of the QA chain.
+    Initializes a question-answering chain, displays a welcome message, and enters a loop to
+    prompt the user for questions about the repository. Processes each question by invoking
+    the QA chain, updates the chat history, and displays the response in Markdown format. The
+    loop continues until the user types 'exit'.
+
+    Args:
+        repo_config: An AutodocRepoConfig instance containing configuration settings for the repository.
+        user_confg: An AutodocUserConfig instance containing user-specific configuration settings.
+
+    Returns:
+        None.
+
+    Raises:
+        Exception: If an error occurs during the initialization of the QA chain, displaying the welcome message,
+            or during the invocation of the QA chain.
     """
     chain = init_qa_chain(repo_config, user_confg)
 
@@ -127,22 +127,22 @@ def generate_readme(
     """
     Generates a README file based on repository and user configurations.
     
-        Initializes a README generation chain, clears the terminal, and prepares the output file.
-        Iterates over the specified headings in the README configuration, generates content for each
-        section by invoking the chain, and writes the content in Markdown format to the README file.
-        Handles any RuntimeError that occurs during the process.
-    
-        Args:
-            repo_config: An AutodocRepoConfig instance containing configuration settings for the repository.
-            user_config: An AutodocUserConfig instance containing user-specific configuration settings.
-            readme_config: An AutodocReadmeConfig instance containing configuration settings for README generation.
-    
-        Returns:
-            None.
-    
-        Raises:
-            IOError: If an error occurs while accessing or writing to the filesystem.
-            Exception: If an error occurs during the initialization of the README chain or content generation.
+    Initializes a README generation chain, clears the terminal, and prepares the output file.
+    Iterates over the specified headings in the README configuration, generates content for each
+    section by invoking the chain, and writes the content in Markdown format to the README file.
+    Handles any RuntimeError that occurs during the process.
+
+    Args:
+        repo_config: An AutodocRepoConfig instance containing configuration settings for the repository.
+        user_config: An AutodocUserConfig instance containing user-specific configuration settings.
+        readme_config: An AutodocReadmeConfig instance containing configuration settings for README generation.
+
+    Returns:
+        None.
+
+    Raises:
+        IOError: If an error occurs while accessing or writing to the filesystem.
+        Exception: If an error occurs during the initialization of the README chain or content generation.
     """
     chain = init_readme_chain(repo_config, user_config)
 
