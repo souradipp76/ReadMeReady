@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-(unreleased)
+Release Version 1.1.3
 ------------
 - Updated Makefile. [Souradip Pal]
 - Fixed device settings. [Souradip Pal]

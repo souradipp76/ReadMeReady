@@ -1,5 +1,5 @@
 """
-Process Repository
+Utilities to Process Repository and Summarize File Contents
 """
 
 import hashlib
@@ -34,29 +34,24 @@ from .prompts import (
 from .select_model import select_model
 
 
-def process_repository(config: AutodocRepoConfig, dry_run=False) -> None:
+def process_repository(
+    config: AutodocRepoConfig, dry_run: bool = False
+) -> None:
     """
-    Creates a vector store from Markdown documents.
+    Process a repository to generate JSON summary using LLMs
 
-    Loads documents from the specified root directory, splits the text into chunks,
-    creates a vector store using the selected LLM model, and saves the vector store
-    to the output path. Ignores files matching the patterns provided in the ignore list.
+    Traverses through the repository and summarizes the contents of
+    each file and directory using an LLM via. a summarization prompt and
+    saves them into JSON files.
 
     Args:
-        root: The root directory containing the documents to be processed.
-        output: The directory where the vector store will be saved.
-        ignore: A list of file patterns to ignore during document loading.
-        llms: A list of LLMModels to use for generating embeddings.
-        device: The device to use for embedding generation (e.g., 'cpu' or 'cuda').
+        config: An AutodocRepoConfig instance containing configuration
+            settings for indexing, including output paths, repository
+            details, and processing options.
+        dry_run: Flag to enable dry run mode where the process runs over the
+            directory without actual indexing the documents
 
-    Returns:
-        None.
-
-    Raises:
-        IOError: If an error occurs accessing the filesystem.
-        Exception: If an error occurs during document loading, splitting, or vector store creation.
     """
-
 
     def read_file(path):
         with open(path, "r", encoding="utf-8") as file:

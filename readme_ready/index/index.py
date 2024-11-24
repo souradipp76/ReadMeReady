@@ -1,5 +1,5 @@
 """
-Index
+Utility to Index a Repository and store them into a Vector Store
 """
 
 from pathlib import Path
@@ -13,18 +13,17 @@ from .process_repository import process_repository
 
 def index(config: AutodocRepoConfig) -> None:
     """
-    Indexes a repository to generate documentation and vector store files.
+    Indexes a repository to generate documentation and vector store files
 
-    Processes the repository specified in the config to create JSON files, converts them to Markdown format,
-    and builds a vector store from the Markdown documents. Creates the necessary directories for JSON,
+    Processes the repository specified in the config to create JSON files,
+    converts them to Markdown format, and builds a vector store from the
+    Markdown documents. Creates the necessary directories for JSON,
     Markdown, and data outputs as specified in the configuration.
 
     Args:
-        config: An AutodocRepoConfig instance containing configuration settings for indexing, including
-            output paths, repository details, and processing options.
-
-    Returns:
-        None.
+        config: An AutodocRepoConfig instance containing configuration
+            settings for indexing, including output paths, repository
+            details, and processing options.
 
     """
     json_path = Path(config.output) / "docs" / "json"

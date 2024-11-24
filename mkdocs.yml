@@ -2,4 +2,5 @@ site_name: ReadmeReady
 theme: readthedocs
 plugins:
   - search
+  - autorefs
   - mkdocstrings

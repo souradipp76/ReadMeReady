@@ -121,3 +121,21 @@ query.generate_readme(repo_config, user_config, readme_config)
 ```
 
 Run the sample script in the `examples/example.py` to see a typical code usage.
+
+## Contributing
+
+ReadmeReady is an open-source project that is supported by a community who will gratefully and humbly accept any contributions you might make to the project.
+
+If you are interested in contributing, read the [CONTRIBUTING.md](https://github.com/souradipp76/ReadMeReady/blob/main/CONTRIBUTING.md) file.
+
+- Submit a bug report or feature request on [GitHub Issues](https://github.com/souradipp76/ReadMeReady/issues).
+- Add to the documentation or help with our website.
+- Write unit or integration tests for our project under the `tests` directory.
+- Answer questions on our issues, mailing list, Stack Overflow, and elsewhere.
+- Write a blog post, tweet, or share our project with others.
+
+As you can see, there are lots of ways to get involved, and we would be very happy for you to join us!
+
+## License
+
+Read the [LICENSE](https://github.com/souradipp76/ReadMeReady/blob/main/LICENSE) file.
