@@ -1,5 +1,5 @@
 """
-Convert Json to Markdown
+Utility to Convert Summary JSON to Markdown
 """
 
 import json
@@ -17,7 +17,18 @@ from readme_ready.utils.traverse_file_system import traverse_file_system
 
 
 def convert_json_to_markdown(config: AutodocRepoConfig):
-    """Convert Json to Markdown"""
+    """
+    Convert JSON summary to Markdown documents
+
+    Traverses the root directory, finds the summary JSON for each file
+    and directory and converts them into Markdown format.
+
+    Args:
+        config: An AutodocRepoConfig instance containing configuration
+            settings for indexing, including output paths, repository
+            details, and processing options.
+
+    """
     project_name = config.name
     input_root = Path(config.root)
     output_root = Path(config.output)

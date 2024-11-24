@@ -74,6 +74,8 @@ def main():  # pragma: no cover
             LLMModels.CODELLAMA_13B_INSTRUCT_HF.value,
             LLMModels.GOOGLE_GEMMA_2B_INSTRUCT.value,
             LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value,
+            LLMModels.GOOGLE_CODEGEMMA_2B.value,
+            LLMModels.GOOGLE_CODEGEMMA_7B_INSTRUCT.value,
         ],
         default=LLMModels.TINYLLAMA_1p1B_CHAT_GGUF.value,
     ).ask()
@@ -113,6 +115,10 @@ def main():  # pragma: no cover
             model = LLMModels.GOOGLE_GEMMA_2B_INSTRUCT
         case LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value:
             model = LLMModels.GOOGLE_GEMMA_7B_INSTRUCT
+        case LLMModels.GOOGLE_CODEGEMMA_2B.value:
+            model = LLMModels.GOOGLE_CODEGEMMA_2B
+        case LLMModels.GOOGLE_CODEGEMMA_7B_INSTRUCT.value:
+            model = LLMModels.GOOGLE_CODEGEMMA_7B_INSTRUCT
         case _:
             model = LLMModels.LLAMA2_7B_CHAT_HF
     print("Initialization Complete.\n")

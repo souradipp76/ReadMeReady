@@ -1,5 +1,5 @@
 """
-Process Repository
+Utilities to Process Repository and Summarize File Contents
 """
 
 import hashlib
@@ -34,9 +34,23 @@ from .prompts import (
 from .select_model import select_model
 
 
-def process_repository(config: AutodocRepoConfig, dry_run=False):
+def process_repository(
+    config: AutodocRepoConfig, dry_run: bool = False
+) -> None:
     """
-    Process Repository
+    Process a repository to generate JSON summary using LLMs
+
+    Traverses through the repository and summarizes the contents of
+    each file and directory using an LLM via. a summarization prompt and
+    saves them into JSON files.
+
+    Args:
+        config: An AutodocRepoConfig instance containing configuration
+            settings for indexing, including output paths, repository
+            details, and processing options.
+        dry_run: Flag to enable dry run mode where the process runs over the
+            directory without actual indexing the documents
+
     """
 
     def read_file(path):

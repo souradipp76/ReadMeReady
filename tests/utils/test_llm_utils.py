@@ -48,6 +48,7 @@ def test_get_gemma_chat_model_with_peft():
         mock_auto_model.return_value = mock_model
 
         mock_peft_model_instance = MagicMock()
+        mock_peft_model_instance.get_memory_footprint.return_value = 0
         mock_peft_model.return_value = mock_peft_model_instance
 
         mock_pipeline_instance = MagicMock()
@@ -108,6 +109,7 @@ def test_get_gemma_chat_model_without_peft():
         mock_get_tokenizer.return_value = mock_tokenizer
 
         mock_model = MagicMock()
+        mock_model.get_memory_footprint.return_value = 0
         mock_auto_model.return_value = mock_model
 
         mock_pipeline_instance = MagicMock()
@@ -168,6 +170,7 @@ def test_get_gemma_chat_model_with_bnb_config():
         mock_get_tokenizer.return_value = mock_tokenizer
 
         mock_model = MagicMock()
+        mock_model.get_memory_footprint.return_value = 0
         mock_auto_model.return_value = mock_model
 
         mock_pipeline_instance = MagicMock()
@@ -232,6 +235,7 @@ def test_get_llama_chat_model_with_peft():
         mock_auto_model.return_value = mock_model
 
         mock_peft_model_instance = MagicMock()
+        mock_peft_model_instance.get_memory_footprint.return_value = 0
         mock_peft_model.return_value = mock_peft_model_instance
 
         mock_pipeline_instance = MagicMock()
@@ -295,6 +299,7 @@ def test_get_llama_chat_model_without_peft():
         mock_tokenizer.eos_token = "<eos>"
 
         mock_model = MagicMock()
+        mock_model.get_memory_footprint.return_value = 0
         mock_auto_model.return_value = mock_model
 
         mock_pipeline_instance = MagicMock()
@@ -356,6 +361,7 @@ def test_get_llama_chat_model_with_bnb_config():
         mock_tokenizer.eos_token = "<eos>"
 
         mock_model = MagicMock()
+        mock_model.get_memory_footprint.return_value = 0
         mock_auto_model.return_value = mock_model
 
         mock_pipeline_instance = MagicMock()

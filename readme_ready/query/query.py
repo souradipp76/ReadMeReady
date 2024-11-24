@@ -1,5 +1,5 @@
 """
-Query
+Utility to Query a Code Repository or Generate README
 """
 
 import os
@@ -77,7 +77,22 @@ def init_readme_chain(
 
 
 def query(repo_config: AutodocRepoConfig, user_confg: AutodocUserConfig):
-    """Query"""
+    """
+    Queries the repository for information based on user input.
+
+    Initializes a question-answering chain, displays a welcome message,
+    and enters a loop to prompt the user for questions about the repository.
+    Processes each question by invoking the QA chain, updates the chat
+    history, and displays the response in Markdown format. The loop continues
+    until the user inputs 'exit'.
+
+    Args:
+        repo_config: An AutodocRepoConfig instance containing configuration
+            settings for the repository.
+        user_confg: An AutodocUserConfig instance containing user-specific
+            configuration settings.
+
+    """
     chain = init_qa_chain(repo_config, user_confg)
 
     clear()
@@ -106,7 +121,24 @@ def generate_readme(
     user_config: AutodocUserConfig,
     readme_config: AutodocReadmeConfig,
 ):
-    """Generate README"""
+    """
+    Generates a README file based on repository and user configurations.
+
+    Initializes a README generation chain, clears the terminal, and prepares
+    the output file. Iterates over the specified headings in the README
+    configuration, generates content for each section by invoking the chain,
+    and writes the content in Markdown format to the README file. Handles any
+    RuntimeError that occurs during the process.
+
+    Args:
+        repo_config: An AutodocRepoConfig instance containing configuration
+            settings for the repository.
+        user_config: An AutodocUserConfig instance containing user-specific
+            configuration settings.
+        readme_config: An AutodocReadmeConfig instance containing
+            configuration settings for README generation.
+
+    """
     chain = init_readme_chain(repo_config, user_config)
 
     clear()
@@ -128,9 +160,11 @@ def generate_readme(
             )
             try:
                 response = chain.invoke({"input": question})
-                print("\n\nMarkdown:\n")
-                print(markdown(response["answer"]))
+                # print("\n\nMarkdown:\n")
+                # print(markdown(response["answer"]))
                 file.write(markdown(response["answer"]))
             except RuntimeError as error:
                 print(f"Something went wrong: {error}")
                 traceback.print_exc()
+
+    print(f"README generated at {readme_path}")

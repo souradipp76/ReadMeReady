@@ -2,11 +2,11 @@
 
 ReadmeReady welcomes contributions from the community.
 
-# Questions and Reporting Issues
+# Asking Questions and Reporting Issues
 
 Have a question? Have you identified a reproducible problem in ReadmeReady? Have a feature request? We want to hear about it!
 
-Submit a bug report or feature request on [GitHub Issues](https://github.com/souradipp76/ReadMeReady/issues).
+Ask a question, submit a bug report or feature request on [GitHub Issues](https://github.com/souradipp76/ReadMeReady/issues).
 
 # How to develop on this project
 
