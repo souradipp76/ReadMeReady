@@ -93,8 +93,27 @@ def create_vector_store(
     device: str,
 ) -> None:
     """
-    Create Vector Store
+    Creates a vector store from Markdown documents.
+    
+        Loads documents from the specified root directory, splits the text into chunks,
+        creates a vector store using the selected LLM model, and saves the vector store
+        to the output path. Ignores files matching the patterns provided in the ignore list.
+    
+        Args:
+            root: The root directory containing the documents to be processed.
+            output: The directory where the vector store will be saved.
+            ignore: A list of file patterns to ignore during document loading.
+            llms: A list of LLMModels to use for generating embeddings.
+            device: The device to use for embedding generation (e.g., 'cpu' or 'cuda').
+    
+        Returns:
+            None.
+    
+        Raises:
+            IOError: If an error occurs accessing the filesystem.
+            Exception: If an error occurs during document loading, splitting, or vector store creation.
     """
+    
     llm = llms[1] if len(llms) > 1 else llms[0]
     loader = RepoLoader(root, ignore)
     raw_docs = loader.load()
