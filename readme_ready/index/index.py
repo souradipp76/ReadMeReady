@@ -12,7 +12,24 @@ from .process_repository import process_repository
 
 
 def index(config: AutodocRepoConfig):
-    """Index"""
+    """
+    Indexes a repository to generate documentation and vector store files.
+
+    Processes the repository specified in the config to create JSON files, converts them to Markdown format,
+    and builds a vector store from the Markdown documents. Creates the necessary directories for JSON,
+    Markdown, and data outputs as specified in the configuration.
+
+    Args:
+        config: An AutodocRepoConfig instance containing configuration settings for indexing, including
+            output paths, repository details, and processing options.
+
+    Returns:
+        None.
+
+    Raises:
+        OSError: If an error occurs while creating directories.
+        Exception: If an error occurs during repository processing, Markdown conversion, or vector store creation.
+    """
     json_path = Path(config.output) / "docs" / "json"
     markdown_path = Path(config.output) / "docs" / "markdown"
     data_path = Path(config.output) / "docs" / "data"
