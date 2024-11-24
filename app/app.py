@@ -28,6 +28,7 @@ with st.sidebar:
         st.subheader('Model')
         options = [
             LLMModels.TINYLLAMA_1p1B_CHAT_GGUF.value,
+            LLMModels.GOOGLE_GEMMA_2B_INSTRUCT_GGUF.value,
             LLMModels.LLAMA2_7B_CHAT_GPTQ.value,
             LLMModels.LLAMA2_13B_CHAT_GPTQ.value,
             LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ.value,
@@ -38,7 +39,8 @@ with st.sidebar:
             LLMModels.CODELLAMA_13B_INSTRUCT_HF.value,
             LLMModels.GOOGLE_GEMMA_2B_INSTRUCT.value,
             LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value,
-            LLMModels.GOOGLE_GEMMA_2B_INSTRUCT_GGUF.value
+            LLMModels.GOOGLE_CODEGEMMA_2B.value,
+            LLMModels.GOOGLE_CODEGEMMA_7B_INSTRUCT.value,
         ]
         llm = st.selectbox('Choose a model', options, key='llm')
         device = st.selectbox('Choose a device', ["cpu", "auto"], key='device')
@@ -65,6 +67,8 @@ with st.sidebar:
             match llm:
                 case LLMModels.TINYLLAMA_1p1B_CHAT_GGUF.value:
                     model = LLMModels.TINYLLAMA_1p1B_CHAT_GGUF
+                case LLMModels.GOOGLE_GEMMA_2B_INSTRUCT_GGUF.value:
+                    model = LLMModels.GOOGLE_GEMMA_2B_INSTRUCT_GGUF
                 case LLMModels.LLAMA2_7B_CHAT_GPTQ.value:
                     model = LLMModels.LLAMA2_7B_CHAT_GPTQ
                 case LLMModels.LLAMA2_13B_CHAT_GPTQ.value:
@@ -83,8 +87,10 @@ with st.sidebar:
                     model = LLMModels.GOOGLE_GEMMA_2B_INSTRUCT
                 case LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value:
                     model = LLMModels.GOOGLE_GEMMA_7B_INSTRUCT
-                case LLMModels.GOOGLE_GEMMA_2B_INSTRUCT_GGUF.value:
-                    model = LLMModels.GOOGLE_GEMMA_2B_INSTRUCT_GGUF
+                case LLMModels.GOOGLE_CODEGEMMA_2B.value:
+                    model = LLMModels.GOOGLE_CODEGEMMA_2B
+                case LLMModels.GOOGLE_CODEGEMMA_7B_INSTRUCT.value:
+                    model = LLMModels.GOOGLE_CODEGEMMA_7B_INSTRUCT
                 case _:
                     model = LLMModels.LLAMA2_7B_CHAT_HF
         
