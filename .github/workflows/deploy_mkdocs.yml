@@ -31,5 +31,4 @@ jobs:
     
     # Build the MkDocs site
     - name: Build and Publish MkDocs site
-      uses: actions/deploy-pages@v2
       run: mkdocs gh-deploy
