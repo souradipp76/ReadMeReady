@@ -1,2 +1,5 @@
-site_name: ReadMeReady
+site_name: ReadmeReady
 theme: readthedocs
+plugins:
+  - search
+  - mkdocstrings

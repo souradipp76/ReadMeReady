@@ -9,8 +9,9 @@ questionary
 accelerate
 bitsandbytes
 optimum
-auto-gptq; sys_platform == 'linux'
+auto-gptq; sys_platform != 'darwin'
 python-magic
+mkdocstrings-python
 sentencepiece
 sentence_transformers
 pymarkdownlnt

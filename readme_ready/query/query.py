@@ -128,9 +128,11 @@ def generate_readme(
             )
             try:
                 response = chain.invoke({"input": question})
-                print("\n\nMarkdown:\n")
-                print(markdown(response["answer"]))
+                # print("\n\nMarkdown:\n")
+                # print(markdown(response["answer"]))
                 file.write(markdown(response["answer"]))
             except RuntimeError as error:
                 print(f"Something went wrong: {error}")
                 traceback.print_exc()
+
+    print(f"README generated at {readme_path}")

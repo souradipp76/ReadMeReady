@@ -10,6 +10,13 @@ Auto-generate code documentation in Markdown format in seconds.
 Automated documentation of programming source code is a challenging task with significant practical and scientific implications for the developer community. ReadmeReady is a large language model (LLM)-based application that developers can use as a support tool to generate basic documentation for any publicly available or custom repository. Over the last decade, several research have been done on generating documentation for source code using neural network architectures. With the recent advancements in LLM technology, some open-source applications have been developed to address this problem. However, these applications typically rely on the OpenAI APIs, which incur substantial financial costs, particularly for large repositories. Moreover, none of these open-source applications offer a fine-tuned model or features to enable users to fine-tune custom LLMs. Additionally, finding suitable data for fine-tuning is often challenging. Our application addresses these issues.
 
 ## Installation
+
+ReadmeReady is available only on Linux/Windows.
+
+### Dependencies
+
+Please follow the installation guide [here](https://pypi.org/project/python-magic/) to install `python-magic`.
+
 ### Install it from PyPI
 
 The simplest way to install ReadmeReady and its dependencies is from PyPI with pip, Python's preferred package installer.

@@ -47,7 +47,7 @@ def test_llm_models():
     )
     assert LLMModels.GOOGLE_GEMMA_2B_INSTRUCT == "google/gemma-2b-it"
     assert LLMModels.GOOGLE_GEMMA_7B_INSTRUCT == "google/gemma-7b-it"
-    assert LLMModels.GOOGLE_CODEGEMMA_2B_INSTRUCT == "google/codegemma-2b-it"
+    assert LLMModels.GOOGLE_CODEGEMMA_2B == "google/codegemma-2b"
     assert LLMModels.GOOGLE_CODEGEMMA_7B_INSTRUCT == "google/codegemma-7b-it"
     assert (
         LLMModels.GOOGLE_GEMMA_2B_INSTRUCT_GGUF
