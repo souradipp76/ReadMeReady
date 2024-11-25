@@ -80,10 +80,10 @@ from readme_ready.types import (
 model = LLMModels.LLAMA2_7B_CHAT_GPTQ # Choose model from supported models
 
 repo_config = AutodocRepoConfig (
-    name = "<NAME>", # Replace <NAME>
-    root = "<PROJECT_ROOT>", # Replace <PROJECT_ROOT>
-    repository_url = "<PROJECT_URL>", # Replace <PROJECT_URL>
-    output = "<OUTPUT_DIR>", # Replace <OUTPUT_DIR>
+    name = "<REPOSITORY_NAME>", # Replace <REPOSITORY_NAME>
+    root = "<REPOSITORY_ROOT_DIR_PATH>", # Replace <REPOSITORY_ROOT_DIR_PATH>
+    repository_url = "<REPOSITORY_URL>", # Replace <REPOSITORY_URL>
+    output = "<OUTPUT_DIR_PATH>", # Replace <OUTPUT_DIR_PATH>
     llms = [model],
     peft_model_path = "<PEFT_MODEL_NAME_OR_PATH>", # Replace <PEFT_MODEL_NAME_OR_PATH>
     ignore = [
@@ -116,6 +116,7 @@ user_config = AutodocUserConfig(
 )
 
 readme_config = AutodocReadmeConfig(
+    # Set comma separated list of README headings
     headings = "Description,Requirements,Installation,Usage,Contributing,License"
 )
 
@@ -125,12 +126,30 @@ query.generate_readme(repo_config, user_config, readme_config)
 
 Run the sample script in the `examples/example.py` to see a typical code usage.
 
+See detailed API references [here](https://souradipp76.github.io/ReadMeReady/reference/).
+
 ### Finetuning
 
 For finetuning on custom datasets, follow the instructions below.
 
 - Run the notebook file `scripts/data.ipynb` and follow the instructions in the file to generate custom dataset from open-source repositories.
 - Run the notebook file `scripts/fine-tuning-with-llama2-qlora.ipynb` and follow the instructions in the file to finetune custom LLMs.
+
+### Supported models
+- TINYLLAMA_1p1B_CHAT_GGUF (`TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF`)
+- GOOGLE_GEMMA_2B_INSTRUCT_GGUF (`bartowski/gemma-2-2b-it-GGUF`)
+- LLAMA2_7B_CHAT_GPTQ (`TheBloke/Llama-2-7B-Chat-GPTQ`)
+- LLAMA2_13B_CHAT_GPTQ (`TheBloke/Llama-2-13B-Chat-GPTQ`)
+- CODELLAMA_7B_INSTRUCT_GPTQ (`TheBloke/CodeLlama-7B-Instruct-GPTQ`)
+- CODELLAMA_13B_INSTRUCT_GPTQ (`TheBloke/CodeLlama-13B-Instruct-GPTQ`)
+- LLAMA2_7B_CHAT_HF (`meta-llama/Llama-2-7b-chat-hf`)
+- LLAMA2_13B_CHAT_HF (`meta-llama/Llama-2-13b-chat-hf`)
+- CODELLAMA_7B_INSTRUCT_HF (`meta-llama/CodeLlama-7b-Instruct-hf`)
+- CODELLAMA_13B_INSTRUCT_HF (`meta-llama/CodeLlama-13b-Instruct-hf`)
+- GOOGLE_GEMMA_2B_INSTRUCT (`google/gemma-2b-it`)
+- GOOGLE_GEMMA_7B_INSTRUCT (`google/gemma-7b-it`)
+- GOOGLE_CODEGEMMA_2B (`google/codegemma-2b`)
+- GOOGLE_CODEGEMMA_7B_INSTRUCT (`google/codegemma-7b-it`)
 
 ## Contributing
 
