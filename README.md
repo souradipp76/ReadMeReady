@@ -124,7 +124,7 @@ index.index(repo_config)
 query.generate_readme(repo_config, user_config, readme_config)
 ```
 
-Run the sample script in the `examples/example.py` to see a typical code usage. See example on Google Colab: <a src="https://colab.research.google.com/assets/colab-badge.svg" href="https://colab.research.google.com/github.com/souradipp76/ReadMeReady/blob/main/examples/example.ipynb" target="_blank" rel="noopener noreferrer"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"></a>
+Run the sample script in the `examples/example.py` to see a typical code usage. See example on Google Colab: <a src="https://colab.research.google.com/assets/colab-badge.svg" href="https://colab.research.google.com/github/souradipp76/ReadMeReady/blob/main/examples/example.ipynb" target="_blank" rel="noopener noreferrer"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"></a>
 
 See detailed API references [here](https://souradipp76.github.io/ReadMeReady/reference/).
 
