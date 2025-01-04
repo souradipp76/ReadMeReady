@@ -1,5 +1,5 @@
 """
-Types
+Utility Classes for REAMDE generation
 """
 
 from enum import Enum
@@ -9,7 +9,44 @@ from langchain_core.language_models.chat_models import BaseChatModel
 
 
 class LLMModels(str, Enum):
-    """LLM Models"""
+    """
+    Supported Large Language Models (LLMs) for README generation task.
+
+    Members:
+        - GPT3 (str): OpenAI GPT-3.5-turbo model.
+        - GPT4 (str): OpenAI GPT-4 model.
+        - GPT432k (str): OpenAI GPT-4-32k model with extended context window.
+        - TINYLLAMA_1p1B_CHAT_GGUF (str): TinyLlama 1.1B Chat model from
+            TheBloke with GGUF format.
+        - GOOGLE_GEMMA_2B_INSTRUCT_GGUF (str): Gemma 2B Instruction model
+            in GGUF format by bartowski.
+        - LLAMA2_7B_CHAT_GPTQ (str): LLaMA 2 7B Chat model using GPTQ
+            from TheBloke.
+        - LLAMA2_13B_CHAT_GPTQ (str): LLaMA 2 13B Chat model using GPTQ
+            from TheBloke.
+        - CODELLAMA_7B_INSTRUCT_GPTQ (str): CodeLlama 7B Instruction model
+            using GPTQ from TheBloke.
+        - CODELLAMA_13B_INSTRUCT_GPTQ (str): CodeLlama 13B Instruction model
+            using GPTQ from TheBloke.
+        - LLAMA2_7B_CHAT_HF (str): LLaMA 2 7B Chat model hosted on
+            Hugging Face.
+        - LLAMA2_13B_CHAT_HF (str): LLaMA 2 13B Chat model hosted on
+            Hugging Face.
+        - CODELLAMA_7B_INSTRUCT_HF (str): CodeLlama 7B Instruction model
+            hosted on Hugging Face.
+        - CODELLAMA_13B_INSTRUCT_HF (str): CodeLlama 13B Instruction model
+            hosted on Hugging Face.
+        - GOOGLE_GEMMA_2B_INSTRUCT (str): Gemma 2B Instruction model by Google.
+        - GOOGLE_GEMMA_7B_INSTRUCT (str): Gemma 7B Instruction model by Google.
+        - GOOGLE_CODEGEMMA_2B (str): CodeGemma 2B model by Google for
+            code-related tasks.
+        - GOOGLE_CODEGEMMA_7B_INSTRUCT (str): CodeGemma 7B Instruction
+            model by Google.
+
+    Typical usage example:
+
+        model = LLMModels.LLAMA2_7B_CHAT_GPTQ
+    """
 
     GPT3 = "gpt-3.5-turbo"
     GPT4 = "gpt-4"
@@ -38,14 +75,44 @@ class Priority(str, Enum):
 
 
 class AutodocReadmeConfig:
-    """AutodocReadmeConfig"""
+    """
+    Configuration class for managing README-specific settings in
+    the README generation process.
+
+    Attributes:
+        headings (str): A comma separated list of headings to
+            include in the README. The input string is split by commas
+            and stripped of extra whitespace.
+
+    Typical usage example:
+
+        readme_config = AutodocReadmeConfig(
+            headings = "Description,Requirements"
+        )
+    """
 
     def __init__(self, headings: str):
         self.headings = [heading.strip() for heading in headings.split(",")]
 
 
 class AutodocUserConfig:
-    """AutodocUserConfig"""
+    """
+    Configuration class for managing user-specific settings in the
+    README generation process.
+
+    Attributes:
+        llms (List[LLMModels]): A list of language models available for
+            the user to utilize.
+        streaming (bool): Whether to enable streaming during the
+            documentation process. Defaults to False.
+
+    Typical usage example:
+
+        model = LLMModels.LLAMA2_7B_CHAT_GPTQ
+        user_config = AutodocUserConfig(
+            llms = [model]
+        )
+    """
 
     def __init__(self, llms: List[LLMModels], streaming: bool = False):
         self.llms = llms
@@ -53,7 +120,71 @@ class AutodocUserConfig:
 
 
 class AutodocRepoConfig:
-    """AutodocRepoConfig"""
+    """
+    Configuration class for managing the README generation process of
+    a repository.
+
+    Attributes:
+        name (str): The name of the repository.
+        repository_url (str): The URL of the repository to be documented.
+        root (str): The root directory of the repository.
+        output (str): The directory where the generated README will be stored.
+        llms (List[LLMModels]): A list of language models to be used
+            in the documentation process.
+        priority (Priority): The priority level for processing tasks.
+        max_concurrent_calls (int): The maximum number of concurrent calls
+            allowed during processing.
+        add_questions (bool): Whether to include generated questions in the
+            documentation.
+        ignore (List[str]): A list of files or directories patterns to be
+            excluded from documentation.
+        file_prompt (str): The template or prompt to process individual files.
+        folder_prompt (str): The template or prompt to process folders.
+        chat_prompt (str): The template or prompt for chatbot interactions.
+        content_type (str): The type of content being documented
+            (e.g., code, docs).
+        target_audience (str): The intended audience for the documentation.
+        link_hosted (bool): Whether to generate hosted links in the
+            documentation.
+        peft_model_path (str | None): Path to a PEFT
+            (Parameter-Efficient Fine-Tuning) model, if applicable.
+        device (str | None): The device to be used for processing
+            (e.g., "cpu", "auto").
+
+    Typical usage example:
+
+        repo_config = AutodocRepoConfig (
+            name = "<REPOSITORY_NAME>",
+            root = "<REPOSITORY_ROOT_DIR_PATH>",
+            repository_url = "<REPOSITORY_URL>",
+            output = "<OUTPUT_DIR_PATH>",
+            llms = [model],
+            peft_model_path = "<PEFT_MODEL_NAME_OR_PATH>",
+            ignore = [
+                ".*",
+                "*package-lock.json",
+                "*package.json",
+                "node_modules",
+                "*dist*",
+                "*build*",
+                "*test*",
+                "*.svg",
+                "*.md",
+                "*.mdx",
+                "*.toml"
+            ],
+            file_prompt = "",
+            folder_prompt = "",
+            chat_prompt = "",
+            content_type = "docs",
+            target_audience = "smart developer",
+            link_hosted = True,
+            priority = None,
+            max_concurrent_calls = 50,
+            add_questions = False,
+            device = "auto",
+        )
+    """
 
     def __init__(
         self,

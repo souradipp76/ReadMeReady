@@ -49,3 +49,15 @@
       show_root_heading: true
       show_source: false
       separate_signature: true
+
+- ::: readme_ready.types
+    handler: python
+    options:
+      members:
+        - AutodocReadmeConfig
+        - AutodocRepoConfig
+        - AutodocUserConfig
+        - LLMModels
+      show_root_heading: true
+      show_source: false
+      separate_signature: true
