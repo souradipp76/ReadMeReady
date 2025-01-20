@@ -135,6 +135,15 @@ For finetuning on custom datasets, follow the instructions below.
 - Run the notebook file `scripts/data.ipynb` and follow the instructions in the file to generate custom dataset from open-source repositories.
 - Run the notebook file `scripts/fine-tuning-with-llama2-qlora.ipynb` and follow the instructions in the file to finetune custom LLMs.
 
+### Validation
+
+Run the script `scripts/run_validate.sh` to generate BLEU and BERT scores for 5 sample repositories comparing the actual README file with the generated ones.
+
+```bash
+$ chmod +x scripts/run_validate.sh
+$ scripts/run_validate.sh
+```
+
 ### Supported models
 - TINYLLAMA_1p1B_CHAT_GGUF (`TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF`)
 - GOOGLE_GEMMA_2B_INSTRUCT_GGUF (`bartowski/gemma-2-2b-it-GGUF`)
