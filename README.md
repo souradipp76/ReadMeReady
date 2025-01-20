@@ -137,7 +137,7 @@ For finetuning on custom datasets, follow the instructions below.
 
 ### Validation
 
-Run the script `scripts/run_validate.sh` to generate BLEU and BERT scores for 5 sample repositories comparing the actual README file with the generated ones.
+Run the script `scripts/run_validate.sh` to generate BLEU and BERT scores for 5 sample repositories comparing the actual README file with the generated ones. Note that to reproduce the scores, a GPU with 16GB or more is required.
 
 ```bash
 $ chmod +x scripts/run_validate.sh
