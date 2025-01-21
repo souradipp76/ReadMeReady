@@ -17,7 +17,7 @@ from readme_ready.types import (
 )
 
 # Choose model from supported models
-model = LLMModels.TINYLLAMA_1p1B_CHAT_GGUF
+model = LLMModels.LLAMA2_7B_CHAT_GPTQ
 
 # Clone repository to a local path
 def git_clone(repo_url, clone_path):
@@ -177,7 +177,7 @@ def get_score(url, readme_df, readme_content, generated_readme_df, generated_rea
     scores['R'] = R.mean().item()
     scores['F1'] = F1.mean().item()
 
-    tokenizer = AutoTokenizer.from_pretrained("TheBloke/Llama-2-7b-Chat-GPTQ")
+    tokenizer = AutoTokenizer.from_pretrained(model.value)
     tokenizer.pad_token = tokenizer.eos_token
 
     def calculate_bleu(reference, candidate):
@@ -212,12 +212,12 @@ def main():
         headings = ",".join(readme_df["Title"].tolist())
         
         generate_readme(name, url, repo_root, output, headings)
-        generated_readme_df, generated_readme_content = parse_markdown(f"{output}/docs/data/README_LLAMA2_7B_CHAT_GPTQ.md")
+        generated_readme_df, generated_readme_content = parse_markdown(f"{output}/docs/data/README_{model.name}.md")
 
         score = get_score(url, readme_df, readme_content, generated_readme_df, generated_readme_content)
         scores.append(score)
         scores_df = pd.DataFrame(scores, index=None)
-        scores_df.to_csv("./scores.csv", index=False)
+        scores_df.to_csv(f"./scores_{model.name}.csv", index=False)
         subprocess.run(['rm', '-rf', repo_root], check=True)
 
 if __name__ == "__main__":
