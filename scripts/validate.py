@@ -17,7 +17,7 @@ from readme_ready.types import (
 )
 
 # Choose model from supported models
-model = LLMModels.LLAMA2_7B_CHAT_GPTQ
+model = LLMModels.TINYLLAMA_1p1B_CHAT_GGUF
 
 # Clone repository to a local path
 def git_clone(repo_url, clone_path):
@@ -209,7 +209,7 @@ def main():
         git_clone(repo, f"./{name}")
         
         readme_df, readme_content = parse_markdown(f"{repo_root}/README.md")
-        headings = ",".join(readme_df["Title"].tolist()[:2])
+        headings = ",".join(readme_df["Title"].tolist())
         
         generate_readme(name, url, repo_root, output, headings)
         generated_readme_df, generated_readme_content = parse_markdown(f"{output}/docs/data/README_LLAMA2_7B_CHAT_GPTQ.md")
