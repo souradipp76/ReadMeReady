@@ -216,9 +216,11 @@ def main():
 
         score = get_score(url, readme_df, readme_content, generated_readme_df, generated_readme_content)
         scores.append(score)
-        scores_df = pd.DataFrame(scores, index=None)
-        scores_df.to_csv(f"./scores_{model.name}.csv", index=False)
         subprocess.run(['rm', '-rf', repo_root], check=True)
+
+    scores_df = pd.DataFrame(scores, index=None)
+    scores_df.to_csv(f"./scores_{model.name}.csv", index=False)
+    print(f"Result saved to ./scores_{model.name}.csv")
 
 if __name__ == "__main__":
     main()
