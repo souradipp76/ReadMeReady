@@ -144,6 +144,8 @@ $ chmod +x scripts/run_validate.sh
 $ scripts/run_validate.sh
 ```
 
+Alternatively, run the notebook `scripts/validate.ipynb` on Google Colab: <a src="https://colab.research.google.com/assets/colab-badge.svg" href="https://colab.research.google.com/github/souradipp76/ReadMeReady/blob/main/scripts/validate.ipynb" target="_blank" rel="noopener noreferrer"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"></a>
+
 ### Supported models
 - TINYLLAMA_1p1B_CHAT_GGUF (`TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF`)
 - GOOGLE_GEMMA_2B_INSTRUCT_GGUF (`bartowski/gemma-2-2b-it-GGUF`)
