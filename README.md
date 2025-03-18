@@ -135,6 +135,29 @@ For finetuning on custom datasets, follow the instructions below.
 - Run the notebook file `scripts/data.ipynb` and follow the instructions in the file to generate custom dataset from open-source repositories.
 - Run the notebook file `scripts/fine-tuning-with-llama2-qlora.ipynb` and follow the instructions in the file to finetune custom LLMs.
 
+The results are reported in Table 1 and Table 2, under the "With FT" or "With Finetuning" columns where the contents are compared with each repository's original README file. It is observed that BLEU scores range from 15 to 30, averaging 20, indicating that the generated text is understandable but requires substantial editing to be acceptable. Conversely, BERT scores reveal a high semantic similarity to the original README content, with an average F1 score of ~85%.
+
+### Table 1: BLEU Scores
+
+| Repository | W/O FT | With FT |
+|------------|--------|---------|
+| allennlp   | 32.09  | 16.38   |
+| autojump   | 25.29  | 18.73   |
+| numpy-ml   | 16.61  | 19.02   |
+| Spleeter   | 18.33  | 19.47   |
+| TouchPose  | 17.04  | 8.05    |
+
+### Table 2: BERT Scores
+
+| Repository | P (W/O FT) | R (W/O FT) | F1 (W/O FT) | P (With FT) | R (With FT) | F1 (With FT) |
+|------------|------------|------------|-------------|-------------|-------------|--------------|
+| allennlp   | 0.904      | 0.8861     | 0.895       | 0.862       | 0.869       | 0.865        |
+| autojump   | 0.907      | 0.86       | 0.883       | 0.846       | 0.87        | 0.858        |
+| numpy-ml   | 0.89       | 0.881      | 0.885       | 0.854       | 0.846       | 0.85         |
+| Spleeter   | 0.86       | 0.845      | 0.852       | 0.865       | 0.866       | 0.865        |
+| TouchPose  | 0.87       | 0.841      | 0.856       | 0.831       | 0.809       | 0.82         |
+
+
 ### Validation
 
 Run the script `scripts/run_validate.sh` to generate BLEU and BERT scores for 5 sample repositories comparing the actual README file with the generated ones. Note that to reproduce the scores, a GPU with 16GB or more is required.
