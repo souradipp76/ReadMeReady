@@ -84,33 +84,13 @@ We conducted the fine-tuning experiment on a small dataset consisting of randoml
 
 ## Before Fine-tuning
 
-We conducted a series of experiments utilizing the `TheBloke/Llama-2-7B-Chat-GPTQ` model [@llama-2-7b-chat-gptq] to demonstrate the functionality and efficacy of our proposed pipeline. The accompanying codebase is designed to be flexible, allowing the user to easily switch between different large language models (LLMs) by simply modifying the configuration file. Given the characteristics of LLMs, models with a greater number of parameters are generally expected to deliver enhanced performance. The BLEU and BERT scores for the `TheBloke/Llama-2-7B-Chat-GPTQ` model are reported in Table 1 and Table 2, under the "W/O FT" or "W/O Finetuning" columns.
+We conducted a series of experiments utilizing the `TheBloke/Llama-2-7B-Chat-GPTQ` model [@llama-2-7b-chat-gptq] to demonstrate the functionality and efficacy of our proposed pipeline. The accompanying codebase is designed to be flexible, allowing the user to easily switch between different large language models (LLMs) by simply modifying the configuration file. Given the characteristics of LLMs, models with a greater number of parameters are generally expected to deliver enhanced performance.
 
 ## After Fine-tuning
 
-We utilized the PEFT library from Hugging Face, which supports several Parameter Efficient Fine-Tuning (PEFT) methods. This approach is cost-effective for fine-tuning large language models (LLMs), particularly on lightweight hardware. The training configuration and hyperparameters are detailed in Table 3 and Table 4 respectively. The results are reported in Table 1 and Table 2, under the "With FT" or "With Finetuning" columns where the contents are compared with each repository's original README file. It is observed that BLEU scores range from 15 to 30, averaging 20, indicating that the generated text is understandable but requires substantial editing to be acceptable. Conversely, BERT scores reveal a high semantic similarity to the original README content, with an average F1 score of ~85%.
+We utilized the PEFT library from Hugging Face, which supports several Parameter Efficient Fine-Tuning (PEFT) methods. This approach is cost-effective for fine-tuning large language models (LLMs), particularly on lightweight hardware. The training configuration and hyperparameters are detailed in Table 1 and Table 2 respectively.
 
-### Table 1: BLEU Scores
-
-| Repository | W/O FT | With FT |
-|------------|--------|---------|
-| allennlp   | 32.09  | 16.38   |
-| autojump   | 25.29  | 18.73   |
-| numpy-ml   | 16.61  | 19.02   |
-| Spleeter   | 18.33  | 19.47   |
-| TouchPose  | 17.04  | 8.05    |
-
-### Table 2: BERT Scores
-
-| Repository | P (W/O FT) | R (W/O FT) | F1 (W/O FT) | P (With FT) | R (With FT) | F1 (With FT) |
-|------------|------------|------------|-------------|-------------|-------------|--------------|
-| allennlp   | 0.904      | 0.8861     | 0.895       | 0.862       | 0.869       | 0.865        |
-| autojump   | 0.907      | 0.86       | 0.883       | 0.846       | 0.87        | 0.858        |
-| numpy-ml   | 0.89       | 0.881      | 0.885       | 0.854       | 0.846       | 0.85         |
-| Spleeter   | 0.86       | 0.845      | 0.852       | 0.865       | 0.866       | 0.865        |
-| TouchPose  | 0.87       | 0.841      | 0.856       | 0.831       | 0.809       | 0.82         |
-
-### Table 3: QLoRA Configuration
+### Table 1: QLoRA Configuration
 
 | Parameter     | Value |
 |---------------|-------|
@@ -120,7 +100,7 @@ We utilized the PEFT library from Hugging Face, which supports several Parameter
 | `bias`        | None  |
 | `task_type`   | CAUSAL_LM |
 
-### Table 4: Training Hyper-parameters
+### Table 2: Training Hyper-parameters
 
 | Parameter                         | Value    |
 |-----------------------------------|----------|
