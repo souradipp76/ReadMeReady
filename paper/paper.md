@@ -28,11 +28,11 @@ Automated documentation of programming source code is a challenging task with si
 
 # Statement of Need
 
-The integration of natural and programming languages is a research area that addresses tasks such as automatic documentation of source code, code generation from natural language descriptions, and searching for code using natural language queries. These tasks are highly practical, as they can significantly enhance programmer efficiency, and they are scientifically intriguing due to their complexity and the proposed relationships between natural language, computation, and reasoning([@chomsky1956three], [@miller2003cognitive], [@graves2014neural]).
+The integration of natural and programming languages is a research area that addresses tasks such as automatic documentation of source code, code generation from natural language descriptions, and searching for code using natural language queries. These tasks are highly practical, as they can significantly enhance programmer efficiency, and they are scientifically intriguing due to their complexity and the proposed relationships between natural language, computation, and reasoning [@chomsky1956three;@miller2003cognitive;@graves2014neural].
 
 # State of the Field
 
-Recently, large language models (LLMs) have become increasingly significant, demonstrating human-like abilities across various fields [@radford2019language], [@brown2020language], [@ouyang2022training]. LLMs typically employ transformer architecture variants and are trained on massive data volumes to detect patterns [@vaswani2017attention].
+Recently, large language models (LLMs) have become increasingly significant, demonstrating human-like abilities across various fields [@radford2019language;@brown2020language;@ouyang2022training]. LLMs typically employ transformer architecture variants and are trained on massive data volumes to detect patterns [@vaswani2017attention].
 
 We present an LLM-based application that developers can use as a support tool to generate basic documentation for any code repository. Some open-source applications have been developed to address this issue, to name a few:
 
@@ -42,7 +42,7 @@ We present an LLM-based application that developers can use as a support tool to
 
 However, these applications suffer from two major issues. Firstly, all of them are built on top of the OpenAI APIs, requiring users to have an OpenAI API key and incurring a cost with each API request. Generating documentation for a large repository could result in costs reaching hundreds of dollars. Our application allows users to choose among OpenAI's GPT, Meta's Llama2, and Google's Gemma models. Notably, apart from the first, the other models are open-source and incur no charges, allowing documentation to be generated for free.
 
-Secondly, none of the existing open-source applications provide a fine-tuned model or an option for users to fine-tune. Our application offers a fine-tuning option using QLoRA[@dettmers2023qlora], which can be trained on the user's own dataset. It is important to note that using this feature requires access to powerful GPU clusters. Some existing applications provide a command-line tool for interacting with the entire repository, allowing users to ask specific questions about the repository but not generating a README file.
+Secondly, none of the existing open-source applications provide a fine-tuned model or an option for users to fine-tune. Our application offers a fine-tuning option using QLoRA [@dettmers2023qlora], which can be trained on the user's own dataset. It is important to note that using this feature requires access to powerful GPU clusters. Some existing applications provide a command-line tool for interacting with the entire repository, allowing users to ask specific questions about the repository but not generating a README file.
 
 # Methodology
 
@@ -60,9 +60,10 @@ The application prompts the user to enter the project's name, GitHub URL, and se
 
 For our experimentation and tests, we used 1 × NVIDIA Tesla V100 with 16GB of GPU memory which is ideal for running the application.
 
-**Document Retrieval:** Our application indexes the codebase through a depth-first traversal of all repository contents and utilizes an LLM to generate documentation. All files are converted into text, tokenized, and then chunked, with each chunk containing 1000 tokens. The application employs the `sentence-transformers/all-mpnet-base-v2` [@sentence-transformers-all-mpnet-base-v2] sentence encoder to convert each chunk into a 768-dimensional embedding vector, which is stored in an in-memory vector store. When a query is provided, it is converted into a similar vector using the same sentence encoder. The neighbor nearest to the query embedding vector is searched using KNN (k=4) from the vector store, utilizing cosine similarity as the distance metric. For the KNN search, we use the HNSWLib library, which implements an approximate nearest-neighbor search based on hierarchical navigable small-world graphs [@malkov2018efficient]. This methodology provides the relevant sections of the source code, aiding in answering the prompted question. The entire methodology for Retrieval Augmented Generation (RAG) and fine-tuning is illustrated in the figure below.
+**Document Retrieval:** Our application indexes the codebase through a depth-first traversal of all repository contents and utilizes an LLM to generate documentation. All files are converted into text, tokenized, and then chunked, with each chunk containing 1000 tokens. The application employs the `sentence-transformers/all-mpnet-base-v2` [@sentence-transformers-all-mpnet-base-v2] sentence encoder to convert each chunk into a 768-dimensional embedding vector, which is stored in an in-memory vector store. When a query is provided, it is converted into a similar vector using the same sentence encoder. The neighbor nearest to the query embedding vector is searched using KNN (k=4) from the vector store, utilizing cosine similarity as the distance metric. For the KNN search, we use the HNSWLib library, which implements an approximate nearest-neighbor search based on hierarchical navigable small-world graphs [@malkov2018efficient]. This methodology provides the relevant sections of the source code, aiding in answering the prompted question. The entire methodology for Retrieval Augmented Generation (RAG) and fine-tuning is illustrated in \autoref{fig:rag_workflow}.
 
-<img src="figures/rag_workflow.jpg" alt="rag_workflow">
+![Input to Output Workflow showing the Retrieval and Generator modules. The retrieval module uses HNSW
+algorithm to create a context for the prompt to the Language model for text generation.\label{fig:rag_workflow}](figures/rag_workflow.jpg){width=80%}
 
 **Prompt Configuration:** Prompt engineering is accomplished using the Langchain API. For our purpose, a prompt template has been used. This template includes placeholders for questions, which users can edit and modify as needed. This flexibility allows the README to be generated according to the user's specific requirements. Our default README structure includes sections on description, requirements, installation, usage, contributing methods, and licensing, which align with standard documentation practices. The temperature for text generation is kept at the default value of 0.2. The current prompts are developer-focused and assume that the repository is code-centric.
 
@@ -78,7 +79,7 @@ The entire source code from the repositories is concatenated into a single strin
 
 **Data Preprocessing:** Following the creation of the CSV file, we pre-process the data using regex patterns to clean the text. Since the context only captures source code, this eliminates the possibility of using offensive content. Regex is used to remove hashtags, email addresses, usernames, image URLs, and other personally identifiable information. Note that only repositories written entirely in English are used, with other languages filtered out. Prompt engineering in our source code ensures that the prompts are designed to avoid generating any personally identifiable data or offensive content.
 
-# Experiments and Results
+# Experiments
 
 We conducted the fine-tuning experiment on a small dataset consisting of randomly selected 190 README files, which may not address our default documentation questions. For each README, we examine its sections and subsections, frame relevant questions, and use the answers generated by our tool for training. For evaluation, we selected the rest of the 10 repositories and compared the original answers with the autogenerated documentation using BLEU and BERT scores to assess our model's performance.
 
