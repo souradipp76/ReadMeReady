@@ -2,6 +2,7 @@
 
 [![codecov](https://codecov.io/gh/souradipp76/ReadMeReady/branch/main/graph/badge.svg?token=49620380-3fe7-4eb1-8dbb-3457febc6f78)](https://codecov.io/gh/souradipp76/ReadMeReady)
 [![CI](https://github.com/souradipp76/ReadMeReady/actions/workflows/main.yml/badge.svg)](https://github.com/souradipp76/ReadMeReady/actions/workflows/main.yml)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.07489/status.svg)](https://doi.org/10.21105/joss.07489)
 
 Auto-generate code documentation in Markdown format in seconds.
 
