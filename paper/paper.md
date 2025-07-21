@@ -28,11 +28,11 @@ Automated documentation of programming source code is a challenging task with si
 
 # Statement of Need
 
-The integration of natural and programming languages is a research area that addresses tasks such as automatic documentation of source code, code generation from natural language descriptions, and searching for code using natural language queries. These tasks are highly practical, as they can significantly enhance programmer efficiency, and they are scientifically intriguing due to their complexity and the proposed relationships between natural language, computation, and reasoning([@chomsky1956three], [@miller2003cognitive], [@graves2014neural]).
+The integration of natural and programming languages is a research area that addresses tasks such as automatic documentation of source code, code generation from natural language descriptions, and searching for code using natural language queries. These tasks are highly practical, as they can significantly enhance programmer efficiency, and they are scientifically intriguing due to their complexity and the proposed relationships between natural language, computation, and reasoning [@chomsky1956three;@miller2003cognitive;@graves2014neural].
 
 # State of the Field
 
-Recently, large language models (LLMs) have become increasingly significant, demonstrating human-like abilities across various fields [@radford2019language], [@brown2020language], [@ouyang2022training]. LLMs typically employ transformer architecture variants and are trained on massive data volumes to detect patterns [@vaswani2017attention].
+Recently, large language models (LLMs) have become increasingly significant, demonstrating human-like abilities across various fields [@radford2019language;@brown2020language;@ouyang2022training]. LLMs typically employ transformer architecture variants and are trained on massive data volumes to detect patterns [@vaswani2017attention].
 
 We present an LLM-based application that developers can use as a support tool to generate basic documentation for any code repository. Some open-source applications have been developed to address this issue, to name a few:
 
@@ -42,7 +42,7 @@ We present an LLM-based application that developers can use as a support tool to
 
 However, these applications suffer from two major issues. Firstly, all of them are built on top of the OpenAI APIs, requiring users to have an OpenAI API key and incurring a cost with each API request. Generating documentation for a large repository could result in costs reaching hundreds of dollars. Our application allows users to choose among OpenAI's GPT, Meta's Llama2, and Google's Gemma models. Notably, apart from the first, the other models are open-source and incur no charges, allowing documentation to be generated for free.
 
-Secondly, none of the existing open-source applications provide a fine-tuned model or an option for users to fine-tune. Our application offers a fine-tuning option using QLoRA[@dettmers2023qlora], which can be trained on the user's own dataset. It is important to note that using this feature requires access to powerful GPU clusters. Some existing applications provide a command-line tool for interacting with the entire repository, allowing users to ask specific questions about the repository but not generating a README file.
+Secondly, none of the existing open-source applications provide a fine-tuned model or an option for users to fine-tune. Our application offers a fine-tuning option using QLoRA [@dettmers2023qlora], which can be trained on the user's own dataset. It is important to note that using this feature requires access to powerful GPU clusters. Some existing applications provide a command-line tool for interacting with the entire repository, allowing users to ask specific questions about the repository but not generating a README file.
 
 # Methodology
 
@@ -60,9 +60,10 @@ The application prompts the user to enter the project's name, GitHub URL, and se
 
 For our experimentation and tests, we used 1 × NVIDIA Tesla V100 with 16GB of GPU memory which is ideal for running the application.
 
-**Document Retrieval:** Our application indexes the codebase through a depth-first traversal of all repository contents and utilizes an LLM to generate documentation. All files are converted into text, tokenized, and then chunked, with each chunk containing 1000 tokens. The application employs the `sentence-transformers/all-mpnet-base-v2` [@sentence-transformers-all-mpnet-base-v2] sentence encoder to convert each chunk into a 768-dimensional embedding vector, which is stored in an in-memory vector store. When a query is provided, it is converted into a similar vector using the same sentence encoder. The neighbor nearest to the query embedding vector is searched using KNN (k=4) from the vector store, utilizing cosine similarity as the distance metric. For the KNN search, we use the HNSWLib library, which implements an approximate nearest-neighbor search based on hierarchical navigable small-world graphs [@malkov2018efficient]. This methodology provides the relevant sections of the source code, aiding in answering the prompted question. The entire methodology for Retrieval Augmented Generation (RAG) and fine-tuning is illustrated in the figure below.
+**Document Retrieval:** Our application indexes the codebase through a depth-first traversal of all repository contents and utilizes an LLM to generate documentation. All files are converted into text, tokenized, and then chunked, with each chunk containing 1000 tokens. The application employs the `sentence-transformers/all-mpnet-base-v2` [@sentence-transformers-all-mpnet-base-v2] sentence encoder to convert each chunk into a 768-dimensional embedding vector, which is stored in an in-memory vector store. When a query is provided, it is converted into a similar vector using the same sentence encoder. The neighbor nearest to the query embedding vector is searched using KNN (k=4) from the vector store, utilizing cosine similarity as the distance metric. For the KNN search, we use the HNSWLib library, which implements an approximate nearest-neighbor search based on hierarchical navigable small-world graphs [@malkov2018efficient]. This methodology provides the relevant sections of the source code, aiding in answering the prompted question. The entire methodology for Retrieval Augmented Generation (RAG) and fine-tuning is illustrated in \autoref{fig:rag_workflow}.
 
-<img src="figures/rag_workflow.jpg" alt="rag_workflow">
+![Input to Output Workflow showing the Retrieval and Generator modules. The retrieval module uses HNSW
+algorithm to create a context for the prompt to the Language model for text generation.\label{fig:rag_workflow}](figures/rag_workflow.jpg){width=80%}
 
 **Prompt Configuration:** Prompt engineering is accomplished using the Langchain API. For our purpose, a prompt template has been used. This template includes placeholders for questions, which users can edit and modify as needed. This flexibility allows the README to be generated according to the user's specific requirements. Our default README structure includes sections on description, requirements, installation, usage, contributing methods, and licensing, which align with standard documentation practices. The temperature for text generation is kept at the default value of 0.2. The current prompts are developer-focused and assume that the repository is code-centric.
 
@@ -78,39 +79,19 @@ The entire source code from the repositories is concatenated into a single strin
 
 **Data Preprocessing:** Following the creation of the CSV file, we pre-process the data using regex patterns to clean the text. Since the context only captures source code, this eliminates the possibility of using offensive content. Regex is used to remove hashtags, email addresses, usernames, image URLs, and other personally identifiable information. Note that only repositories written entirely in English are used, with other languages filtered out. Prompt engineering in our source code ensures that the prompts are designed to avoid generating any personally identifiable data or offensive content.
 
-# Experiments and Results
+# Experiments
 
 We conducted the fine-tuning experiment on a small dataset consisting of randomly selected 190 README files, which may not address our default documentation questions. For each README, we examine its sections and subsections, frame relevant questions, and use the answers generated by our tool for training. For evaluation, we selected the rest of the 10 repositories and compared the original answers with the autogenerated documentation using BLEU and BERT scores to assess our model's performance.
 
 ## Before Fine-tuning
 
-We conducted a series of experiments utilizing the `TheBloke/Llama-2-7B-Chat-GPTQ` model [@llama-2-7b-chat-gptq] to demonstrate the functionality and efficacy of our proposed pipeline. The accompanying codebase is designed to be flexible, allowing the user to easily switch between different large language models (LLMs) by simply modifying the configuration file. Given the characteristics of LLMs, models with a greater number of parameters are generally expected to deliver enhanced performance. The BLEU and BERT scores for the `TheBloke/Llama-2-7B-Chat-GPTQ` model are reported in Table 1 and Table 2, under the "W/O FT" or "W/O Finetuning" columns.
+We conducted a series of experiments utilizing the `TheBloke/Llama-2-7B-Chat-GPTQ` model [@llama-2-7b-chat-gptq] to demonstrate the functionality and efficacy of our proposed pipeline. The accompanying codebase is designed to be flexible, allowing the user to easily switch between different large language models (LLMs) by simply modifying the configuration file. Given the characteristics of LLMs, models with a greater number of parameters are generally expected to deliver enhanced performance.
 
 ## After Fine-tuning
 
-We utilized the PEFT library from Hugging Face, which supports several Parameter Efficient Fine-Tuning (PEFT) methods. This approach is cost-effective for fine-tuning large language models (LLMs), particularly on lightweight hardware. The training configuration and hyperparameters are detailed in Table 3 and Table 4 respectively. The results are reported in Table 1 and Table 2, under the "With FT" or "With Finetuning" columns where the contents are compared with each repository's original README file. It is observed that BLEU scores range from 15 to 30, averaging 20, indicating that the generated text is understandable but requires substantial editing to be acceptable. Conversely, BERT scores reveal a high semantic similarity to the original README content, with an average F1 score of ~85%.
+We utilized the PEFT library from Hugging Face, which supports several Parameter Efficient Fine-Tuning (PEFT) methods. This approach is cost-effective for fine-tuning large language models (LLMs), particularly on lightweight hardware. The training configuration and hyperparameters are detailed in Table 1 and Table 2 respectively.
 
-### Table 1: BLEU Scores
-
-| Repository | W/O FT | With FT |
-|------------|--------|---------|
-| allennlp   | 32.09  | 16.38   |
-| autojump   | 25.29  | 18.73   |
-| numpy-ml   | 16.61  | 19.02   |
-| Spleeter   | 18.33  | 19.47   |
-| TouchPose  | 17.04  | 8.05    |
-
-### Table 2: BERT Scores
-
-| Repository | P (W/O FT) | R (W/O FT) | F1 (W/O FT) | P (With FT) | R (With FT) | F1 (With FT) |
-|------------|------------|------------|-------------|-------------|-------------|--------------|
-| allennlp   | 0.904      | 0.8861     | 0.895       | 0.862       | 0.869       | 0.865        |
-| autojump   | 0.907      | 0.86       | 0.883       | 0.846       | 0.87        | 0.858        |
-| numpy-ml   | 0.89       | 0.881      | 0.885       | 0.854       | 0.846       | 0.85         |
-| Spleeter   | 0.86       | 0.845      | 0.852       | 0.865       | 0.866       | 0.865        |
-| TouchPose  | 0.87       | 0.841      | 0.856       | 0.831       | 0.809       | 0.82         |
-
-### Table 3: QLoRA Configuration
+### Table 1: QLoRA Configuration
 
 | Parameter     | Value |
 |---------------|-------|
@@ -120,7 +101,7 @@ We utilized the PEFT library from Hugging Face, which supports several Parameter
 | `bias`        | None  |
 | `task_type`   | CAUSAL_LM |
 
-### Table 4: Training Hyper-parameters
+### Table 2: Training Hyper-parameters
 
 | Parameter                         | Value    |
 |-----------------------------------|----------|
