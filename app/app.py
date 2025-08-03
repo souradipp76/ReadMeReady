@@ -1,9 +1,10 @@
 import streamlit as st
 import os
 import shutil
-import git
 from streamlit_ace import st_ace
-from pymarkdown.api import PyMarkdownApi
+import requests
+
+from streamlit.runtime.scriptrunner import get_script_run_ctx
 
 # App title
 st.set_page_config(page_title="Readme Generator", layout="wide",page_icon=":material/graphic_eq:")
@@ -20,28 +21,18 @@ with st.sidebar:
     hf_token = st.text_input('Enter HuggingFace token:', type='password')
     os.environ['HF_TOKEN'] = hf_token
 
-    from readme_ready.query import query
-    from readme_ready.index import index
-    from readme_ready.types import AutodocRepoConfig, AutodocUserConfig, LLMModels
+    ctx = get_script_run_ctx()
+    session_id = None
+    if ctx:
+        session_id = ctx.session_id
+        # You can now use session_id for various purposes, e.g., logging or file naming
+        print(f"Current Streamlit session ID: {session_id}")
+    else:
+        print("Not running within a Streamlit context.")
 
     with st.form("my_form"):
         st.subheader('Model')
-        options = [
-            LLMModels.TINYLLAMA_1p1B_CHAT_GGUF.value,
-            LLMModels.GOOGLE_GEMMA_2B_INSTRUCT_GGUF.value,
-            LLMModels.LLAMA2_7B_CHAT_GPTQ.value,
-            LLMModels.LLAMA2_13B_CHAT_GPTQ.value,
-            LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ.value,
-            LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ.value,
-            LLMModels.LLAMA2_7B_CHAT_HF.value,
-            LLMModels.LLAMA2_13B_CHAT_HF.value,
-            LLMModels.CODELLAMA_7B_INSTRUCT_HF.value,
-            LLMModels.CODELLAMA_13B_INSTRUCT_HF.value,
-            LLMModels.GOOGLE_GEMMA_2B_INSTRUCT.value,
-            LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value,
-            LLMModels.GOOGLE_CODEGEMMA_2B.value,
-            LLMModels.GOOGLE_CODEGEMMA_7B_INSTRUCT.value,
-        ]
+        options = requests.get(url="http://127.0.0.1:8000/models").json()
         llm = st.selectbox('Choose a model', options, key='llm')
         device = st.selectbox('Choose a device', ["cpu", "auto"], key='device')
         st.subheader('Parameters')
@@ -59,115 +50,23 @@ with st.sidebar:
         submitted = st.form_submit_button("Setup")
         if submitted:
             st.toast('Indexing repository...')
-            try:
-                repo = git.Repo.clone_from(project_url, project_root)
-            except:
-                print('Project already exists.')
-
-            match llm:
-                case LLMModels.TINYLLAMA_1p1B_CHAT_GGUF.value:
-                    model = LLMModels.TINYLLAMA_1p1B_CHAT_GGUF
-                case LLMModels.GOOGLE_GEMMA_2B_INSTRUCT_GGUF.value:
-                    model = LLMModels.GOOGLE_GEMMA_2B_INSTRUCT_GGUF
-                case LLMModels.LLAMA2_7B_CHAT_GPTQ.value:
-                    model = LLMModels.LLAMA2_7B_CHAT_GPTQ
-                case LLMModels.LLAMA2_13B_CHAT_GPTQ.value:
-                    model = LLMModels.LLAMA2_13B_CHAT_GPTQ
-                case LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ.value:
-                    model = LLMModels.CODELLAMA_7B_INSTRUCT_GPTQ
-                case LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ.value:
-                    model = LLMModels.CODELLAMA_13B_INSTRUCT_GPTQ
-                case LLMModels.LLAMA2_13B_CHAT_HF.value:
-                    model = LLMModels.LLAMA2_13B_CHAT_HF
-                case LLMModels.CODELLAMA_7B_INSTRUCT_HF.value:
-                    model = LLMModels.CODELLAMA_7B_INSTRUCT_HF
-                case LLMModels.CODELLAMA_13B_INSTRUCT_HF.value:
-                    model = LLMModels.CODELLAMA_13B_INSTRUCT_HF
-                case LLMModels.GOOGLE_GEMMA_2B_INSTRUCT.value:
-                    model = LLMModels.GOOGLE_GEMMA_2B_INSTRUCT
-                case LLMModels.GOOGLE_GEMMA_7B_INSTRUCT.value:
-                    model = LLMModels.GOOGLE_GEMMA_7B_INSTRUCT
-                case LLMModels.GOOGLE_CODEGEMMA_2B.value:
-                    model = LLMModels.GOOGLE_CODEGEMMA_2B
-                case LLMModels.GOOGLE_CODEGEMMA_7B_INSTRUCT.value:
-                    model = LLMModels.GOOGLE_CODEGEMMA_7B_INSTRUCT
-                case _:
-                    model = LLMModels.LLAMA2_7B_CHAT_HF
-        
-            repo_config = {
+            request_body = {
                 "name": name,
-                "root": project_root,
-                "repository_url": project_url,
-                "output": output_dir,
-                "llms": [model],
-                "peft_model_path": None,
-                "ignore": [
-                    ".*",
-                    "*package-lock.json",
-                    "*package.json",
-                    "node_modules",
-                    "*dist*",
-                    "*build*",
-                    "*test*",
-                    "*.svg",
-                    "*.md",
-                    "*.mdx",
-                    "*.toml"
-                ],
-                "file_prompt": "Write a detailed technical explanation of \
-                    what this code does. \n      Focus on the high-level \
-                    purpose of the code and how it may be used in the \
-                    larger project.\n      Include code examples where \
-                    appropriate. Keep you response between 100 and 300 \
-                    words. \n      DO NOT RETURN MORE THAN 300 WORDS.\n \
-                    Output should be in markdown format.\n \
-                    Do not just list the methods and classes in this file.",
-                "folder_prompt": "Write a technical explanation of what the \
-                    code in this file does\n      and how it might fit into the \
-                    larger project or work with other parts of the project.\n      \
-                    Give examples of how this code might be used. Include code \
-                    examples where appropriate.\n      Be concise. Include any \
-                    information that may be relevant to a developer who is \
-                    curious about this code.\n      Keep you response under \
-                    400 words. Output should be in markdown format.\n      \
-                    Do not just list the files and folders in this folder.",
-                "chat_prompt": "",
-                "content_type": "docs",
-                "target_audience": "smart developer",
-                "link_hosted": True,
-                "priority": None,
-                "max_concurrent_calls": 50,
-                "add_questions": False,
+                "project_url": project_url,
+                "model": llm,
                 "device": device,
-            }
-            user_config = {
-                "llms": [model]
+                "temperature": temperature,
+                "top_p": top_p,
+                "max_length": max_length,
+                # "peft_model_path": None,
             }
 
-            repo_conf = AutodocRepoConfig(
-                name=repo_config["name"],
-                repository_url=repo_config["repository_url"],
-                root=repo_config["root"],
-                output=repo_config["output"],
-                llms=repo_config["llms"],
-                peft_model_path=repo_config["peft_model_path"],
-                priority=repo_config["priority"],
-                max_concurrent_calls=repo_config["max_concurrent_calls"],
-                add_questions=repo_config["add_questions"],
-                ignore=repo_config["ignore"],
-                file_prompt=repo_config["file_prompt"],
-                folder_prompt=repo_config["folder_prompt"],
-                chat_prompt=repo_config["chat_prompt"],
-                content_type=repo_config["content_type"],
-                target_audience=repo_config["target_audience"],
-                link_hosted=repo_config["link_hosted"],
-                device=repo_config["device"]
-            )
-            usr_conf = AutodocUserConfig(llms=user_config['llms'], streaming=True)
-            index.index(repo_conf)
-            st.session_state.repo_conf = repo_conf
-            st.session_state.usr_conf = usr_conf
-            st.session_state.chain = query.init_readme_chain(st.session_state.repo_conf, st.session_state.usr_conf)
+            response = requests.post(
+                url="http://localhost:8000/setup",
+                json=request_body,
+                headers={"x-session-id": session_id}
+            ).json()
+
             st.toast('Repository indexing done.')
             
 
@@ -200,16 +99,32 @@ with left:
         if st.session_state.messages[-1]["role"] != "assistant":
             with st.spinner("Thinking..."):
                 with history.chat_message("assistant"):
-                    if "chain" not in st.session_state.keys():
-                        full_response = 'Please setup model and repository!!'
-                    else:
-                        chain = st.session_state.chain
+                    response = requests.post(
+                        url="http://localhost:8000/query",
+                        json={"query": prompt},
+                        headers={"x-session-id": session_id},
+                        stream=True
+                    )
+                    
+                    if response.status_code == 200:
                         placeholder = st.empty()
                         full_response = ''
-                        for chunk in chain.stream({'input': prompt}):
-                            if answer_chunk := chunk.get("answer"):
-                                full_response += answer_chunk
-                                placeholder.markdown(full_response)
+                        for chunk in response.iter_content(chunk_size=10, decode_unicode=True):
+                            full_response += chunk
+                            placeholder.markdown(full_response)
+                    else:
+                        full_response = "Please setup model and repository!!"
+                    
+                    # if "chain" not in st.session_state.keys():
+                    #     full_response = 'Please setup model and repository!!'
+                    # else:
+                    #     chain = st.session_state.chain
+                    #     placeholder = st.empty()
+                    #     full_response = ''
+                    #     for chunk in chain.stream({'input': prompt}):
+                    #         if answer_chunk := chunk.get("answer"):
+                    #             full_response += answer_chunk
+                    #             placeholder.markdown(full_response)
                     
             message = {"role": "assistant", "content": full_response}
             st.session_state.messages.append(message)
@@ -240,7 +155,11 @@ with right:
 
     def validate_markdown():
         error_str = ""
-        errors = PyMarkdownApi().scan_string(st.session_state.readme_content)
+        # errors = PyMarkdownApi().scan_string(st.session_state.readme_content)
+        errors = requests.get(
+            url="http://localhost:8000/validate_markdown",
+            json={"content": st.session_state.readme_content}
+        ).json()
         if len(errors.scan_failures) > 0:
             print(errors.scan_failures)
             error_str = "\n".join([f'Line {failure.line_number}: Col {failure.column_number}: {failure.rule_id}: {failure.rule_description} {failure.extra_error_information} ({failure.rule_name})' for failure in errors.scan_failures])

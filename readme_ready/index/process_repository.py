@@ -214,7 +214,7 @@ def process_repository(
         file_summaries = []
         for f in contents:
             entry_path = Path(folder_path) / f
-            if entry_path.is_file() and f != "summary.json":
+            if entry_path.is_file() and f == "summary.json":
                 file = read_file(entry_path)
                 if len(file) > 0:
                     file_summaries.append(json.loads(file))

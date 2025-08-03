@@ -408,7 +408,7 @@ def get_embeddings(model: str, device: str | None):
         device = None
     if "llama" in model.lower() or "gemma" in model.lower():
         return HuggingFaceEmbeddings(
-            model_name="sentence-transformers/all-mpnet-base-v2",
+            model_name="sentence-transformers/all-MiniLM-L6-v2",
             model_kwargs={"device": device},
             encode_kwargs={"normalize_embeddings": True},
         )

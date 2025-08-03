@@ -23,6 +23,8 @@ from readme_ready.utils.llm_utils import (
     models,
 )
 
+from langchain_community.vectorstores import FAISS
+
 # Define the prompt template for condensing the follow-up question
 condense_qa_prompt = PromptTemplate.from_template(
     template="Given the following conversation and a follow up "
@@ -146,7 +148,7 @@ def make_qa_chain(
     content_type: str,
     chat_prompt: str,
     target_audience: str,
-    vector_store: HNSWLib,
+    vector_store: HNSWLib | FAISS,
     llms: List[LLMModels],
     device: str = "cpu",
     on_token_stream: bool = False,
@@ -266,7 +268,7 @@ def make_readme_chain(
     content_type: str,
     chat_prompt: str,
     target_audience: str,
-    vector_store: HNSWLib,
+    vector_store: HNSWLib | FAISS,
     llms: List[LLMModels],
     peft_model: str | None = None,
     device: str = "cpu",

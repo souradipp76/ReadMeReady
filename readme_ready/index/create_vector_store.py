@@ -11,7 +11,6 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_core.document_loaders import BaseLoader
 from langchain_core.documents import Document
 
-from readme_ready.utils.HNSWLib import HNSWLib, InMemoryDocstore
 from readme_ready.utils.llm_utils import LLMModels, get_embeddings
 
 
@@ -156,6 +155,14 @@ def create_vector_store(
     docs = text_splitter.split_documents(raw_docs)
     # Create the vectorstore
     print("Creating vector store....")
+    # create_hnsw_vector_store(llm, device, docs, output)
+    create_faiss_vector_store(llm, device, docs, output)
+
+    print("Done creating vector store....")
+
+def create_hnsw_vector_store(llm, device, docs, output):
+    from readme_ready.utils.HNSWLib import HNSWLib, InMemoryDocstore
+
     vector_store = HNSWLib.from_documents(
         docs, get_embeddings(llm.name, device), docstore=InMemoryDocstore()
     )
@@ -163,4 +170,22 @@ def create_vector_store(
     print("Saving vector store output....")
     vector_store.save(output)
 
-    print("Done creating vector store....")
+
+def create_faiss_vector_store(llm, device, docs, output):
+    import faiss
+    from langchain_community.docstore.in_memory import InMemoryDocstore
+    from langchain_community.vectorstores import FAISS
+
+    index = faiss.IndexHNSWFlat(384, 32)
+
+    vector_store = FAISS(
+        embedding_function=get_embeddings(llm.name, device),
+        index=index,
+        docstore=InMemoryDocstore(),
+        index_to_docstore_id={},
+    )
+
+    vector_store.add_documents(docs)
+
+    print("Saving vector store output....")
+    vector_store.save_local(output)
