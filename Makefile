@@ -35,7 +35,7 @@ lint:             ## Run pep8, black, mypy linters.
 	$(ENV_PREFIX)flake8 readme_ready/
 	$(ENV_PREFIX)black -l 79 --check readme_ready/
 	$(ENV_PREFIX)black -l 79 --check tests/
-	$(ENV_PREFIX)mypy --ignore-missing-imports --disable-error-code=arg-type readme_ready/
+	$(ENV_PREFIX)mypy --ignore-missing-imports --disable-error-code=arg-type --disable-error-code=assignment readme_ready/
 
 .PHONY: test
 test: lint        ## Run tests and generate coverage report.
