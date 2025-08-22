@@ -1,5 +1,4 @@
-"""CLI interface for readme_ready project.
-"""
+"""CLI interface for readme_ready project."""
 
 from urllib.parse import urlparse
 
