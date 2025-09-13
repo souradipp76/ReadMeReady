@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="None" />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>ReadmeReady</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "ReadmeReady";
+        var mkdocs_page_input_path = "index.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="." class="icon icon-home"> ReadmeReady
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">ReadmeReady</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#what-is-readmeready">What is ReadmeReady?</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#dependencies">Dependencies</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#install-it-from-pypi">Install it from PyPI</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#install-it-from-source">Install it from source</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#initialize">Initialize</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#command-line">Command-Line</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#in-code">In Code</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#supported-models">Supported models</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#contributing">Contributing</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#license">License</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="reference/">API Reference</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href=".">ReadmeReady</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">ReadmeReady</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="readmeready">ReadmeReady</h1>
+<p>Auto-generate code documentation in Markdown format in seconds.</p>
+<h2 id="what-is-readmeready">What is ReadmeReady?</h2>
+<p>Automated documentation of programming source code is a challenging task with significant practical and scientific implications for the developer community. ReadmeReady is a large language model (LLM)-based application that developers can use as a support tool to generate basic documentation for any publicly available or custom repository. Over the last decade, several research have been done on generating documentation for source code using neural network architectures. With the recent advancements in LLM technology, some open-source applications have been developed to address this problem. However, these applications typically rely on the OpenAI APIs, which incur substantial financial costs, particularly for large repositories. Moreover, none of these open-source applications offer a fine-tuned model or features to enable users to fine-tune custom LLMs. Additionally, finding suitable data for fine-tuning is often challenging. Our application addresses these issues.</p>
+<h2 id="installation">Installation</h2>
+<p>ReadmeReady is available only on Linux/Windows.</p>
+<h3 id="dependencies">Dependencies</h3>
+<p>Please follow the installation guide <a href="https://pypi.org/project/python-magic/">here</a> to install <code>python-magic</code>.</p>
+<h3 id="install-it-from-pypi">Install it from PyPI</h3>
+<p>The simplest way to install ReadmeReady and its dependencies is from PyPI with pip, Python's preferred package installer.</p>
+<pre><code class="language-bash">pip install readme_ready
+</code></pre>
+<p>In order to upgrade ReadmeReady to the latest version, use pip as follows.</p>
+<pre><code class="language-bash">$ pip install -U readme_ready
+</code></pre>
+<h3 id="install-it-from-source">Install it from source</h3>
+<p>You can also install ReadmeReady from source as follows.</p>
+<pre><code class="language-bash">$ git clone https://github.com/souradipp76/ReadMeReady.git
+$ cd ReadMeReady
+$ make install
+</code></pre>
+<p>To create a virtual environment before installing ReadmeReady, you can use the command:</p>
+<pre><code class="language-bash">$ make virtualenv
+$ source .venv/bin/activate
+</code></pre>
+<h2 id="usage">Usage</h2>
+<h3 id="initialize">Initialize</h3>
+<pre><code class="language-bash">$ export OPENAI_API_KEY=&lt;YOUR_OPENAI_API_KEY&gt;
+$ export HF_TOKEN=&lt;YOUR_HUGGINGFACE_TOKEN&gt;
+</code></pre>
+<p>Set <code>OPENAI_API_KEY=dummy</code> to use only open-source models.</p>
+<h3 id="command-line">Command-Line</h3>
+<pre><code class="language-bash">$ python -m readme_ready
+#or
+$ readme_ready
+</code></pre>
+<h3 id="in-code">In Code</h3>
+<pre><code class="language-py">from readme_ready.query import query
+from readme_ready.index import index
+from readme_ready.types import (
+    AutodocReadmeConfig,
+    AutodocRepoConfig,
+    AutodocUserConfig,
+    LLMModels,
+)
+
+model = LLMModels.LLAMA2_7B_CHAT_GPTQ # Choose model from supported models
+
+repo_config = AutodocRepoConfig (
+    name = &quot;&lt;REPOSITORY_NAME&gt;&quot;, # Replace &lt;REPOSITORY_NAME&gt;
+    root = &quot;&lt;REPOSITORY_ROOT_DIR_PATH&gt;&quot;, # Replace &lt;REPOSITORY_ROOT_DIR_PATH&gt;
+    repository_url = &quot;&lt;REPOSITORY_URL&gt;&quot;, # Replace &lt;REPOSITORY_URL&gt;
+    output = &quot;&lt;OUTPUT_DIR_PATH&gt;&quot;, # Replace &lt;OUTPUT_DIR_PATH&gt;
+    llms = [model],
+    peft_model_path = &quot;&lt;PEFT_MODEL_NAME_OR_PATH&gt;&quot;, # Replace &lt;PEFT_MODEL_NAME_OR_PATH&gt;
+    ignore = [
+        &quot;.*&quot;,
+        &quot;*package-lock.json&quot;,
+        &quot;*package.json&quot;,
+        &quot;node_modules&quot;,
+        &quot;*dist*&quot;,
+        &quot;*build*&quot;,
+        &quot;*test*&quot;,
+        &quot;*.svg&quot;,
+        &quot;*.md&quot;,
+        &quot;*.mdx&quot;,
+        &quot;*.toml&quot;
+    ],
+    file_prompt = &quot;&quot;,
+    folder_prompt = &quot;&quot;,
+    chat_prompt = &quot;&quot;,
+    content_type = &quot;docs&quot;,
+    target_audience = &quot;smart developer&quot;,
+    link_hosted = True,
+    priority = None,
+    max_concurrent_calls = 50,
+    add_questions = False,
+    device = &quot;auto&quot;, # Select device &quot;cpu&quot; or &quot;auto&quot;
+)
+
+user_config = AutodocUserConfig(
+    llms = [model]
+)
+
+readme_config = AutodocReadmeConfig(
+    # Set comma separated list of README headings
+    headings = &quot;Description,Requirements,Installation,Usage,Contributing,License&quot;
+)
+
+index.index(repo_config)
+query.generate_readme(repo_config, user_config, readme_config)
+</code></pre>
+<p>Run the sample script in the <code>examples/example.py</code> to see a typical code usage.</p>
+<p>See detailed API references <a href="https://souradipp76.github.io/ReadMeReady/reference/">here</a>.</p>
+<h3 id="supported-models">Supported models</h3>
+<ul>
+<li>TINYLLAMA_1p1B_CHAT_GGUF (<code>TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF</code>)</li>
+<li>GOOGLE_GEMMA_2B_INSTRUCT_GGUF (<code>bartowski/gemma-2-2b-it-GGUF</code>)</li>
+<li>LLAMA2_7B_CHAT_GPTQ (<code>TheBloke/Llama-2-7B-Chat-GPTQ</code>)</li>
+<li>LLAMA2_13B_CHAT_GPTQ (<code>TheBloke/Llama-2-13B-Chat-GPTQ</code>)</li>
+<li>CODELLAMA_7B_INSTRUCT_GPTQ (<code>TheBloke/CodeLlama-7B-Instruct-GPTQ</code>)</li>
+<li>CODELLAMA_13B_INSTRUCT_GPTQ (<code>TheBloke/CodeLlama-13B-Instruct-GPTQ</code>)</li>
+<li>LLAMA2_7B_CHAT_HF (<code>meta-llama/Llama-2-7b-chat-hf</code>)</li>
+<li>LLAMA2_13B_CHAT_HF (<code>meta-llama/Llama-2-13b-chat-hf</code>)</li>
+<li>CODELLAMA_7B_INSTRUCT_HF (<code>meta-llama/CodeLlama-7b-Instruct-hf</code>)</li>
+<li>CODELLAMA_13B_INSTRUCT_HF (<code>meta-llama/CodeLlama-13b-Instruct-hf</code>)</li>
+<li>GOOGLE_GEMMA_2B_INSTRUCT (<code>google/gemma-2b-it</code>)</li>
+<li>GOOGLE_GEMMA_7B_INSTRUCT (<code>google/gemma-7b-it</code>)</li>
+<li>GOOGLE_CODEGEMMA_2B (<code>google/codegemma-2b</code>)</li>
+<li>GOOGLE_CODEGEMMA_7B_INSTRUCT (<code>google/codegemma-7b-it</code>)</li>
+</ul>
+<h2 id="contributing">Contributing</h2>
+<p>ReadmeReady is an open-source project that is supported by a community who will gratefully and humbly accept any contributions you might make to the project.</p>
+<p>If you are interested in contributing, read the <a href="https://github.com/souradipp76/ReadMeReady/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> file.</p>
+<ul>
+<li>Submit a bug report or feature request on <a href="https://github.com/souradipp76/ReadMeReady/issues">GitHub Issues</a>.</li>
+<li>Add to the documentation or help with our website.</li>
+<li>Write unit or integration tests for our project under the <code>tests</code> directory.</li>
+<li>Answer questions on our issues, mailing list, Stack Overflow, and elsewhere.</li>
+<li>Write a blog post, tweet, or share our project with others.</li>
+</ul>
+<p>As you can see, there are lots of ways to get involved, and we would be very happy for you to join us!</p>
+<h2 id="license">License</h2>
+<p>Read the <a href="https://github.com/souradipp76/ReadMeReady/blob/main/LICENSE">LICENSE</a> file.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="reference/" class="btn btn-neutral float-right" title="API Reference">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+      <span><a href="reference/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = ".";</script>
+    <script src="js/theme_extra.js"></script>
+    <script src="js/theme.js"></script>
+      <script src="search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
+
+<!--
+MkDocs version : 1.6.1
+Build Date UTC : 2025-09-13 05:25:40.356891+00:00
+-->

@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>API Reference - ReadmeReady</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "API Reference";
+        var mkdocs_page_input_path = "reference.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> ReadmeReady
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">ReadmeReady</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">API Reference</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#readme_ready.index.index">index</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#readme_ready.index.index.index">index</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#readme_ready.index.convert_json_to_markdown">convert_json_to_markdown</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#readme_ready.index.convert_json_to_markdown.convert_json_to_markdown">convert_json_to_markdown</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#readme_ready.index.create_vector_store">create_vector_store</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#readme_ready.index.create_vector_store.RepoLoader">RepoLoader</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#readme_ready.index.create_vector_store.create_vector_store">create_vector_store</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#readme_ready.index.create_vector_store.process_directory">process_directory</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#readme_ready.index.create_vector_store.process_file">process_file</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#readme_ready.index.process_repository">process_repository</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#readme_ready.index.process_repository.process_repository">process_repository</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#readme_ready.query.query">query</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#readme_ready.query.query.query">query</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#readme_ready.query.query.generate_readme">generate_readme</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#readme_ready.query.create_chat_chain">create_chat_chain</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#readme_ready.query.create_chat_chain.make_qa_chain">make_qa_chain</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#readme_ready.query.create_chat_chain.make_readme_chain">make_readme_chain</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#readme_ready.types">types</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#readme_ready.types.AutodocReadmeConfig">AutodocReadmeConfig</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#readme_ready.types.AutodocRepoConfig">AutodocRepoConfig</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#readme_ready.types.AutodocUserConfig">AutodocUserConfig</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#readme_ready.types.LLMModels">LLMModels</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">ReadmeReady</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">API Reference</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="api-reference">API Reference</h1>
+<ul>
+<li>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="readme_ready.index.index" class="doc doc-heading">
+            <span class="doc doc-object-name doc-module-name">readme_ready.index.index</span>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+        <p>Utility to Index a Repository and store them into a Vector Store</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="readme_ready.index.index.index" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">index</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">index</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Indexes a repository to generate documentation and vector store files</p>
+<p>Processes the repository specified in the config to create JSON files,
+converts them to Markdown format, and builds a vector store from the
+Markdown documents. Creates the necessary directories for JSON,
+Markdown, and data outputs as specified in the configuration.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>config</code></b>
+                  (<code><a class="autorefs autorefs-internal" title="AutodocRepoConfig (readme_ready.types.AutodocRepoConfig)" href="#readme_ready.types.AutodocRepoConfig">AutodocRepoConfig</a></code>)
+              –
+              <div class="doc-md-description">
+                <p>An AutodocRepoConfig instance containing configuration
+settings for indexing, including output paths, repository
+details, and processing options.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div></li>
+<li>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="readme_ready.index.convert_json_to_markdown" class="doc doc-heading">
+            <span class="doc doc-object-name doc-module-name">readme_ready.index.convert_json_to_markdown</span>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+        <p>Utility to Convert Summary JSON to Markdown</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="readme_ready.index.convert_json_to_markdown.convert_json_to_markdown" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">convert_json_to_markdown</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">convert_json_to_markdown</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Convert JSON summary to Markdown documents</p>
+<p>Traverses the root directory, finds the summary JSON for each file
+and directory and converts them into Markdown format.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>config</code></b>
+                  (<code><a class="autorefs autorefs-internal" title="AutodocRepoConfig (readme_ready.types.AutodocRepoConfig)" href="#readme_ready.types.AutodocRepoConfig">AutodocRepoConfig</a></code>)
+              –
+              <div class="doc-md-description">
+                <p>An AutodocRepoConfig instance containing configuration
+settings for indexing, including output paths, repository
+details, and processing options.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div></li>
+<li>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="readme_ready.index.create_vector_store" class="doc doc-heading">
+            <span class="doc doc-object-name doc-module-name">readme_ready.index.create_vector_store</span>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+        <p>Utilities to Create Vector Store</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="readme_ready.index.create_vector_store.RepoLoader" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">RepoLoader</span>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="langchain_core.document_loaders.BaseLoader">BaseLoader</span></code></p>
+
+
+        <p>Class to load and process a repository</p>
+<p>A loader class which loads and processes a repsitory given
+the root directory path and list of file patterns to ignore.</p>
+<p>Typical usage example:</p>
+<pre><code>loader = RepoLoader(path, ignore)
+docs = loader.load()
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="readme_ready.index.create_vector_store.create_vector_store" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">create_vector_store</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">create_vector_store</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">ignore</span><span class="p">,</span> <span class="n">llms</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Creates a vector store from Markdown documents</p>
+<p>Loads documents from the specified root directory, splits the text into
+chunks, creates a vector store using the selected LLM, and saves the
+vector store to the output path. Ignores files matching the patterns
+provided in the ignore list.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>root</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The root directory containing the documents to be processed.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>output</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The directory where the vector store will be saved.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>ignore</code></b>
+                  (<code><span title="typing.List">List</span>[<span title="str">str</span>]</code>)
+              –
+              <div class="doc-md-description">
+                <p>A list of file patterns to ignore during document loading.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>llms</code></b>
+                  (<code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="LLMModels (readme_ready.utils.llm_utils.LLMModels)" href="#readme_ready.types.LLMModels">LLMModels</a>]</code>)
+              –
+              <div class="doc-md-description">
+                <p>A list of LLMModels to use for generating embeddings.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>device</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The device to use for embedding generation
+(e.g., 'cpu' or 'auto').</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="readme_ready.index.create_vector_store.process_directory" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">process_directory</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">process_directory</span><span class="p">(</span><span class="n">directory_path</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Processes a directory</p>
+<p>Processes a specified directory, and converts all the content
+of the files in the directory into Document format. Ignores
+files matching the patterns provided in the ignore list.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>directory_path</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The root directory containing the files to be
+processed.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>ignore</code></b>
+                  (<code><span title="typing.List">List</span>[<span title="str">str</span>]</code>)
+              –
+              <div class="doc-md-description">
+                <p>A list of file patterns to ignore during processing.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>docs</code></b>(                  <code><span title="typing.List">List</span>[<span title="langchain_core.documents.Document">Document</span>]</code>
+)              –
+              <div class="doc-md-description">
+                <p>List of Documents with file contents and metatdata</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="readme_ready.index.create_vector_store.process_file" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">process_file</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">process_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Processes a file</p>
+<p>Processes a specified file and converts the content
+of the file into Document format. Ignores any file matching
+the patterns provided in the ignore list.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>file_path</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The file to be processed.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>ignore</code></b>
+                  (<code><span title="typing.List">List</span>[<span title="str">str</span>]</code>)
+              –
+              <div class="doc-md-description">
+                <p>A list of file patterns to ignore during processing.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>doc</code></b>(                  <code><span title="langchain_core.documents.Document">Document</span> | None</code>
+)              –
+              <div class="doc-md-description">
+                <p>A Document with file contents and metatdata</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div></li>
+<li>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="readme_ready.index.process_repository" class="doc doc-heading">
+            <span class="doc doc-object-name doc-module-name">readme_ready.index.process_repository</span>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+        <p>Utilities to Process Repository and Summarize File Contents</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="readme_ready.index.process_repository.process_repository" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">process_repository</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">process_repository</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Process a repository to generate JSON summary using LLMs</p>
+<p>Traverses through the repository and summarizes the contents of
+each file and directory using an LLM via. a summarization prompt and
+saves them into JSON files.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>config</code></b>
+                  (<code><a class="autorefs autorefs-internal" title="AutodocRepoConfig (readme_ready.types.AutodocRepoConfig)" href="#readme_ready.types.AutodocRepoConfig">AutodocRepoConfig</a></code>)
+              –
+              <div class="doc-md-description">
+                <p>An AutodocRepoConfig instance containing configuration
+settings for indexing, including output paths, repository
+details, and processing options.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>dry_run</code></b>
+                  (<code><span title="bool">bool</span></code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Flag to enable dry run mode where the process runs over the
+directory without actual indexing the documents</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div></li>
+<li>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="readme_ready.query.query" class="doc doc-heading">
+            <span class="doc doc-object-name doc-module-name">readme_ready.query.query</span>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+        <p>Utility to Query a Code Repository or Generate README</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="readme_ready.query.query.query" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">query</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">query</span><span class="p">(</span><span class="n">repo_config</span><span class="p">,</span> <span class="n">user_confg</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Queries the repository for information based on user input.</p>
+<p>Initializes a question-answering chain, displays a welcome message,
+and enters a loop to prompt the user for questions about the repository.
+Processes each question by invoking the QA chain, updates the chat
+history, and displays the response in Markdown format. The loop continues
+until the user inputs 'exit'.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>repo_config</code></b>
+                  (<code><a class="autorefs autorefs-internal" title="AutodocRepoConfig (readme_ready.types.AutodocRepoConfig)" href="#readme_ready.types.AutodocRepoConfig">AutodocRepoConfig</a></code>)
+              –
+              <div class="doc-md-description">
+                <p>An AutodocRepoConfig instance containing configuration
+settings for the repository.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>user_confg</code></b>
+                  (<code><a class="autorefs autorefs-internal" title="AutodocUserConfig (readme_ready.types.AutodocUserConfig)" href="#readme_ready.types.AutodocUserConfig">AutodocUserConfig</a></code>)
+              –
+              <div class="doc-md-description">
+                <p>An AutodocUserConfig instance containing user-specific
+configuration settings.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="readme_ready.query.query.generate_readme" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">generate_readme</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">generate_readme</span><span class="p">(</span><span class="n">repo_config</span><span class="p">,</span> <span class="n">user_config</span><span class="p">,</span> <span class="n">readme_config</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Generates a README file based on repository and user configurations.</p>
+<p>Initializes a README generation chain, clears the terminal, and prepares
+the output file. Iterates over the specified headings in the README
+configuration, generates content for each section by invoking the chain,
+and writes the content in Markdown format to the README file. Handles any
+RuntimeError that occurs during the process.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>repo_config</code></b>
+                  (<code><a class="autorefs autorefs-internal" title="AutodocRepoConfig (readme_ready.types.AutodocRepoConfig)" href="#readme_ready.types.AutodocRepoConfig">AutodocRepoConfig</a></code>)
+              –
+              <div class="doc-md-description">
+                <p>An AutodocRepoConfig instance containing configuration
+settings for the repository.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>user_config</code></b>
+                  (<code><a class="autorefs autorefs-internal" title="AutodocUserConfig (readme_ready.types.AutodocUserConfig)" href="#readme_ready.types.AutodocUserConfig">AutodocUserConfig</a></code>)
+              –
+              <div class="doc-md-description">
+                <p>An AutodocUserConfig instance containing user-specific
+configuration settings.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>readme_config</code></b>
+                  (<code><a class="autorefs autorefs-internal" title="AutodocReadmeConfig (readme_ready.types.AutodocReadmeConfig)" href="#readme_ready.types.AutodocReadmeConfig">AutodocReadmeConfig</a></code>)
+              –
+              <div class="doc-md-description">
+                <p>An AutodocReadmeConfig instance containing
+configuration settings for README generation.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div></li>
+<li>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="readme_ready.query.create_chat_chain" class="doc doc-heading">
+            <span class="doc doc-object-name doc-module-name">readme_ready.query.create_chat_chain</span>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+        <p>Creates Chains for QA Chat or Readme Generation</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="readme_ready.query.create_chat_chain.make_qa_chain" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">make_qa_chain</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">make_qa_chain</span><span class="p">(</span><span class="n">project_name</span><span class="p">,</span> <span class="n">repository_url</span><span class="p">,</span> <span class="n">content_type</span><span class="p">,</span> <span class="n">chat_prompt</span><span class="p">,</span> <span class="n">target_audience</span><span class="p">,</span> <span class="n">vector_store</span><span class="p">,</span> <span class="n">llms</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">on_token_stream</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Creates a question-answering (QA) chain for the specified project</p>
+<p>Initializes and configures the QA chain using the provided repository
+and user configurations. Selects the appropriate language model (LLM),
+sets up the retriever with a history-aware mechanism, and combines
+document chains for processing queries. The chain facilitates interaction
+with the vector store to retrieve and process relevant information
+based on user queries.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>project_name</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The name of the project for which the QA chain is
+being created.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>repository_url</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The URL of the repository containing the project.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>content_type</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The type of content to be processed
+(e.g., 'code', 'documentation').</p>
+              </div>
+            </li>
+            <li>
+              <b><code>chat_prompt</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The prompt template used for generating chat responses.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>target_audience</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The intended audience for the QA responses.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>vector_store</code></b>
+                  (<code><span title="readme_ready.utils.HNSWLib.HNSWLib">HNSWLib</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>An instance of HNSWLib representing the vector store
+containing document embeddings.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>llms</code></b>
+                  (<code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="LLMModels (readme_ready.types.LLMModels)" href="#readme_ready.types.LLMModels">LLMModels</a>]</code>)
+              –
+              <div class="doc-md-description">
+                <p>A list of LLMModels to select from for generating embeddings
+and responses.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>device</code></b>
+                  (<code><span title="str">str</span></code>, default:
+                      <code>&#39;cpu&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>The device to use for model inference (default is 'cpu').</p>
+              </div>
+            </li>
+            <li>
+              <b><code>on_token_stream</code></b>
+                  (<code><span title="bool">bool</span></code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Optional callback for handling token streams during
+model inference.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code><span title="langchain_core.runnables.base.Runnable">Runnable</span></code>
+              –
+              <div class="doc-md-description">
+                <p>A retrieval chain configured for question-answering, combining the
+retriever and document processing chain.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="readme_ready.query.create_chat_chain.make_readme_chain" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">make_readme_chain</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">make_readme_chain</span><span class="p">(</span><span class="n">project_name</span><span class="p">,</span> <span class="n">repository_url</span><span class="p">,</span> <span class="n">content_type</span><span class="p">,</span> <span class="n">chat_prompt</span><span class="p">,</span> <span class="n">target_audience</span><span class="p">,</span> <span class="n">vector_store</span><span class="p">,</span> <span class="n">llms</span><span class="p">,</span> <span class="n">peft_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">on_token_stream</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Creates a README generation chain for the specified project</p>
+<p>Initializes and configures the README generation chain using the provided
+repository, user, and README configurations. Selects the appropriate
+language model (LLM), sets up the document processing chain with the
+specified prompts, and integrates with the vector store to generate
+comprehensive README sections based on project data. The chain facilitates
+automated generation of README files tailored to the project's
+specifications.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>project_name</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The name of the project for which the README is
+being generated.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>repository_url</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The URL of the repository containing the project.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>content_type</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The type of content to be included in the README
+(e.g., 'overview', 'installation').</p>
+              </div>
+            </li>
+            <li>
+              <b><code>chat_prompt</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The prompt template used for generating README content.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>target_audience</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The intended audience for the README.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>vector_store</code></b>
+                  (<code><span title="readme_ready.utils.HNSWLib.HNSWLib">HNSWLib</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>An instance of HNSWLib representing the vector store
+containing document embeddings.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>llms</code></b>
+                  (<code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="LLMModels (readme_ready.types.LLMModels)" href="#readme_ready.types.LLMModels">LLMModels</a>]</code>)
+              –
+              <div class="doc-md-description">
+                <p>A list of LLMModels to select from for generating README content.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>peft_model</code></b>
+                  (<code><span title="str">str</span> | None</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>An optional parameter specifying a PEFT
+(Parameter-Efficient Fine-Tuning) model for enhanced performance.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>device</code></b>
+                  (<code><span title="str">str</span></code>, default:
+                      <code>&#39;cpu&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>The device to use for model inference (default is 'cpu').</p>
+              </div>
+            </li>
+            <li>
+              <b><code>on_token_stream</code></b>
+                  (<code><span title="bool">bool</span></code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Optional callback for handling token streams during
+model inference.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code><span title="langchain_core.runnables.base.Runnable">Runnable</span></code>
+              –
+              <div class="doc-md-description">
+                <p>A retrieval chain configured for README generation, combining the
+retriever and document processing chain.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div></li>
+<li>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="readme_ready.types" class="doc doc-heading">
+            <span class="doc doc-object-name doc-module-name">readme_ready.types</span>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+        <p>Utility Classes for REAMDE generation</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="readme_ready.types.AutodocReadmeConfig" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">AutodocReadmeConfig</span>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>Configuration class for managing README-specific settings in
+the README generation process.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Attributes:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>headings</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>A comma separated list of headings to
+include in the README. The input string is split by commas
+and stripped of extra whitespace.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>        <p>Typical usage example:</p>
+<pre><code>readme_config = AutodocReadmeConfig(
+    headings = "Description,Requirements"
+)
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="readme_ready.types.AutodocRepoConfig" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">AutodocRepoConfig</span>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>Configuration class for managing the README generation process of
+a repository.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Attributes:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>name</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The name of the repository.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>repository_url</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The URL of the repository to be documented.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>root</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The root directory of the repository.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>output</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The directory where the generated README will be stored.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>llms</code></b>
+                  (<code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="LLMModels (readme_ready.types.LLMModels)" href="#readme_ready.types.LLMModels">LLMModels</a>]</code>)
+              –
+              <div class="doc-md-description">
+                <p>A list of language models to be used
+in the documentation process.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>priority</code></b>
+                  (<code><span title="readme_ready.types.Priority">Priority</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The priority level for processing tasks.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>max_concurrent_calls</code></b>
+                  (<code><span title="int">int</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The maximum number of concurrent calls
+allowed during processing.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>add_questions</code></b>
+                  (<code><span title="bool">bool</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Whether to include generated questions in the
+documentation.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>ignore</code></b>
+                  (<code><span title="typing.List">List</span>[<span title="str">str</span>]</code>)
+              –
+              <div class="doc-md-description">
+                <p>A list of files or directories patterns to be
+excluded from documentation.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>file_prompt</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The template or prompt to process individual files.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>folder_prompt</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The template or prompt to process folders.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>chat_prompt</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The template or prompt for chatbot interactions.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>content_type</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The type of content being documented
+(e.g., code, docs).</p>
+              </div>
+            </li>
+            <li>
+              <b><code>target_audience</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The intended audience for the documentation.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>link_hosted</code></b>
+                  (<code><span title="bool">bool</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Whether to generate hosted links in the
+documentation.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>peft_model_path</code></b>
+                  (<code><span title="str">str</span> | None</code>)
+              –
+              <div class="doc-md-description">
+                <p>Path to a PEFT
+(Parameter-Efficient Fine-Tuning) model, if applicable.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>device</code></b>
+                  (<code><span title="str">str</span> | None</code>)
+              –
+              <div class="doc-md-description">
+                <p>The device to be used for processing
+(e.g., "cpu", "auto").</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>        <p>Typical usage example:</p>
+<pre><code>repo_config = AutodocRepoConfig (
+    name = "&lt;REPOSITORY_NAME&gt;",
+    root = "&lt;REPOSITORY_ROOT_DIR_PATH&gt;",
+    repository_url = "&lt;REPOSITORY_URL&gt;",
+    output = "&lt;OUTPUT_DIR_PATH&gt;",
+    llms = [model],
+    peft_model_path = "&lt;PEFT_MODEL_NAME_OR_PATH&gt;",
+    ignore = [
+        ".*",
+        "*package-lock.json",
+        "*package.json",
+        "node_modules",
+        "*dist*",
+        "*build*",
+        "*test*",
+        "*.svg",
+        "*.md",
+        "*.mdx",
+        "*.toml"
+    ],
+    file_prompt = "",
+    folder_prompt = "",
+    chat_prompt = "",
+    content_type = "docs",
+    target_audience = "smart developer",
+    link_hosted = True,
+    priority = None,
+    max_concurrent_calls = 50,
+    add_questions = False,
+    device = "auto",
+)
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="readme_ready.types.AutodocUserConfig" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">AutodocUserConfig</span>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>Configuration class for managing user-specific settings in the
+README generation process.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Attributes:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>llms</code></b>
+                  (<code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="LLMModels (readme_ready.types.LLMModels)" href="#readme_ready.types.LLMModels">LLMModels</a>]</code>)
+              –
+              <div class="doc-md-description">
+                <p>A list of language models available for
+the user to utilize.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>streaming</code></b>
+                  (<code><span title="bool">bool</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Whether to enable streaming during the
+documentation process. Defaults to False.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>        <p>Typical usage example:</p>
+<pre><code>model = LLMModels.LLAMA2_7B_CHAT_GPTQ
+user_config = AutodocUserConfig(
+    llms = [model]
+)
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="readme_ready.types.LLMModels" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">LLMModels</span>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="str">str</span></code>, <code><span title="enum.Enum">Enum</span></code></p>
+
+
+        <p>Supported Large Language Models (LLMs) for README generation task.</p>
+
+
+<details class="members" open>
+  <summary>Members</summary>
+  <ul>
+<li>GPT3 (str): OpenAI GPT-3.5-turbo model.</li>
+<li>GPT4 (str): OpenAI GPT-4 model.</li>
+<li>GPT432k (str): OpenAI GPT-4-32k model with extended context window.</li>
+<li>TINYLLAMA_1p1B_CHAT_GGUF (str): TinyLlama 1.1B Chat model from
+    TheBloke with GGUF format.</li>
+<li>GOOGLE_GEMMA_2B_INSTRUCT_GGUF (str): Gemma 2B Instruction model
+    in GGUF format by bartowski.</li>
+<li>LLAMA2_7B_CHAT_GPTQ (str): LLaMA 2 7B Chat model using GPTQ
+    from TheBloke.</li>
+<li>LLAMA2_13B_CHAT_GPTQ (str): LLaMA 2 13B Chat model using GPTQ
+    from TheBloke.</li>
+<li>CODELLAMA_7B_INSTRUCT_GPTQ (str): CodeLlama 7B Instruction model
+    using GPTQ from TheBloke.</li>
+<li>CODELLAMA_13B_INSTRUCT_GPTQ (str): CodeLlama 13B Instruction model
+    using GPTQ from TheBloke.</li>
+<li>LLAMA2_7B_CHAT_HF (str): LLaMA 2 7B Chat model hosted on
+    Hugging Face.</li>
+<li>LLAMA2_13B_CHAT_HF (str): LLaMA 2 13B Chat model hosted on
+    Hugging Face.</li>
+<li>CODELLAMA_7B_INSTRUCT_HF (str): CodeLlama 7B Instruction model
+    hosted on Hugging Face.</li>
+<li>CODELLAMA_13B_INSTRUCT_HF (str): CodeLlama 13B Instruction model
+    hosted on Hugging Face.</li>
+<li>GOOGLE_GEMMA_2B_INSTRUCT (str): Gemma 2B Instruction model by Google.</li>
+<li>GOOGLE_GEMMA_7B_INSTRUCT (str): Gemma 7B Instruction model by Google.</li>
+<li>GOOGLE_CODEGEMMA_2B (str): CodeGemma 2B model by Google for
+    code-related tasks.</li>
+<li>GOOGLE_CODEGEMMA_7B_INSTRUCT (str): CodeGemma 7B Instruction
+    model by Google.</li>
+</ul>
+</details>        <p>Typical usage example:</p>
+<pre><code>model = LLMModels.LLAMA2_7B_CHAT_GPTQ
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div></li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href=".." class="btn btn-neutral float-left" title="ReadmeReady"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
