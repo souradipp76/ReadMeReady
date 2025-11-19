@@ -65,6 +65,9 @@ class LLMModels(str, Enum):
     GOOGLE_GEMMA_7B_INSTRUCT = "google/gemma-7b-it"
     GOOGLE_CODEGEMMA_2B = "google/codegemma-2b"
     GOOGLE_CODEGEMMA_7B_INSTRUCT = "google/codegemma-7b-it"
+    GPT4_1 = "gpt-4.1"
+    CLAUDE_4_SONNET = "anthropic/claude-sonnet-4"
+    GEMMA_3_27B = "google/gemma-3-27b-it"
 
 
 class Priority(str, Enum):
