@@ -7,7 +7,7 @@ from readme_ready.query.create_chat_chain import (
     condense_qa_prompt,
     condense_readme_prompt,
 )
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 from readme_ready.utils.llm_utils import (
     models,
 )

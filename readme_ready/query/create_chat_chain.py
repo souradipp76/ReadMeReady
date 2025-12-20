@@ -4,14 +4,14 @@ Creates Chains for QA Chat or Readme Generation
 
 from typing import List
 
-from langchain.chains import (
+from langchain_classic.chains import (
     create_history_aware_retriever,
     create_retrieval_chain,
 )
-from langchain.chains.combine_documents.stuff import (
+from langchain_classic.chains.combine_documents.stuff import (
     create_stuff_documents_chain,
 )
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables.base import Runnable
 
 from readme_ready.types import LLMModels
