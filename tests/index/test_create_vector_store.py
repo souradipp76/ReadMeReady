@@ -10,7 +10,7 @@ from readme_ready.index.create_vector_store import (
     should_ignore,
 )
 from readme_ready.types import LLMModels
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
 def test_should_ignore():
