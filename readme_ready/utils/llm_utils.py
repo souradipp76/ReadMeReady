@@ -140,6 +140,7 @@ def get_ollama_chat_model(model_name: str, streaming=False, model_kwargs=None):
         disable_streaming=not streaming,
     )
 
+
 def get_openai_chat_model(
     model: str, temperature=None, streaming=None, model_kwargs=None
 ) -> ChatOpenAI:

@@ -22,8 +22,8 @@ jobs:
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install project
@@ -40,8 +40,8 @@ jobs:
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install project
@@ -65,8 +65,8 @@ jobs:
   #       os: [macos-latest]
   #   runs-on: ${{ matrix.os }}
   #   steps:
-  #     - uses: actions/checkout@v5
-  #     - uses: actions/setup-python@v5
+  #     - uses: actions/checkout@v6
+  #     - uses: actions/setup-python@v6
   #       with:
   #         python-version: ${{ matrix.python-version }}
   #     - name: Install project
@@ -83,8 +83,8 @@ jobs:
   #       os: [windows-latest]
   #   runs-on: ${{ matrix.os }}
   #   steps:
-  #     - uses: actions/checkout@v5
-  #     - uses: actions/setup-python@v5
+  #     - uses: actions/checkout@v6
+  #     - uses: actions/setup-python@v6
   #       with:
   #         python-version: ${{ matrix.python-version }}
   #     - name: Install Pip

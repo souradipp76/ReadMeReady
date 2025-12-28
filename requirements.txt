@@ -1,5 +1,6 @@
 torch
 langchain
+langchain-classic
 markdown2
 langchain_openai
 langchain_experimental
