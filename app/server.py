@@ -32,6 +32,7 @@ class IndexRequest(BaseModel):
     top_p: float = 0.9
     max_tokens: int = 1000
     peft_model_path: str = None
+    hf_token: str = None
 
 class ValidateMarkdownRequest(BaseModel):
     content: str
@@ -66,6 +67,7 @@ async def handle_query(request: QueryRequest, x_session_id: Annotated[str, Heade
     Returns:
         The response from the query function.
     """
+    print(session_details)
     if x_session_id not in session_details:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -88,6 +90,7 @@ async def handle_setup(request: IndexRequest, x_session_id: Annotated[str, Heade
     repo_dir = os.path.join(project_root, "tmp", request.name)
     output_dir = os.path.join(project_root, "output", request.name)
     session_id = x_session_id
+    os.environ['HF_TOKEN'] = request.hf_token
 
     if not os.path.exists(repo_dir):
         os.makedirs(repo_dir, exist_ok=True)

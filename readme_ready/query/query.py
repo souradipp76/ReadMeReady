@@ -21,6 +21,10 @@ from readme_ready.types import (
 from readme_ready.utils.HNSWLib import HNSWLib
 from readme_ready.utils.llm_utils import get_embeddings
 
+import faiss
+from langchain_community.docstore.in_memory import InMemoryDocstore
+from langchain_community.vectorstores import FAISS
+
 chat_history: list[tuple[str, str]] = []
 
 
@@ -59,7 +63,8 @@ def init_readme_chain(
 ):
     data_path = os.path.join(repo_config.output, "docs", "data")
     embeddings = get_embeddings(repo_config.llms[0].value, repo_config.device)
-    vector_store = HNSWLib.load(data_path, embeddings)
+    # vector_store = HNSWLib.load(data_path, embeddings)
+    vector_store = FAISS.load_local(data_path, embeddings, allow_dangerous_deserialization=True)
     chain = make_readme_chain(
         repo_config.name,
         repo_config.repository_url,

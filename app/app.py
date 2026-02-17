@@ -59,6 +59,7 @@ with st.sidebar:
                 "top_p": top_p,
                 "max_length": max_length,
                 # "peft_model_path": None,
+                "hf_token": hf_token
             }
 
             response = requests.post(
