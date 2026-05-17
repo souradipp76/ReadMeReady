@@ -2,12 +2,29 @@
 HNSWLib Wrapper
 """
 
+from __future__ import annotations
+
 import json
 import os
 from abc import abstractmethod
 from typing import Any, Dict, Iterable, List, Optional
 
-import hnswlib
+_hnswlib_import_error = None
+try:
+    import hnswlib
+except Exception as exc:
+    hnswlib = None  # type: ignore[assignment]
+    _hnswlib_import_error = exc
+
+
+def _ensure_hnswlib_available() -> None:
+    if hnswlib is None:
+        raise ImportError(
+            "hnswlib is required for readme_ready.utils.HNSWLib. "
+            "Install it with `pip install --no-binary :all: hnswlib` or a compatible wheel. "
+            f"Original import error: {_hnswlib_import_error}"
+        )
+
 import numpy as np
 from langchain_community.docstore.in_memory import InMemoryDocstore
 from langchain_core.documents import Document
@@ -39,7 +56,7 @@ class HNSWLibArgs(HNSWLibBase):
         space: str,
         num_dimensions: Optional[int] = None,
         docstore: Optional[InMemoryDocstore] = None,
-        index: Optional[hnswlib.Index] = None,
+        index: Optional["hnswlib.Index"] = None,
     ):
         super().__init__(space, num_dimensions)
         self.docstore = docstore
@@ -66,8 +83,9 @@ class HNSWLib(SaveableVectorStore):
         return ids
 
     @staticmethod
-    def get_hierarchical_nsw(args: HNSWLibArgs) -> hnswlib.Index:
+    def get_hierarchical_nsw(args: HNSWLibArgs) -> "hnswlib.Index":
         """Get Hierarchical NSW"""
+        _ensure_hnswlib_available()
         if args.space is None:
             raise ValueError("hnswlib requires a space argument")
         if args.num_dimensions is None:
@@ -192,6 +210,7 @@ class HNSWLib(SaveableVectorStore):
 
     @staticmethod
     def load(directory: str, embeddings: Embeddings):
+        _ensure_hnswlib_available()
         with open(os.path.join(directory, "args.json"), "r") as f:
             args_data = json.load(f)
         args = HNSWLibArgs(

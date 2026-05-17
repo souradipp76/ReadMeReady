@@ -21,7 +21,6 @@ from readme_ready.types import (
 from readme_ready.utils.HNSWLib import HNSWLib
 from readme_ready.utils.llm_utils import get_embeddings
 
-import faiss
 from langchain_community.docstore.in_memory import InMemoryDocstore
 from langchain_community.vectorstores import FAISS
 

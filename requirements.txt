@@ -18,3 +18,7 @@ sentence_transformers
 pymarkdownlnt
 peft
 gguf
+streamlit
+streamlit_ace
+fastapi
+uvicorn[standard]
